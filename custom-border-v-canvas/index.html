@@ -37,7 +37,7 @@
         });
 
 
-        var sectorPos = [0,0];
+
         // for (let i = 0; i < 2; i++) {
         //     Konva.Image.fromURL('./plus.svg', function (darthNode) {
         //         darthNode.setAttrs({
@@ -70,7 +70,26 @@
         //     group.add(darthNode);
         // });
 
-        var plus = new Konva.Line({
+
+        var config = {
+            sectorPos: {
+                x: 0,
+                y: 0
+            },
+            lineHeight: 241,
+            lineWidth: 80,
+
+            plusInfo: {
+                width: 15,
+                height: 15,
+                margin: 5,
+            },
+        }
+        var sectorPos = [0,0];
+
+
+
+        var plusTopLeft = new Konva.Line({
             points: [
                 8, 8,
                 8, 1,
@@ -84,18 +103,67 @@
             stroke: 'black',
             strokeWidth: 1,
         });
-        group.add(plus);
 
-
-        var redLine = new Konva.Line({
-            points: [20, 8, 20+81, 8],
+        var plusBottomLeft = new Konva.Line({
+            points: [
+                8, 8,
+                8, 1,
+                8, 8,
+                1, 8,
+                8, 8,
+                15, 8,
+                8, 8,
+                8, 15
+            ],
             stroke: 'black',
             strokeWidth: 1,
         });
-        group.add(redLine);
+        plusBottomLeft.move({
+            x: 0,
+            y: config.plusInfo.height + config.plusInfo.margin*2 + config.lineHeight,
+        })
 
+        var lineTop = new Konva.Line({
+            points: [config.plusInfo.height + config.plusInfo.margin, 8, config.plusInfo.height + config.plusInfo.margin + config.lineWidth, 8],
+            stroke: 'black',
+            strokeWidth: 1,
+        });
+
+        var lineBottom = new Konva.Line({
+            points: [config.plusInfo.height + config.plusInfo.margin, 8, config.plusInfo.height + config.plusInfo.margin + config.lineWidth, 8],
+            stroke: 'black',
+            strokeWidth: 1,
+        });
+        lineBottom.move({
+            x: 0,
+            y: config.plusInfo.height + config.plusInfo.margin*2 + config.lineHeight,
+
+        })
+
+        var lineLeft = new Konva.Line({
+            points: [8, config.plusInfo.height + config.plusInfo.margin, 8, config.plusInfo.height + config.plusInfo.margin + config.lineHeight],
+            stroke: 'black',
+            strokeWidth: 1,
+        });
+
+
+        group.add(lineTop);
+        group.add(lineBottom);
+        group.add(lineLeft);
+        group.add(plusTopLeft);
+        group.add(plusBottomLeft);
+
+
+        var group2 = group.clone()
+
+
+        group2.move({
+            x: config.plusInfo.height + config.plusInfo.margin*2 + config.lineWidth,
+            y: 0,
+        })
 
         layer.add(group);
+        layer.add(group2);
         stage.add(layer);
 
 
