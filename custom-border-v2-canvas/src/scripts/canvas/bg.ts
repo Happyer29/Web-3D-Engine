@@ -36,6 +36,7 @@ export class bg {
         //TODO resize
         this.width = window.innerWidth;
         this.height = window.innerHeight;
+
         // window.addEventListener('resize', function(event) {
         //     width = window.innerWidth;
         //     height = window.innerHeight;
@@ -47,12 +48,15 @@ export class bg {
             height: this.height,
         });
 
-        this.layer = new Konva.Layer();
 
+        this.layer = new Konva.Layer();
 
         let group = this.createSector(0, 0);
         this.layer.add(group);
         this.stage.add(this.layer);
+
+        //on resize - rerender
+        window.addEventListener('resize', this.render);
     }
 
 
@@ -153,6 +157,32 @@ export class bg {
         return line;
     }
 
+    private render(){
+        var container = document.querySelector('#container') as HTMLElement; //TODO why?
+
+        this.stage = new Konva.Stage({
+            container: 'container',
+            width: container.offsetWidth,
+            height: container.offsetHeight,
+        });
+
+        this.stage.add(this.layer);
+    }
+    // private autoResize() {
+    //     var container = document.getElementsByClassName('.container');
+    //
+    //     // now we need to fit stage into parent container
+    //     var containerWidth = container.offsetWidth;
+    //
+    //     // but we also make the full scene visible
+    //     // so we need to scale all objects on canvas
+    //     var scale = containerWidth / sceneWidth;
+    //
+    //     stage.width(sceneWidth * scale);
+    //     stage.height(sceneHeight * scale);
+    //     stage.scale({ x: scale, y: scale });
+    //     return undefined;
+    // }
 }
 
 

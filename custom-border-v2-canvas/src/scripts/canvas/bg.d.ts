@@ -15,5 +15,6 @@ export declare class bg {
     createSector(posX: number, posY: number): import("konva/lib/Group").Group;
     createPlus(plusInfo: plus): any;
     createLine(lineInfo: line): any;
+    private render;
 }
 export {};
