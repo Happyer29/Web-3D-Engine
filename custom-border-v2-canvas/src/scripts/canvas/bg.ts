@@ -57,7 +57,7 @@ export class bg {
         this.layer = new Konva.Layer();
 
         let group = this.createFirstSector();
-        let group2 = this.createSector(200, 100, ['top', 'left'], []);
+        let group2 = this.createSector(200, 100, [{ position: 'top'}, { position: 'top'}], []);
         this.layer.add(group);
         this.layer.add(group2);
         this.stage.add(this.layer);
@@ -97,7 +97,7 @@ export class bg {
 
     }
 
-    public createSector(posX: number, posY: number, plusArr: [lineArr], lineArr: [lineArr]){
+    public createSector(posX: number, posY: number, plusArr: lineArr[], lineArr: lineArr[]){
         var group = new Konva.Group({
             x: posX,
             y: posY
