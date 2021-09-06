@@ -20,6 +20,12 @@
     <script>
         var width = window.innerWidth;
         var height = window.innerHeight;
+        window.addEventListener('resize', function(event) {
+            width = window.innerWidth;
+            height = window.innerHeight;
+        });
+
+
 
         var stage = new Konva.Stage({
             container: 'container',
