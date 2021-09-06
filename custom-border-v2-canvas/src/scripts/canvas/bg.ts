@@ -32,6 +32,7 @@ export class bg {
 
 
 
+
     constructor() {
         //TODO resize
         this.width = window.innerWidth;
@@ -52,11 +53,13 @@ export class bg {
         this.layer = new Konva.Layer();
 
         let group = this.createSector(0, 0);
+        let group2 = this.createSector(200, 100);
         this.layer.add(group);
+        this.layer.add(group2);
         this.stage.add(this.layer);
 
         //on resize - rerender
-        window.addEventListener('resize', this.render);
+        //TODO window.addEventListener('resize', this.render);
     }
 
 
