@@ -1,11 +1,15 @@
 import Konva from 'konva';
 
 interface plus {
-    position?: 'topLeft' | "bottomLeft"
+    position?: 'topLeft' | 'bottomLeft' | 'topRight' | 'bottomRight'
 }
 
 interface line {
-    position?: 'top' | "left" | "bottom"
+    position?: 'top' | 'left' | 'bottom' | 'right'
+}
+
+interface lineArr extends line{
+    [index: number]: line
 }
 
 
@@ -52,8 +56,8 @@ export class bg {
 
         this.layer = new Konva.Layer();
 
-        let group = this.createSector(0, 0);
-        let group2 = this.createSector(200, 100);
+        let group = this.createFirstSector();
+        let group2 = this.createSector(200, 100, ['top', 'left'], []);
         this.layer.add(group);
         this.layer.add(group2);
         this.stage.add(this.layer);
@@ -63,23 +67,57 @@ export class bg {
     }
 
 
-    public createSector(posX: number, posY: number){
+    public createFirstSector(){
+        var group = new Konva.Group({
+            x: 0,
+            y: 0
+        });
+
+        let topLeftPlus = this.createPlus({position: "topLeft"});
+        let topRightPlus = this.createPlus({position: "topRight"});
+        let bottomRightPlus = this.createPlus({position: "bottomRight"});
+        let bottomLeftPlus = this.createPlus({position: "bottomLeft"});
+
+        let topLine = this.createLine({position: "top"});
+        let rightLine = this.createLine({position: "right"});
+        let bottomLine = this.createLine({position: "bottom"});
+        let leftLine = this.createLine({position: "left"});
+
+        group.add(topLeftPlus);
+        group.add(topRightPlus);
+        group.add(bottomRightPlus);
+        group.add(bottomLeftPlus);
+
+        group.add(topLine);
+        group.add(rightLine);
+        group.add(bottomLine);
+        group.add(leftLine);
+
+        return group;
+
+    }
+
+    public createSector(posX: number, posY: number, plusArr: [lineArr], lineArr: [lineArr]){
         var group = new Konva.Group({
             x: posX,
             y: posY
         });
 
-        let topLeftPlus = this.createPlus({position: "topLeft"});
-        let bottomLeftPlus = this.createPlus({position: "bottomLeft"});
-        let topLine = this.createLine({position: "top"});
-        let leftLine = this.createLine({position: "left"});
-        let bottomLine = this.createLine({position: "bottom"});
+        for(let i:number; i < plusArr.length; i++){
+            console.log(plusArr[i]);
+        }
 
-        group.add(topLeftPlus);
-        group.add(bottomLeftPlus);
-        group.add(topLine);
-        group.add(leftLine);
-        group.add(bottomLine);
+        // let topLeftPlus = this.createPlus({position: "topLeft"});
+        // let bottomLeftPlus = this.createPlus({position: "bottomLeft"});
+        // let topLine = this.createLine({position: "top"});
+        // let leftLine = this.createLine({position: "left"});
+        // let bottomLine = this.createLine({position: "bottom"});
+        //
+        // group.add(topLeftPlus);
+        // group.add(bottomLeftPlus);
+        // group.add(topLine);
+        // group.add(leftLine);
+        // group.add(bottomLine);
 
 
         return group;
@@ -87,43 +125,43 @@ export class bg {
     }
 
     public createPlus(plusInfo: plus){
-        let plus;
+        let plus = new Konva.Line({
+            points: [
+                8, 8,
+                8, 1,
+                8, 8,
+                1, 8,
+                8, 8,
+                15, 8,
+                8, 8,
+                8, 15
+            ],
+            stroke: this.color,
+            strokeWidth: 1,
+        });
         if(plusInfo.position === 'topLeft'){
-            plus = new Konva.Line({
-                points: [
-                    8, 8,
-                    8, 1,
-                    8, 8,
-                    1, 8,
-                    8, 8,
-                    15, 8,
-                    8, 8,
-                    8, 15
-                ],
-                stroke: this.color,
-                strokeWidth: 1,
-            });
+
+        }
+        else if(plusInfo.position === 'topRight'){
+            plus.move({
+                x: this.config.plusInfo.width + this.config.plusInfo.margin*2 + this.config.lineWidth,
+                y: 0,
+            })
+        }
+        else if(plusInfo.position === 'bottomRight'){
+            plus.move({
+                x: this.config.plusInfo.width + this.config.plusInfo.margin*2 + this.config.lineWidth,
+                y: this.config.plusInfo.height + this.config.plusInfo.margin*2 + this.config.lineHeight,
+            })
         }
         else if(plusInfo.position === 'bottomLeft'){
-            plus = new Konva.Line({
-                points: [
-                    8, 8,
-                    8, 1,
-                    8, 8,
-                    1, 8,
-                    8, 8,
-                    15, 8,
-                    8, 8,
-                    8, 15
-                ],
-                stroke: this.color,
-                strokeWidth: 1,
-            });
             plus.move({
                 x: 0,
                 y: this.config.plusInfo.height + this.config.plusInfo.margin*2 + this.config.lineHeight,
             })
         }
+
+
 
         return plus;
     }
@@ -137,12 +175,18 @@ export class bg {
                 strokeWidth: 1,
             });
         }
-        else if(lineInfo.position === 'left'){
+        else if(lineInfo.position === 'right'){
             line = new Konva.Line({
                 points: [8, this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineHeight],
                 stroke: 'black',
                 strokeWidth: 1,
             });
+
+            line.move({
+                x: this.config.plusInfo.width + this.config.plusInfo.margin*2 + this.config.lineWidth,
+                y: 0,
+
+            })
         }
         else if(lineInfo.position === 'bottom'){
             line = new Konva.Line({
@@ -156,6 +200,14 @@ export class bg {
 
             })
         }
+        else if(lineInfo.position === 'left'){
+            line = new Konva.Line({
+                points: [8, this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineHeight],
+                stroke: 'black',
+                strokeWidth: 1,
+            });
+        }
+
 
         return line;
     }

@@ -1,8 +1,8 @@
 interface plus {
-    position?: 'topLeft' | "bottomLeft";
+    position?: 'topLeft' | 'bottomLeft' | 'topRight' | 'bottomRight';
 }
 interface line {
-    position?: 'top' | "left" | "bottom";
+    position?: 'top' | 'left' | 'bottom' | 'right';
 }
 export declare class bg {
     private width;
@@ -12,8 +12,13 @@ export declare class bg {
     private color;
     private config;
     constructor();
+    createFirstSector(): import("konva/lib/Group").Group;
     createSector(posX: number, posY: number): import("konva/lib/Group").Group;
-    createPlus(plusInfo: plus): any;
+    createPlus(plusInfo: plus): import("konva/lib/shapes/Line").Line<{
+        points: number[];
+        stroke: string;
+        strokeWidth: number;
+    }>;
     createLine(lineInfo: line): any;
     private render;
 }
