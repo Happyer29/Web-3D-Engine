@@ -1,16 +1,22 @@
 import Konva from 'konva';
 
-interface plus {
-    position?: 'topLeft' | 'bottomLeft' | 'topRight' | 'bottomRight'
-}
+type plusPos = 'topLeft' | 'bottomLeft' | 'topRight' | 'bottomRight'
+// interface plusArr{
+//     [index: number]: plusPos
+//     // [0]: plusPos,
+//     // [1]?: plusPos,
+//     // [2]?: plusPos,
+//     // [3]?: plusPos
+// }
 
-interface line {
-    position?: 'top' | 'left' | 'bottom' | 'right'
-}
-
-interface lineArr extends line{
-    [index: number]: line
-}
+type linePos = 'top' | 'left' | 'bottom' | 'right'
+// interface lineArr{
+//     [index: number]: lineArr
+//     // [0]: linePos,
+//     // [1]?: linePos,
+//     // [2]?: linePos,
+//     // [3]?: linePos
+// }
 
 
 export class bg {
@@ -57,7 +63,7 @@ export class bg {
         this.layer = new Konva.Layer();
 
         let group = this.createFirstSector();
-        let group2 = this.createSector(200, 100, [{ position: 'top'}, { position: 'top'}], []);
+        let group2 = this.createSector(200, 100, ['topLeft', 'topRight'], ['top', 'left']);
         this.layer.add(group);
         this.layer.add(group2);
         this.stage.add(this.layer);
@@ -66,65 +72,32 @@ export class bg {
         //TODO window.addEventListener('resize', this.render);
     }
 
-
-    public createFirstSector(){
-        var group = new Konva.Group({
-            x: 0,
-            y: 0
-        });
-
-        let topLeftPlus = this.createPlus({position: "topLeft"});
-        let topRightPlus = this.createPlus({position: "topRight"});
-        let bottomRightPlus = this.createPlus({position: "bottomRight"});
-        let bottomLeftPlus = this.createPlus({position: "bottomLeft"});
-
-        let topLine = this.createLine({position: "top"});
-        let rightLine = this.createLine({position: "right"});
-        let bottomLine = this.createLine({position: "bottom"});
-        let leftLine = this.createLine({position: "left"});
-
-        group.add(topLeftPlus);
-        group.add(topRightPlus);
-        group.add(bottomRightPlus);
-        group.add(bottomLeftPlus);
-
-        group.add(topLine);
-        group.add(rightLine);
-        group.add(bottomLine);
-        group.add(leftLine);
-
-        return group;
-
-    }
-
-    public createSector(posX: number, posY: number, plusArr: lineArr[], lineArr: lineArr[]){
+    private createSector(posX: number, posY: number, plusArr: plusPos[], lineArr: linePos[]){
         var group = new Konva.Group({
             x: posX,
             y: posY
         });
 
-        for(let i:number; i < plusArr.length; i++){
-            console.log(plusArr[i]);
+        //for pluses render
+        for(let i:number = 0; i < plusArr.length; i++){
+            let tmp = this.createPlus(plusArr[i]);
+            group.add(tmp);
         }
 
-        // let topLeftPlus = this.createPlus({position: "topLeft"});
-        // let bottomLeftPlus = this.createPlus({position: "bottomLeft"});
-        // let topLine = this.createLine({position: "top"});
-        // let leftLine = this.createLine({position: "left"});
-        // let bottomLine = this.createLine({position: "bottom"});
-        //
-        // group.add(topLeftPlus);
-        // group.add(bottomLeftPlus);
-        // group.add(topLine);
-        // group.add(leftLine);
-        // group.add(bottomLine);
-
+        //for lines render
+        for(let i:number = 0; i < lineArr.length; i++){
+            let tmp = this.createLine(lineArr[i]);
+            group.add(tmp);
+        }
 
         return group;
-
     }
 
-    public createPlus(plusInfo: plus){
+    private createFirstSector(){
+        return this.createSector(0, 0, ['topLeft', 'bottomLeft', 'topRight', 'bottomRight'], ['top', 'left', 'bottom', 'right']);
+    }
+
+    private createPlus(plusPos: plusPos){
         let plus = new Konva.Line({
             points: [
                 8, 8,
@@ -139,43 +112,44 @@ export class bg {
             stroke: this.color,
             strokeWidth: 1,
         });
-        if(plusInfo.position === 'topLeft'){
 
-        }
-        else if(plusInfo.position === 'topRight'){
+        return this.setPlusPosition(plus, plusPos);
+    }
+
+    private setPlusPosition(plus, plusPos: plusPos){
+        if(plusPos === 'topRight'){
             plus.move({
                 x: this.config.plusInfo.width + this.config.plusInfo.margin*2 + this.config.lineWidth,
                 y: 0,
             })
         }
-        else if(plusInfo.position === 'bottomRight'){
+        else if(plusPos === 'bottomRight'){
             plus.move({
                 x: this.config.plusInfo.width + this.config.plusInfo.margin*2 + this.config.lineWidth,
                 y: this.config.plusInfo.height + this.config.plusInfo.margin*2 + this.config.lineHeight,
             })
         }
-        else if(plusInfo.position === 'bottomLeft'){
+        else if(plusPos === 'bottomLeft'){
             plus.move({
                 x: 0,
                 y: this.config.plusInfo.height + this.config.plusInfo.margin*2 + this.config.lineHeight,
             })
         }
-
-
 
         return plus;
     }
 
-    public createLine(lineInfo: line){
+    //TODO create line position method
+    private createLine(linePos: linePos){
         let line;
-        if(lineInfo.position === 'top'){
+        if(linePos === 'top'){
             line = new Konva.Line({
                 points: [this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineWidth, 8],
                 stroke: 'black',
                 strokeWidth: 1,
             });
         }
-        else if(lineInfo.position === 'right'){
+        else if(linePos === 'right'){
             line = new Konva.Line({
                 points: [8, this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineHeight],
                 stroke: 'black',
@@ -188,7 +162,7 @@ export class bg {
 
             })
         }
-        else if(lineInfo.position === 'bottom'){
+        else if(linePos === 'bottom'){
             line = new Konva.Line({
                 points: [this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineWidth, 8],
                 stroke: 'black',
@@ -200,7 +174,7 @@ export class bg {
 
             })
         }
-        else if(lineInfo.position === 'left'){
+        else if(linePos === 'left'){
             line = new Konva.Line({
                 points: [8, this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineHeight],
                 stroke: 'black',
@@ -208,21 +182,25 @@ export class bg {
             });
         }
 
-
         return line;
     }
 
-    private render(){
-        var container = document.querySelector('#container') as HTMLElement; //TODO why?
 
-        this.stage = new Konva.Stage({
-            container: 'container',
-            width: container.offsetWidth,
-            height: container.offsetHeight,
-        });
 
-        this.stage.add(this.layer);
-    }
+
+
+
+    // private render(){
+    //     var container = document.querySelector('#container') as HTMLElement; //TODO why?
+    //
+    //     this.stage = new Konva.Stage({
+    //         container: 'container',
+    //         width: container.offsetWidth,
+    //         height: container.offsetHeight,
+    //     });
+    //
+    //     this.stage.add(this.layer);
+    // }
     // private autoResize() {
     //     var container = document.getElementsByClassName('.container');
     //
