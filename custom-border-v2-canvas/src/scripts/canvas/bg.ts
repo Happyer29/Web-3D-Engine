@@ -141,48 +141,34 @@ export class bg {
 
     //TODO create line position method
     private createLine(linePos: linePos){
-        let line;
+        let points = [];
+        let move = {
+            x: 0,
+            y: 0
+        }
+
         if(linePos === 'top'){
-            line = new Konva.Line({
-                points: [this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineWidth, 8],
-                stroke: 'black',
-                strokeWidth: 1,
-            });
+            points = [this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineWidth, 8];
         }
         else if(linePos === 'right'){
-            line = new Konva.Line({
-                points: [8, this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineHeight],
-                stroke: 'black',
-                strokeWidth: 1,
-            });
-
-            line.move({
-                x: this.config.plusInfo.width + this.config.plusInfo.margin*2 + this.config.lineWidth,
-                y: 0,
-
-            })
+            points = [8, this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineHeight];
+            move.x = this.config.plusInfo.width + this.config.plusInfo.margin*2 + this.config.lineWidth;
         }
         else if(linePos === 'bottom'){
-            line = new Konva.Line({
-                points: [this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineWidth, 8],
-                stroke: 'black',
-                strokeWidth: 1,
-            });
-            line.move({
-                x: 0,
-                y: this.config.plusInfo.height + this.config.plusInfo.margin*2 + this.config.lineHeight,
-
-            })
+            points = [this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineWidth, 8]
+            move.y = this.config.plusInfo.height + this.config.plusInfo.margin*2 + this.config.lineHeight;
         }
         else if(linePos === 'left'){
-            line = new Konva.Line({
-                points: [8, this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineHeight],
-                stroke: 'black',
-                strokeWidth: 1,
-            });
+            points = [8, this.config.plusInfo.height + this.config.plusInfo.margin, 8, this.config.plusInfo.height + this.config.plusInfo.margin + this.config.lineHeight];
         }
 
-        return line;
+        return new Konva.Line
+        ({
+            points: points,
+            stroke: 'black',
+            strokeWidth: 1,
+        })
+            .move(move);
     }
 
 
