@@ -23,7 +23,6 @@ export class bg {
     private width;
     private height;
     private stage;
-    private layer;
     private color = 'black'
     private config = {
         sectorPos: {
@@ -39,6 +38,9 @@ export class bg {
             margin: 5,
         },
     }
+
+    private firstSectorWidth = this.config.plusInfo.width + this.config.plusInfo.margin*2 + this.config.lineWidth;
+    private firstSectorHeight = this.config.plusInfo.height + this.config.plusInfo.margin*2 + this.config.lineHeight;
 
 
 
@@ -59,17 +61,35 @@ export class bg {
             height: this.height,
         });
 
-
-        this.layer = new Konva.Layer();
-
-        let group = this.createFirstSector();
-        let group2 = this.createSector(200, 100, ['topLeft', 'topRight'], ['top', 'left']);
-        this.layer.add(group);
-        this.layer.add(group2);
-        this.stage.add(this.layer);
+        let layer = this.createGridLayer();
+        this.stage.add(layer);
 
         //on resize - rerender
         //TODO window.addEventListener('resize', this.render);
+    }
+
+
+    private createGridLayer(){
+        let layer = new Konva.Layer();
+        let group = this.createFirstSector();
+        layer.add(group);
+
+        let posX = this.firstSectorWidth;
+        let posY = 0;
+
+        for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 10; i++) {
+                let group = this.createSector(posX, posY, ['topRight', 'bottomRight'], ['top', 'right', 'bottom']);
+                layer.add(group);
+
+                posX += this.firstSectorWidth;
+            }
+            posX = 0;
+            posY += this.firstSectorHeight + 100;
+        }
+
+
+        return layer;
     }
 
     private createSector(posX: number, posY: number, plusArr: plusPos[], lineArr: linePos[]){
