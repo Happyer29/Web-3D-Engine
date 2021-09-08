@@ -23,7 +23,7 @@ export class bgGrid {
     private width;
     private height;
     private stage;
-    private color = 'white'
+    private color = '#333333'
     private bgColor = 'black'
 
     private config = {
@@ -69,12 +69,16 @@ export class bgGrid {
         let layer = this.createGridLayer();
 
 
-        var underMouse = new Konva.Rect({
+        var underMouse = new Konva.Circle({
             x: 0,
             y: 0,
-            width: 10,
-            height: 10,
-            fill: 'red'
+            radius: 150,
+            globalCompositeOperation:'source-atop',
+            fillRadialGradientStartPoint: { x: 0, y: 0 },
+            fillRadialGradientStartRadius: 0,
+            fillRadialGradientEndPoint: { x: 0, y: 0 },
+            fillRadialGradientEndRadius: 150,
+            fillRadialGradientColorStops: [0, '#ffffff', 0.7, '#FFFFFF25', 0.9, '#FFFFFF00'],
         });
 
         layer.add(underMouse)
@@ -82,17 +86,32 @@ export class bgGrid {
         this.stage.add(layer);
 
 
-        //var stageTest = this.stage;
         this.stage.on('mousemove', () => {
-            var mousePos = this.stage.getPointerPosition();
-            var x = mousePos.x;
-            var y = mousePos.y;
+            const mousePos = this.stage.getPointerPosition();
+            let x = mousePos.x;
+            let y = mousePos.y;
 
-            underMouse.move({
-                x:x,
-                y:y
-            });
+            new Konva.Animation(function () {
+                underMouse.x(x)
+                underMouse.y(y)
+            }, layer).start()
         })
+
+        //var stageTest = this.stage;
+        // this.stage.on('mousemove', () => {
+        //     var mousePos = this.stage.getPointerPosition();
+        //     var x = mousePos.x;
+        //     var y = mousePos.y;
+        //
+        //     underMouse.move({
+        //         x:x,
+        //         y:y
+        //     });
+        // })
+
+
+
+
         /*
         globalCompositeOperation: 'xor',
         */
