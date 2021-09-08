@@ -19,11 +19,13 @@ type linePos = 'top' | 'left' | 'bottom' | 'right'
 // }
 
 
-export class bg {
+export class bgGrid {
     private width;
     private height;
     private stage;
-    private color = 'black'
+    private color = 'white'
+    private bgColor = 'black'
+
     private config = {
         sectorPos: {
             x: 0,
@@ -61,12 +63,77 @@ export class bg {
             height: this.height,
         });
 
+        let bgLayer = this.createBgLayer();
+        this.stage.add(bgLayer);
+
         let layer = this.createGridLayer();
+
+
+        var underMouse = new Konva.Rect({
+            x: 0,
+            y: 0,
+            width: 10,
+            height: 10,
+            fill: 'red'
+        });
+
+        layer.add(underMouse)
+
         this.stage.add(layer);
 
+
+        //var stageTest = this.stage;
+        this.stage.on('mousemove', () => {
+            var mousePos = this.stage.getPointerPosition();
+            var x = mousePos.x;
+            var y = mousePos.y;
+
+            underMouse.move({
+                x:x,
+                y:y
+            });
+        })
+        /*
+        globalCompositeOperation: 'xor',
+        */
+        /*$('.nav li:not(".active") a').mousemove(function(e) {
+            x = e.pageX - this.offsetLeft;
+            y = e.pageY - this.offsetTop;
+            xy = x + " " + y;
+            bgWebKit = "-webkit-gradient(radial, " + xy + ", 0, " + xy + ", 100, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0.0))), " + originalBG;
+            bgMoz = "-moz-radial-gradient(" + x + "px " + y + "px 45deg, circle, " + lightColor + " 0%, " + originalBG + " " + gradientSize + "px)";
+
+            $(this)
+                .css({background: bgWebKit})
+                .css({background: bgMoz});
+        }).mouseleave(function() {
+            $(this).css({
+                background: originalBG
+            });
+        });*/
         //on resize - rerender
         //TODO window.addEventListener('resize', this.render);
     }
+
+
+    private createBgLayer(){
+        let layer = new Konva.Layer();
+        var background = new Konva.Rect({
+            x: 0,
+            y: 0,
+            width: this.width,
+            height: this.height,
+            fill: this.bgColor,
+            listening: false,
+        });
+        layer.add(background);
+
+        return layer;
+    }
+
+    // private createMouseAura(){
+    //     var staticLayer = new Konva.Layer();
+    // }
 
 
     private createGridLayer(){
@@ -185,7 +252,7 @@ export class bg {
         return new Konva.Line
         ({
             points: points,
-            stroke: 'black',
+            stroke: this.color,
             strokeWidth: 1,
         })
             .move(move);

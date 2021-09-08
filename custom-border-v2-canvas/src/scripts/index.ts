@@ -1,3 +1,3 @@
 // import './another-file';
-import {bg} from "./canvas/bg"
-new bg();
+import {bgGrid} from "./canvas/bg"
+new bgGrid();
