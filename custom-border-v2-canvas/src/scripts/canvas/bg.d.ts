@@ -8,11 +8,14 @@ export declare class bgGrid {
     private firstSectorWidth;
     private firstSectorHeight;
     constructor();
-    private createBgLayer;
-    private createGridLayer;
+    private createAndSetGridLayer;
+    private auraMove;
+    private static getMouseAura;
+    private createGrid;
     private createSector;
     private createFirstSector;
     private createPlus;
     private setPlusPosition;
     private createLine;
+    private createBgLayer;
 }

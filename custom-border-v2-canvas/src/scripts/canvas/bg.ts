@@ -66,49 +66,7 @@ export class bgGrid {
         let bgLayer = this.createBgLayer();
         this.stage.add(bgLayer);
 
-        let layer = this.createGridLayer();
-
-
-        var underMouse = new Konva.Circle({
-            x: 0,
-            y: 0,
-            radius: 150,
-            globalCompositeOperation:'source-atop',
-            fillRadialGradientStartPoint: { x: 0, y: 0 },
-            fillRadialGradientStartRadius: 0,
-            fillRadialGradientEndPoint: { x: 0, y: 0 },
-            fillRadialGradientEndRadius: 150,
-            fillRadialGradientColorStops: [0, '#ffffff', 0.7, '#FFFFFF25', 0.9, '#FFFFFF00'],
-        });
-
-        layer.add(underMouse)
-
-        this.stage.add(layer);
-
-
-        this.stage.on('mousemove', () => {
-            const mousePos = this.stage.getPointerPosition();
-            let x = mousePos.x;
-            let y = mousePos.y;
-
-            new Konva.Animation(function () {
-                underMouse.x(x)
-                underMouse.y(y)
-            }, layer).start()
-        })
-
-        //var stageTest = this.stage;
-        // this.stage.on('mousemove', () => {
-        //     var mousePos = this.stage.getPointerPosition();
-        //     var x = mousePos.x;
-        //     var y = mousePos.y;
-        //
-        //     underMouse.move({
-        //         x:x,
-        //         y:y
-        //     });
-        // })
-
+        this.createAndSetGridLayer();
 
 
 
@@ -134,28 +92,42 @@ export class bgGrid {
         //TODO window.addEventListener('resize', this.render);
     }
 
+    private createAndSetGridLayer(){
+        let layer = this.createGrid();
+        let mouseAura = bgGrid.getMouseAura();
+        layer.add(mouseAura)
 
-    private createBgLayer(){
-        let layer = new Konva.Layer();
-        var background = new Konva.Rect({
-            x: 0,
-            y: 0,
-            width: this.width,
-            height: this.height,
-            fill: this.bgColor,
-            listening: false,
-        });
-        layer.add(background);
+        this.stage.add(layer);
 
-        return layer;
+        this.stage.on('mousemove', () => {
+            const mousePos = this.stage.getPointerPosition();
+            this.auraMove(layer, mouseAura, mousePos.x, mousePos.y)
+        })
     }
 
-    // private createMouseAura(){
-    //     var staticLayer = new Konva.Layer();
-    // }
+    private auraMove(layer, mouseAura, x, y){
+        new Konva.Animation(function () {
+            mouseAura.x(x)
+            mouseAura.y(y)
+        }, layer).start()
 
+    }
 
-    private createGridLayer(){
+    private static getMouseAura(){
+        return new Konva.Circle({
+            x: 0,
+            y: 0,
+            radius: 150,
+            globalCompositeOperation: 'source-atop',
+            fillRadialGradientStartPoint: {x: 0, y: 0},
+            fillRadialGradientStartRadius: 0,
+            fillRadialGradientEndPoint: {x: 0, y: 0},
+            fillRadialGradientEndRadius: 150,
+            fillRadialGradientColorStops: [0, '#ffffff', 0.7, '#FFFFFF25', 0.9, '#FFFFFF00'],
+        });
+    }
+
+    private createGrid(){
         let layer = new Konva.Layer();
         let group = this.createFirstSector();
         layer.add(group);
@@ -277,7 +249,20 @@ export class bgGrid {
             .move(move);
     }
 
+    private createBgLayer(){
+        let layer = new Konva.Layer();
+        var background = new Konva.Rect({
+            x: 0,
+            y: 0,
+            width: this.width,
+            height: this.height,
+            fill: this.bgColor,
+            listening: false,
+        });
+        layer.add(background);
 
+        return layer;
+    }
 
 
 

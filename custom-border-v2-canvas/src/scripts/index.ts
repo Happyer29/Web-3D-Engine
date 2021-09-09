@@ -1,3 +1,4 @@
 // import './another-file';
 import {bgGrid} from "./canvas/bg"
-new bgGrid();
+let bg = new bgGrid();
+
