@@ -57,37 +57,8 @@ export class bgGrid {
         //     height = window.innerHeight;
         // });
 
-        this.stage = new Konva.Stage({
-            container: 'container',
-            width: this.width,
-            height: this.height,
-        });
-
-        let bgLayer = this.createBgLayer();
-        this.stage.add(bgLayer);
-
         this.createAndSetGridLayer();
 
-
-
-        /*
-        globalCompositeOperation: 'xor',
-        */
-        /*$('.nav li:not(".active") a').mousemove(function(e) {
-            x = e.pageX - this.offsetLeft;
-            y = e.pageY - this.offsetTop;
-            xy = x + " " + y;
-            bgWebKit = "-webkit-gradient(radial, " + xy + ", 0, " + xy + ", 100, from(rgba(255,255,255,0.8)), to(rgba(255,255,255,0.0))), " + originalBG;
-            bgMoz = "-moz-radial-gradient(" + x + "px " + y + "px 45deg, circle, " + lightColor + " 0%, " + originalBG + " " + gradientSize + "px)";
-
-            $(this)
-                .css({background: bgWebKit})
-                .css({background: bgMoz});
-        }).mouseleave(function() {
-            $(this).css({
-                background: originalBG
-            });
-        });*/
         //on resize - rerender
         //TODO window.addEventListener('resize', this.render);
     }
@@ -249,7 +220,7 @@ export class bgGrid {
             .move(move);
     }
 
-    private createBgLayer(){
+    public createBgLayer(){
         let layer = new Konva.Layer();
         var background = new Konva.Rect({
             x: 0,
@@ -263,6 +234,16 @@ export class bgGrid {
 
         return layer;
     }
+
+
+    public getWidth(){
+        return this.width;
+    }
+
+    public getHeight(){
+        return this.height;
+    }
+
 
 
 

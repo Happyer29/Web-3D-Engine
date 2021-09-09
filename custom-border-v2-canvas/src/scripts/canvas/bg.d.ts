@@ -17,5 +17,7 @@ export declare class bgGrid {
     private createPlus;
     private setPlusPosition;
     private createLine;
-    private createBgLayer;
+    createBgLayer(): import("konva/lib/Layer").Layer;
+    getWidth(): any;
+    getHeight(): any;
 }
