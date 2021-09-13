@@ -29,6 +29,7 @@
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@popperjs/core": "^2.9.3",
+    "@types/color": "^3.0.2",
     "acorn": "^8.4.1",
     "autoprefixer": "^10.3.2",
     "babel": "^6.23.0",
