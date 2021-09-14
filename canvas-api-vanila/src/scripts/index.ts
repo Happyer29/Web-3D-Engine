@@ -1,10 +1,10 @@
 // import './another-file';
 //import {bgGrid} from "./canvas/bg"
 import {figure} from "./canvas/figure"
-import Color from "color";
+import Color from "ts-color-class";
 
 var figureVar = new figure('#canvas');
-var ctx = figureVar.createFigure({radius: 20, color: new Color("#000")})
+var ctx = figureVar.createFigure({radius: 20, color: new Color("#ff0000")})
 
 
 figureVar.render(ctx);

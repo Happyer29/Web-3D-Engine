@@ -20,10 +20,11 @@ module.exports = {
   },
 
   resolve: { //TODO learn modules
-    extensions: ['.tsx', '.ts', ".js", ".jsx", ".json", "*",],
+    extensions: ['.tsx', '.ts', '.d.ts',".js", ".jsx", ".json", "*",],
     alias: {
-      '~': PATHS.src
-    }
+      '~': PATHS.src,
+    },
+    modules: [PATHS.modules]
   },
 
   // TODO WTF??? vendors.bundle.js????

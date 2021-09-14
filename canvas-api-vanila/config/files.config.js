@@ -7,9 +7,11 @@ let PAGES_DIR,
     },
     PATHS = {
         src     : path.join(__dirname, '../', 'src'),
-        dist    : path.join(__dirname, '../', 'dist')
+        dist    : path.join(__dirname, '../', 'dist'),
+        root    : path.join(__dirname, '../'),
     }
 
+PATHS.modules     = path.join(PATHS.root, 'node_modules');
 PATHS.assets    = path.join(PATHS.src, 'assets');
 PATHS.fonts     = path.join(PATHS.assets, 'fonts');
 PATHS.img       = path.join(PATHS.assets, 'img');

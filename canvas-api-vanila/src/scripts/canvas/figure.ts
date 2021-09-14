@@ -1,4 +1,4 @@
-import * as Color from 'color';
+import Color from 'ts-color-class';
 interface circle{
     radius: number
 }
@@ -35,7 +35,7 @@ export class figure{
         ctx.save();
         ctx.beginPath();
         ctx.arc(75, 75, 50, 0, Math.PI * 2, true);
-        ctx.fillStyle = new Color(figure.color).string();
+        ctx.fillStyle = new Color(figure.color).toString();
         return ctx;
     }
 
