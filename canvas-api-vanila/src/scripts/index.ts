@@ -1,13 +1,34 @@
 // import './another-file';
 //import {bgGrid} from "./canvas/bg"
-import {figure} from "./canvas/figure"
+import {Figure} from "./canvas/figure"
 import Color from "ts-color-class";
 
-var figureVar = new figure('#canvas');
-var ctx = figureVar.createFigure({radius: 20, color: new Color("#ff0000")})
+var figureVar = new Figure('#canvas');
+var ctx1 = figureVar.createFigure(
+    {
+        radius: 20,
+        color: new Color("#ff0000")
+    },
+    {
+        x: 0,
+        y: 0
+    }
+)
+
+var ctx2 = figureVar.createFigure(
+    {
+        size:10,
+        color: new Color("#ff0000")
+    },
+    {
+        x: 50,
+        y: 50
+    }
+)
 
 
-figureVar.render(ctx);
+figureVar.render(ctx1);
+figureVar.render(ctx2);
 
 
 // const canvas = <HTMLCanvasElement> document.getElementById('canvas');
