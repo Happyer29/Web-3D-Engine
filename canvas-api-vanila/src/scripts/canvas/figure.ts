@@ -5,73 +5,86 @@ interface Position {
     y: number
 }
 
-interface Circle{
+interface PositionObj {
+    position: Position
+}
+
+export interface Circle extends PositionObj{
     radius: number
 }
 
-interface Rectangle{
+export interface Rectangle extends PositionObj{
     width: number,
     height: number
 }
 
-interface Square {
-    size: number
+export interface colorString{
+    color: any
 }
 
-interface ColorInterface {
+interface ColorInterface{
     color: Color
 }
 
-type ColorFulCircle = Circle & ColorInterface;
+export type ColorFulCircle = Circle & ColorInterface;
 type ColorFulRectangle = Rectangle & ColorInterface;
-type ColorFulSquare = Square & ColorInterface;
 
 
 export class Figure {
-    private canvas: HTMLCanvasElement;
-
-    constructor(selector: string) {
-        this.canvas = <HTMLCanvasElement> document.querySelector(selector);
+    constructor() {
     }
 
-    public createFigure(figure:ColorFulCircle | ColorFulRectangle | ColorFulSquare, position: Position){
-        let ctx:CanvasRenderingContext2D = this.canvas.getContext('2d')
+    public createCircle(ctx: CanvasRenderingContext2D, figure: ColorFulCircle) {
+        this.prepareCtx(ctx);
+
+        ctx.fillStyle = new Color(figure.color).toString();
+        ctx.beginPath();
+        ctx.arc(figure.position.x, figure.position.y, 50, 0, Math.PI * 2, true);
+        ctx.closePath();
+    }
+
+    public createRectangle(ctx: CanvasRenderingContext2D, figure: ColorFulRectangle) {
+        this.prepareCtx(ctx);
+
+        ctx.fillStyle = new Color(figure.color).toString();
+        ctx.beginPath();
+        ctx.moveTo(figure.position.x, figure.position.y);
+        ctx.lineTo(figure.position.x, figure.position.y + figure.height);
+        ctx.lineTo(figure.width + figure.position.x, figure.position.y + figure.height);
+        ctx.lineTo(figure.width + figure.position.x, figure.position.y);
+        ctx.closePath();
+    }
+
+    public render(ctx: CanvasRenderingContext2D): void{
+        ctx.fill();
+    }
+
+    private prepareCtx(ctx: CanvasRenderingContext2D){
+        ctx.save();
+    }
+
+    //instanceOf checks
+    protected instanceOfColorFulCircle(obj: any): obj is ColorFulCircle{
+        return !!(obj as ColorFulCircle).radius;
+    }
+
+    protected instanceOfColorFulRectangle(obj:any): obj is ColorFulRectangle{
+        return !!((obj as ColorFulRectangle).width && (obj as ColorFulRectangle).height);
+    }
+
+
+
+    /*    constructor(ctx: CanvasRenderingContext2D, figure:ColorFulCircle | ColorFulRectangle){
+
         ctx.save();
         ctx.fillStyle = new Color(figure.color).toString();
 
         if (this.instanceOfColorFulCircle(figure)) {
-            ctx.beginPath();
-            ctx.arc(position.x, position.y, 50, 0, Math.PI * 2, true);
+            this.createCircle(ctx, figure);
         }
         else if (this.instanceOfColorFulRectangle(figure)) {
-            ctx.fillRect(position.x, position.y, figure.width, figure.height);
+            //ctx.rect(figure.position.x, figure.position.y, figure.width, figure.height);
+            this.createRectangle(ctx, figure);
         }
-        else if (this.instanceOfColorFulSquare(figure)) {
-            ctx.fillRect(position.x, position.y, figure.size, figure.size);
-        }
-
-        return ctx;
-    }
-
-    public render(ctx:CanvasRenderingContext2D): void{
-        ctx.fill();
-    }
-
-
-    //instanceOf checks
-    public instanceOfColorFulCircle(obj: any): obj is ColorFulCircle{
-        return !!(obj as ColorFulCircle).radius;
-    }
-
-    public instanceOfColorFulRectangle(obj:any): obj is ColorFulRectangle{
-        return !!((obj as ColorFulRectangle).width && (obj as ColorFulRectangle).height);
-    }
-
-    public instanceOfColorFulSquare(obj:any): obj is ColorFulSquare{
-        return !!(obj as ColorFulSquare).size;
-    }
+    }*/
 }
-
-
-// var test: Circle | Rectangle = {
-// }
