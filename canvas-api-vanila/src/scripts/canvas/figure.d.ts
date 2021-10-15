@@ -1,17 +1,18 @@
 import Color from 'ts-color-class';
-interface Position {
+export interface Position {
     x: number;
     y: number;
 }
-interface PositionObj {
+interface Circle {
+    type: "circle";
+    radius: number;
     position: Position;
 }
-export interface Circle extends PositionObj {
-    radius: number;
-}
-export interface Rectangle extends PositionObj {
+export interface Rectangle {
+    type: "rectangle";
     width: number;
     height: number;
+    position: Position;
 }
 export interface colorString {
     color: any;
@@ -19,15 +20,16 @@ export interface colorString {
 interface ColorInterface {
     color: Color;
 }
-export declare type ColorFulCircle = Circle & ColorInterface;
-declare type ColorFulRectangle = Rectangle & ColorInterface;
+export declare type figure = Circle | Rectangle;
+export declare type colorFulFigure = figure & ColorInterface;
+declare type colorFulCircle = Circle & ColorInterface;
+declare type colorFulRectangle = Rectangle & ColorInterface;
 export declare class Figure {
-    constructor();
-    createCircle(ctx: CanvasRenderingContext2D, figure: ColorFulCircle): void;
-    createRectangle(ctx: CanvasRenderingContext2D, figure: ColorFulRectangle): void;
-    render(ctx: CanvasRenderingContext2D): void;
+    drawFigure(ctx: CanvasRenderingContext2D, figure: colorFulFigure): void;
+    private drawCircle;
+    private drawRectangle;
     private prepareCtx;
-    protected instanceOfColorFulCircle(obj: any): obj is ColorFulCircle;
-    protected instanceOfColorFulRectangle(obj: any): obj is ColorFulRectangle;
+    protected instanceOfColorFulCircle(obj: colorFulFigure): obj is colorFulCircle;
+    protected instanceOfColorFulRectangle(obj: colorFulFigure): obj is colorFulRectangle;
 }
 export {};
