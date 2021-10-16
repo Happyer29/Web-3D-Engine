@@ -1,12 +1,11 @@
 // import './another-file';
 //import {bgGrid} from "./canvas/bg"
 import {Canvas} from "./canvas/canvas"
-import {colorFulFigure, Figure, figure} from "./canvas/figure";
+import {colorFulFigure, Figure} from "./canvas/figure";
 
 let canvas = new Canvas('#canvas');
 
-
-canvas.addFigure({
+var figure1 = new Figure({
     type: "circle",
     radius: 15,
     color: "#ff0000",
@@ -15,8 +14,10 @@ canvas.addFigure({
         y: 50
     }
 })
+figure1.moveTo({x: 20, y: 20});
 
-canvas.addFigure({
+
+var figure2 = new Figure({
     type: "circle",
     radius: 30,
     color: "#ffff00",
@@ -25,6 +26,11 @@ canvas.addFigure({
         y: 50
     }
 })
+figure2.moveTo({x: 90, y: 80});
+
+canvas.addFigure(figure1)
+canvas.addFigure(figure2)
+
 canvas.render();
 
 //

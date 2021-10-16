@@ -1,18 +1,18 @@
 import Color from 'ts-color-class';
-export interface Position {
+export interface Vector {
     x: number;
     y: number;
 }
 interface Circle {
     type: "circle";
     radius: number;
-    position: Position;
+    position: Vector;
 }
 export interface Rectangle {
     type: "rectangle";
     width: number;
     height: number;
-    position: Position;
+    position: Vector;
 }
 export interface colorString {
     color: any;
@@ -20,16 +20,21 @@ export interface colorString {
 interface ColorInterface {
     color: Color;
 }
-export declare type figure = Circle | Rectangle;
+declare type figure = Circle | Rectangle;
 export declare type colorFulFigure = figure & ColorInterface;
-declare type colorFulCircle = Circle & ColorInterface;
-declare type colorFulRectangle = Rectangle & ColorInterface;
+export declare type colorFulCircle = Circle & ColorInterface;
+export declare type colorFulRectangle = Rectangle & ColorInterface;
 export declare class Figure {
-    drawFigure(ctx: CanvasRenderingContext2D, figure: colorFulFigure): void;
-    private drawCircle;
-    private drawRectangle;
-    private prepareCtx;
-    protected instanceOfColorFulCircle(obj: colorFulFigure): obj is colorFulCircle;
-    protected instanceOfColorFulRectangle(obj: colorFulFigure): obj is colorFulRectangle;
+    private readonly _info;
+    private _moveTo;
+    constructor(figure: colorFulFigure);
+    get type(): "circle" | "rectangle";
+    get info(): colorFulFigure;
+    get position(): Vector;
+    setPosition(position: Vector): void;
+    set color(color: string);
+    get color(): string;
+    get getMoveTo(): Vector;
+    moveTo(position: Vector): void;
 }
 export {};

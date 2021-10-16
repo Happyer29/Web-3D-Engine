@@ -3,7 +3,7 @@ const path = require('path')
 let PAGES_DIR,
     PAGES,
     ENTRY = {
-        app     : `./src/index.ts`
+        app     : `./src/scripts/index.ts`
     },
     PATHS = {
         src     : path.join(__dirname, '../', 'src'),

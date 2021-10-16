@@ -2,7 +2,7 @@
   "name": "webpacktests",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "src/scripts/index.ts",
   "repository": {
     "type": "git",
     "url": "git://github.com/Happyer29/webpack-bootstrap-pug-template.git"

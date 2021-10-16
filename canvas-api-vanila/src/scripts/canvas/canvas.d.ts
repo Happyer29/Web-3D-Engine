@@ -1,4 +1,4 @@
-import { colorFulFigure, figure } from "./figure";
+import { Figure } from "./figure";
 import { FigureController } from "./figureController";
 export declare class Canvas extends FigureController {
     private readonly _canvas;
@@ -8,8 +8,8 @@ export declare class Canvas extends FigureController {
     private _fps;
     constructor(selector: string);
     get ctx(): CanvasRenderingContext2D;
-    addFigure(figure: colorFulFigure): void;
-    getFigures(): Array<figure>;
+    addFigure(figure: Figure): void;
+    getFigures(): Array<Figure>;
     render(): void;
     get frameDelay(): number;
     private clear;

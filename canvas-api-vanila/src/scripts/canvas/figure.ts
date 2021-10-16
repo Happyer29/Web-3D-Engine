@@ -1,100 +1,78 @@
 import Color from 'ts-color-class';
 
-export interface Position {
+export interface Vector {
     x: number,
     y: number
 }
 
-interface Circle{
+interface Circle {
     type: "circle",
     radius: number,
-    position: Position,
+    position: Vector,
 }
 
-export interface Rectangle{
+export interface Rectangle {
     type: "rectangle",
     width: number,
     height: number,
-    position: Position
+    position: Vector
 }
 
-export interface colorString{
+export interface colorString {
     color: any
 }
 
-interface ColorInterface{
+interface ColorInterface {
     color: Color
 }
 
 // export type ColorFulCircle = Circle & ColorInterface;
 // type ColorFulRectangle = Rectangle & ColorInterface;
-export type figure = Circle | Rectangle;
+type figure = Circle | Rectangle;
 export type colorFulFigure = figure & ColorInterface;
 
-type colorFulCircle = Circle & ColorInterface;
-type colorFulRectangle = Rectangle & ColorInterface;
+export type colorFulCircle = Circle & ColorInterface;
+export type colorFulRectangle = Rectangle & ColorInterface;
 
 
 export class Figure {
+    private readonly _info: colorFulFigure;
+    private _moveTo: Vector;
 
-    public drawFigure(ctx: CanvasRenderingContext2D, figure: colorFulFigure){
-        if(this.instanceOfColorFulRectangle(figure)){
-            this.drawRectangle(ctx, (figure as colorFulRectangle))
-        }
-        else if(this.instanceOfColorFulCircle(figure)){
-            this.drawCircle(ctx, (figure as colorFulCircle))
-        }
+    constructor(figure: colorFulFigure) {
+        this._info = figure;
+        this._moveTo = {x: null, y: null}
     }
 
-    private drawCircle<T>(ctx: CanvasRenderingContext2D, figure: colorFulCircle) {
-        this.prepareCtx(ctx);
-
-        ctx.fillStyle = new Color(figure.color).toString();
-        ctx.beginPath();
-        ctx.arc(figure.position.x, figure.position.y, figure.radius, 0, Math.PI * 2, true);
-        ctx.closePath();
-        ctx.fill();
+    get type() {
+        return this._info.type;
     }
 
-    private drawRectangle(ctx: CanvasRenderingContext2D, figure: colorFulRectangle) {
-        this.prepareCtx(ctx);
-
-        ctx.fillStyle = new Color(figure.color).toString();
-        ctx.beginPath();
-        ctx.moveTo(figure.position.x, figure.position.y);
-        ctx.lineTo(figure.position.x, figure.position.y + figure.height);
-        ctx.lineTo(figure.width + figure.position.x, figure.position.y + figure.height);
-        ctx.lineTo(figure.width + figure.position.x, figure.position.y);
-        ctx.closePath();
-        ctx.fill();
+    get info() {
+        return this._info;
     }
 
-    private prepareCtx(ctx: CanvasRenderingContext2D){
-        //ctx.save();
+    get position() {
+        return this._info.position
     }
 
-    //instanceOf checks
-    protected instanceOfColorFulCircle(obj: colorFulFigure): obj is colorFulCircle{
-        return !!(obj as colorFulCircle).radius;
+    public setPosition(position: Vector) {
+        this._info.position = position;
     }
 
-    protected instanceOfColorFulRectangle(obj:colorFulFigure): obj is colorFulRectangle{
-        return !!((obj as colorFulRectangle).width && (obj as colorFulRectangle).height);
+    set color(color: string) {
+        this._info.color = color;
     }
 
+    get color() {
+        return this._info.color;
+    }
 
+    get getMoveTo(){
+        return this._moveTo;
+    }
 
-    /*    constructor(ctx: CanvasRenderingContext2D, figure:ColorFulCircle | ColorFulRectangle){
-
-        ctx.save();
-        ctx.fillStyle = new Color(figure.color).toString();
-
-        if (this.instanceOfColorFulCircle(figure)) {
-            this.createCircle(ctx, figure);
-        }
-        else if (this.instanceOfColorFulRectangle(figure)) {
-            //ctx.rect(figure.position.x, figure.position.y, figure.width, figure.height);
-            this.createRectangle(ctx, figure);
-        }
-    }*/
+    public moveTo(position: Vector){
+        this._moveTo = position;
+    }
 }
