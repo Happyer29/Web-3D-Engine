@@ -2,6 +2,16 @@
 //import {bgGrid} from "./canvas/bg"
 import {Canvas} from "./canvas/canvas"
 import {colorFulFigure, Figure} from "./canvas/figure";
+import {Vector} from "./canvas/vectorClass";
+import {Point} from "./canvas/point";
+
+
+let p1 = new Point(1, 1)
+let p2 = new Point(2, 2)
+
+let v = new Vector({p1, p2}, 2);
+console.log(v.position)
+
 
 let canvas = new Canvas('#canvas');
 
@@ -31,63 +41,8 @@ figure2.moveTo({x: 90, y: 80});
 canvas.addFigure(figure1)
 canvas.addFigure(figure2)
 
-canvas.render();
-
-//
-//
-// canvas.addCircle(circle);
-// canvas.animateTo(circle);
-
 //canvas.render();
-//console.log(canvas.getFigures()[0]);
 
-
-//
-// var figure1 = new Figure(
-//     canvas,
-//     ctx,
-//     {
-//         radius: 20,
-//         color: new Color("#ff0000"),
-//         position: {
-//             x: 50,
-//             y: 50
-//
-//         }
-//     }
-// )
-// figure1.render(ctx);
-//
-// var figure2 = new Figure(
-//     canvas,
-//     ctx,
-//     {
-//         width:10,
-//         color: new Color("#0000ff"),
-//         position: {
-//             x: 50,
-//             y: 50
-//         }
-//     },
-//
-// )
-// figure2.render(ctx);
-
-
-//figure1.animateTo();
-
-
-//figureInstance.animateTo();
-
-
-// const canvas = <HTMLCanvasElement> document.getElementById('canvas');
-// const ctx = canvas.getContext('2d');
-
-// Save the default state
-// ctx.save();
-
-// ctx.fillStyle = 'green';
-// ctx.fillRect(10, 10, 100, 100);
 
 // var i = 0;
 // setInterval(()=>{
