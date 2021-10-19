@@ -39,22 +39,7 @@ export class FigureController {
         })
     }
 
-    protected vectorLengthDots(startPos: Vector, endPos:Vector) {
-        return Math.sqrt(Math.pow(startPos.x - endPos.x,2) + Math.pow(startPos.y - endPos.y,2))
-    }
 
-    protected vectorLength(vector: Vector):number{
-        return Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2))
-    }
-
-    protected unitVector(vector:Vector){
-        console.log(vector);
-        console.log(this.vectorLength(vector))
-        return {
-            x: vector.x/this.vectorLength(vector),
-            y: vector.y/this.vectorLength(vector)
-        };
-    }
 
     private drawFigure(ctx: CanvasRenderingContext2D, figure: Figure) {
         if (figure.type == "rectangle") {

@@ -2,14 +2,15 @@
 //import {bgGrid} from "./canvas/bg"
 import {Canvas} from "./canvas/canvas"
 import {colorFulFigure, Figure} from "./canvas/figure";
-import {Vector} from "./canvas/vectorClass";
+import {Vector} from "./canvas/Vector/vectorClass";
 import {Point} from "./canvas/point";
+import {Vector2D} from "./canvas/Vector/vector2D";
 
 
 let p1 = new Point(1, 1)
 let p2 = new Point(2, 2)
 
-let v = new Vector({p1, p2}, 2);
+let v = new Vector2D({p1, p2});
 console.log(v.position)
 
 

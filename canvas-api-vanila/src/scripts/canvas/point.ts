@@ -1,16 +1,18 @@
-export type dimension = 2 | 3;
+export type dimension = 2 | 3 | 4;
 
 export class Point {
-    private _x: number = null;
-    private _y: number = null;
-    private _z: number = null;
+    private readonly _x: number = null;
+    private readonly _y: number = null;
+    private readonly _z: number = null;
+    private readonly _w: number = null;
     private _dimension: dimension = null;
 
-    constructor(x: number, y: number, z?: number) {
+    constructor(x: number, y: number, z?: number, w?: number) {
         this._x = x;
         this._y = y;
         this._z = z || null;
-        this._dimension = z == null ? 2 : 3;
+        this._w = w || null;
+        this.setDimension(x,y,z,w);
     }
 
     get x() {
@@ -27,8 +29,24 @@ export class Point {
         return this._z;
     }
 
+    get w() {
+        if (this._dimension == 3)
+            throw new Error('dimension is 3. No w coordinates');
+        return this._w;
+    }
+
     get dimension() {
         return this._dimension;
+    }
+
+    private setDimension(x: number, y: number, z?: number, w?: number){
+        if(z == null)
+            this._dimension = 2
+        else
+            if (w == null)
+                this._dimension = 3
+            else
+                this._dimension = 4
     }
 
     //если указано пространство, сверяет точки с пространством
