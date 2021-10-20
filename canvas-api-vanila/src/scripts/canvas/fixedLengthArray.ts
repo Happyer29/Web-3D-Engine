@@ -5,10 +5,9 @@
 //     Pick<T, Exclude<keyof T, arrayLengthMutationKeys>>
 //     & { [Symbol.iterator]: () => IterableIterator< arrayItems<T> > }
 
-import {dimension} from "./Point/point";
 
 type arrayLengthMutationKeys = 'splice' | 'push' | 'pop' | 'shift' |  'unshift'
-export type fixedLengthArray<T, L extends dimension, TObj = [T, ...Array<T>]> =
+export type fixedLengthArray<T, L extends any, TObj = [T, ...Array<T>]> =
     Pick<TObj, Exclude<keyof TObj, arrayLengthMutationKeys>>
     & {
     readonly length: L

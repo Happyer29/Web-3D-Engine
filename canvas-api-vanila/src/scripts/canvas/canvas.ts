@@ -32,7 +32,7 @@ export class Canvas extends FigureController {
     public render() {
         setTimeout(() => {
             this.clear();
-            //super.drawAllFigures(this._ctx, this.frameDelay);
+            super.drawAllFigures(this._ctx, this.frameDelay);
             this.render();
             console.log("tick");
         }, this.frameDelay);

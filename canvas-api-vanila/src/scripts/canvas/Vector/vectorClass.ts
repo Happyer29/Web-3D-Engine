@@ -4,10 +4,13 @@
 import {dimension, Point} from "../Point/point";
 import {fixedLengthArray} from "../fixedLengthArray";
 
+
 interface VectorPoints {
-    p1: Point,
-    p2: Point
+    p1:Point,
+    p2:Point
 }
+// type test = fixedLengthArray<Point, 2>;
+// let test: test = [new Point([1,1]), new Point([1,1])];
 
 interface VectorObj {
     x: number,
@@ -20,10 +23,11 @@ interface VectorObj {
 // export type vector3D = fixedLengthArray<[number, number, number]> | VectorPoints;
 // export type vector4D = fixedLengthArray<[number, number, number, number]> | VectorPoints;
 // export type vector5D = fixedLengthArray<[number, number, number, number, number]> | VectorPoints;
+//export type VectorPoints = fixedLengthArray<number, Point>;
 export type vector = fixedLengthArray<number, dimension> | VectorPoints;
 
 export class Vector {
-    private _vector: vector;
+    protected _vector: vector;
 
     protected readonly _dimension: dimension = null;
 

@@ -9,6 +9,7 @@ import {Vector3D} from "./canvas/Vector/vector3D";
 
 let p1 = new Point([1, 2, 0])
 let p2 = new Point([2, 4, 0])
+let p3 = new Point([2, 5, 0])
 
 let v1 = new Vector3D({p1, p2});
 let v2 = new Vector3D([4, 3, 5]);
@@ -23,35 +24,35 @@ console.log("VectorMultiplication " + Vector3D.vectorMultiplication(v1, v2).posi
 
 
 //
-// let canvas = new Canvas('#canvas');
-//
-// var figure1 = new Figure({
-//     type: "circle",
-//     radius: 15,
-//     color: "#ff0000",
-//     position: {
-//         x: 50,
-//         y: 50
-//     }
-// })
-// figure1.moveTo({x: 20, y: 20});
-//
-//
-// var figure2 = new Figure({
-//     type: "circle",
-//     radius: 30,
-//     color: "#ffff00",
-//     position: {
-//         x: 80,
-//         y: 50
-//     }
-// })
-// figure2.moveTo({x: 90, y: 80});
-//
-// canvas.addFigure(figure1)
-// canvas.addFigure(figure2)
+let canvas = new Canvas('#canvas');
 
-//canvas.render();
+var figure1 = new Figure({
+    type: "circle",
+    radius: 15,
+    color: "#ff0000",
+    position: {
+        x: 50,
+        y: 50
+    }
+})
+figure1.moveTo({x: 20, y: 20});
+
+
+var figure2 = new Figure({
+    type: "circle",
+    radius: 30,
+    color: "#ffff00",
+    position: {
+        x: 80,
+        y: 50
+    }
+})
+figure2.moveTo({x: 90, y: 80});
+
+canvas.addFigure(figure1)
+canvas.addFigure(figure2)
+
+canvas.render();
 
 
 // var i = 0;
