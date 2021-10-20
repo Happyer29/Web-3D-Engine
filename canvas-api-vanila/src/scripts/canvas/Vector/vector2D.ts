@@ -1,21 +1,14 @@
-import {Vector, vectorCreate} from "./vectorClass";
+import {vector, Vector} from "./vectorClass";
 
 export class Vector2D extends Vector{
-    constructor(v: vectorCreate) {
-        super(v, 2);
+    constructor(v: vector) {
+        super(v);
     }
 
-    get position(){
-        return {
-            x: this._x,
-            y: this._y
-        }
-    }
-
-    protected getUnitVector(){
-        return {
-            x: this._x/this.length(),
-            y: this._y/this.length()
-        };
-    }
+    // protected getUnitVector(){
+    //     return {
+    //         x: this._x/this.length(),
+    //         y: this._y/this.length()
+    //     };
+    // }
 }

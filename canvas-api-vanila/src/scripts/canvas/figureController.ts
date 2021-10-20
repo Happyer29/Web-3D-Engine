@@ -17,27 +17,27 @@ export class FigureController {
         this.figures.splice(key, 1);
     }
 
-    protected drawAllFigures(ctx: CanvasRenderingContext2D, t:number) {
-        this.figures.forEach((el) => {
-            let moveTo = el.getMoveTo;
-            if(moveTo.x != null && moveTo.y != null) {
-                let vector: Vector = {
-                    x: moveTo.x - el.position.x,
-                    y: moveTo.y - el.position.y,
-                }
-
-                let unitVector = this.unitVector(vector);
-                el.position.x += 0.02 * unitVector.x * t;
-                el.position.y += 0.02 * unitVector.y * t;
-                if (Math.abs(el.position.x-moveTo.x) < unitVector.x && Math.abs(el.position.y-moveTo.y) < unitVector.y){
-                    el.moveTo({x: null, y:null})
-                    el.setPosition({x: el.position.x, y:el.position.y})
-                }
-                    console.log(el.position)
-            }
-            this.drawFigure(ctx, el);
-        })
-    }
+    // protected drawAllFigures(ctx: CanvasRenderingContext2D, t:number) {
+    //     this.figures.forEach((el) => {
+    //         let moveTo = el.getMoveTo;
+    //         if(moveTo.x != null && moveTo.y != null) {
+    //             let vector: Vector = {
+    //                 x: moveTo.x - el.position.x,
+    //                 y: moveTo.y - el.position.y,
+    //             }
+    //
+    //             let unitVector = this.unitVector(vector);
+    //             el.position.x += 0.02 * unitVector.x * t;
+    //             el.position.y += 0.02 * unitVector.y * t;
+    //             if (Math.abs(el.position.x-moveTo.x) < unitVector.x && Math.abs(el.position.y-moveTo.y) < unitVector.y){
+    //                 el.moveTo({x: null, y:null})
+    //                 el.setPosition({x: el.position.x, y:el.position.y})
+    //             }
+    //                 console.log(el.position)
+    //         }
+    //         this.drawFigure(ctx, el);
+    //     })
+    // }
 
 
 

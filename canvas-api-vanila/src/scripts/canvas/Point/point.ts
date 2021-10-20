@@ -1,52 +1,45 @@
+import {fixedLengthArray} from "../fixedLengthArray";
+
 export type dimension = 2 | 3 | 4;
 
-export class Point {
-    private readonly _x: number = null;
-    private readonly _y: number = null;
-    private readonly _z: number = null;
-    private readonly _w: number = null;
-    private _dimension: dimension = null;
 
-    constructor(x: number, y: number, z?: number, w?: number) {
-        this._x = x;
-        this._y = y;
-        this._z = z || null;
-        this._w = w || null;
-        this.setDimension(x,y,z,w);
+export type point = fixedLengthArray<number, dimension>;
+
+export class Point {
+    protected _point:point;
+    private readonly _dimension: dimension = null;
+
+    constructor(p: point) {
+        this._dimension = p.length;
+        this._point = p;
+    }
+
+    get point(){
+        return this._point;
     }
 
     get x() {
-        return this._x;
+        return this._point[0];
     }
 
     get y() {
-        return this._y;
+        return this._point[1];
     }
 
     get z() {
         if (this._dimension == 2)
             throw new Error('dimension is 2. No z coordinates');
-        return this._z;
+        return this._point[2];
     }
 
     get w() {
         if (this._dimension == 3)
             throw new Error('dimension is 3. No w coordinates');
-        return this._w;
+        return this._point[3];
     }
 
     get dimension() {
         return this._dimension;
-    }
-
-    private setDimension(x: number, y: number, z?: number, w?: number){
-        if(z == null)
-            this._dimension = 2
-        else
-            if (w == null)
-                this._dimension = 3
-            else
-                this._dimension = 4
     }
 
     //если указано пространство, сверяет точки с пространством
