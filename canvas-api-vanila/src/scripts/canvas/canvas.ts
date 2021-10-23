@@ -7,12 +7,14 @@ export class Canvas extends FigureController {
     private readonly _canvasWidth: number = 0;
     private readonly _canvasHeight: number = 0;
 
-    private _fps: number = 30;
+    private _fps: number = 60;
 
     constructor(selector: string) {
         super();
         this._canvas = <HTMLCanvasElement>document.querySelector(selector)
         this._ctx = this._canvas.getContext('2d');
+        this._canvas.width = document.body.clientWidth; //document.width is obsolete
+        this._canvas.height = document.body.clientHeight
         this._canvasWidth = this._canvas.width;
         this._canvasHeight = this._canvas.height;
     }

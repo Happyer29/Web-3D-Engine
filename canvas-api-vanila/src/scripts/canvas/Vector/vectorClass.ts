@@ -56,7 +56,7 @@ export class Vector {
         this._vector = (tmp as unknown as fixedLengthArray<number, dimension>);
     }
 
-    protected length(): number {
+    public length(): number {
         let tmp = 0;
         for (let i = 0; i < this._dimension; i++) {
             tmp += Math.pow(this._vector[i], 2);
@@ -142,7 +142,9 @@ export class Vector {
         return new Vector((tmp as unknown as fixedLengthArray<number, dimension>));
     }
 
-
+    public static zeroVector(d:dimension){
+        return Array.from({ length: d }, _ => 0);
+    }
 
     get dimension() {
         return this._dimension;

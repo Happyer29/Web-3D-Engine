@@ -1,6 +1,6 @@
 import {fixedLengthArray} from "../fixedLengthArray";
 
-export type dimension = 2 | 3 | 4;
+export type dimension = null | 2 | 3 | 4;
 
 
 export type point = fixedLengthArray<number, dimension>;

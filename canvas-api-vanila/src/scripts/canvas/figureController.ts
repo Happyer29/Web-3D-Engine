@@ -1,7 +1,8 @@
-import {colorFulCircle, colorFulFigure, colorFulRectangle, Figure, Vector} from "./figure";
+import {colorFulCircle, colorFulFigure, colorFulRectangle, Figure} from "./figure";
 import Color from 'ts-color-class';
 import {Vector2D} from "./Vector/vector2D";
 import {Point} from "./Point/point";
+import {Vector} from "./Vector/vectorClass";
 
 export class FigureController {
     private figures:Array<Figure> = [];
@@ -29,14 +30,33 @@ export class FigureController {
                 let vector = new Vector2D({p1, p2})
 
                 let unitVector = Vector2D.normalization(vector);
-                let posuUitVector = unitVector.positionObj
-                el.position.x += 0.02 * posuUitVector.x * t;
-                el.position.y += 0.02 * posuUitVector.y * t;
-                if (Math.abs(el.position.x-moveTo.x) < posuUitVector.x && Math.abs(el.position.y-moveTo.y) < posuUitVector.y){
-                    el.moveTo({x: null, y:null})
-                    el.setPosition({x: el.position.x, y:el.position.y})
+                let posUnitVector = unitVector.positionObj
+
+                let speed = 0.4;
+                let deltaPosPerFrame = {
+                    x: speed * posUnitVector.x * t,
+                    y: speed * posUnitVector.y * t
                 }
-                    console.log(el.position)
+
+                let vx = new Vector([el.position.x, deltaPosPerFrame.x]);
+                let vMoveToX = new Vector([el.position.x, moveTo.x]);
+                let vy = new Vector([el.position.y, deltaPosPerFrame.y]);
+                let vMoveToY = new Vector([el.position.y, moveTo.y]);
+
+                console.log(vMoveToX.length())
+                //if(Math.abs(el.position.x - moveTo.x) < Number.EPSILON && Math.abs(el.position.y - moveTo.y) < Number.EPSILON ){
+                if (Math.abs(vx.length()-vMoveToX.length()) < Number.EPSILON && Math.abs(vy.length()-vMoveToY.length()) < Number.EPSILON){
+                    el.setPosition({x: moveTo.x, y:moveTo.y})
+                    el.moveTo({x: null, y:null})
+                }
+                else{
+                    el.position.x += deltaPosPerFrame.x;
+                    el.position.y += deltaPosPerFrame.y;
+                }
+
+                if(el.type == "rectangle"){
+                    //console.log(el.position)
+                }
             }
             this.drawFigure(ctx, el);
         })
