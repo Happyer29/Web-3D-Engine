@@ -19,6 +19,7 @@ export class Canvas extends FigureController {
         this._canvasHeight = this._canvas.height;
     }
 
+
     get ctx() {
         return this._ctx;
     }

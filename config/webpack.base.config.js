@@ -61,6 +61,11 @@ module.exports = {
           },
         },
       },
+      {//for mocha tests
+        test: /\.spec\.ts$/,
+        use: 'mocha-loader',
+        exclude: /node_modules/,
+      },
 
       {//For css
         test: /\.css$/,

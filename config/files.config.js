@@ -5,6 +5,7 @@ let PAGES_DIR,
     ENTRY = {
         app     : `./src/scripts/index.ts`
     },
+    ENTRY_TESTS = `./src/scripts/tests/index.spec.ts`,
     PATHS = {
         src     : path.join(__dirname, '../', 'src'),
         dist    : path.join(__dirname, '../', 'dist'),
@@ -23,6 +24,7 @@ PAGES           = ""/*fs.readdirSync(PAGES_DIR).filter(fileName => fileName.ends
 
 
 exports.ENTRY   = ENTRY;
+exports.ENTRY_TESTS   = ENTRY_TESTS;
 exports.PAGES   = PAGES;
 exports.PATHS   = PATHS;
 exports.PAGES_DIR = PAGES_DIR;
