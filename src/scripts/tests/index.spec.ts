@@ -1,22 +1,8 @@
-//TODO specific file for every class
-
-describe('Test', () => {
-    it('should succeed', (done) => {
-        setTimeout(done, 1000);
-    });
-
-    // it('should fail', () => {
-    //     setTimeout(() => {
-    //         throw new Error('Failed');
-    //     }, 1000);
-    // });
-
-    // it('should randomly fail', () => {
-    //     if (require('./module')) {
-    //         throw new Error('Randomly failed');
-    //     }
-    // });
+//index.spec не трогаем, тут просто скрипт который пробегается
+//по всей папке tests и собирает все файлы .spec.ts воедино
+context = require.context('./', true, /\.spec\.ts$/);
+context.keys().forEach(context);
+module.exports = context;
 
 
-});
 
