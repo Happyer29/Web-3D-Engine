@@ -1,4 +1,3 @@
-//type matrix3 = fixedLengthArray<number, dimension>;
 import {fixedLengthArray} from "../utils/fixedLengthArray";
 import {Vector3} from "./Vector3";
 
@@ -48,7 +47,7 @@ export class Matrix3 {
         return res;
     }
 
-    //TODO сделать лучше
+    //TODO сделать лучше?? если можно
     public static identityMatrix() {
         let res = Matrix3.zeroMatrix();
         for (let i = 0; i < 3; i++) {
@@ -61,7 +60,6 @@ export class Matrix3 {
         let m1 = a.matrix;
         let m2 = b.matrix;
 
-        //TODO поправить as unknown
         let res = Matrix3.zeroMatrix();
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
