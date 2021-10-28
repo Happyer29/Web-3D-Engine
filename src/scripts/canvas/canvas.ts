@@ -7,6 +7,7 @@ export class Canvas extends FigureController {
     private readonly _canvasWidth: number = 0;
     private readonly _canvasHeight: number = 0;
 
+
     private _fps: number = 60;
 
     constructor(selector: string) {

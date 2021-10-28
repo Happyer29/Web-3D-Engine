@@ -13,7 +13,6 @@ module.exports = {
   devtool: "source-map", //TODO console parameter with/without maps
   entry: ENTRY,
 
-  watch: true,
   output: {
     path: PATHS.dist,
     filename: "./scripts/[name].bundle.js",
