@@ -5,7 +5,7 @@ const WebpackShellPluginNext = require("webpack-shell-plugin-next");
 const {PATHS} = require("./files.config.js");
 
 console.log('\x1b[31m%s\x1b[0m', 'Starting dev project build:');
-const devWebpackConfig = merge(baseWebpackConfig, {
+const devWebpackConfig = (env) => merge(baseWebpackConfig, {
     mode: 'development',
     devtool: 'eval-cheap-module-source-map',
     stats: 'errors-warnings',
