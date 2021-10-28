@@ -17,7 +17,7 @@
     "lint:watch": "npm run lint -- --watch",
     "prebuild": "npm-run-all clean-dist",
     "build": "webpack --config ./config/webpack.dev.config.js",
-    "build:watch": "webpack --config ./config/webpack.dev.config.js --env watch",
+    "build:watch": "webpack -w --config ./config/webpack.dev.config.js",
     "prebuild:prod": "npm-run-all clean-build",
     "build:prod": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod.config.js",
     "postbuild:prod": "npm run server:prod",
