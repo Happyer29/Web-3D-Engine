@@ -1,19 +1,13 @@
 export class Geometry {
-    private vertices: number[] = [];
-    private textureVertices: number[] = [];
-    private normals: number[] = [];
-
-    private polygonVertexIndices: number[] = [];
-    private polygonTextureVertexIndices: number[] = [];
-    private polygonNormalIndices: number[] = [];
+    private _position : number[];
+    private _texcoord?: number[];
+    private _normal?: number[];
 
 
-    constructor(vertices: number[], textureVertices: number[], normals: number[], polygonVertexIndices: number[], polygonTextureVertexIndices: number[], polygonNormalIndices: number[]) {
-        this.vertices = vertices;
-        this.textureVertices = textureVertices;
-        this.normals = normals;
-        this.polygonVertexIndices = polygonVertexIndices;
-        this.polygonTextureVertexIndices = polygonTextureVertexIndices;
-        this.polygonNormalIndices = polygonNormalIndices;
+    constructor(position: number[], textureCoordinates?: number[], normal?: number[]) {
+        this._position = position;
+        if (textureCoordinates) this._texcoord = textureCoordinates;
+        if (normal) this._normal = normal;
     }
+
 }
