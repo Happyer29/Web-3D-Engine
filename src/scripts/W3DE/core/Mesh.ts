@@ -2,11 +2,16 @@ import {Material} from "./Material";
 import {Geometry} from "./Geometry";
 
 export class Mesh {
-    private geometry: Geometry;
+    private _geometry: Geometry;
     private material: Material;
 
     constructor(geometry: Geometry, material: Material) {
-        this.geometry = geometry;
+        this._geometry = geometry;
         this.material = material;
+    }
+
+
+    get geometry(): Geometry {
+        return this._geometry;
     }
 }

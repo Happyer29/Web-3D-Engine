@@ -10,7 +10,7 @@ console.log(t.matrix)
 
 let objInput = document.querySelector("#obj-loader");
 let textureInput = document.querySelector("#texture-loader");
-
+const canvas = <HTMLCanvasElement>document.querySelector("#canvas");
 
 objInput.addEventListener('change', readObjectFromInput, false);
 

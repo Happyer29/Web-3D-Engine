@@ -1,5 +1,6 @@
 import {FileLoader} from "./FileLoader";
 
+
 export class TextureLoader {
     public static async loadFromUrl(textureURL : string) : Promise<HTMLImageElement> {
         return new Promise((resolve, reject) => {

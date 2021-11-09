@@ -10,4 +10,16 @@ export class Geometry {
         if (normal) this._normal = normal;
     }
 
+
+    get position(): number[] {
+        return this._position;
+    }
+
+    get texcoord(): number[] {
+        return this._texcoord;
+    }
+
+    get normal(): number[] {
+        return this._normal;
+    }
 }

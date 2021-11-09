@@ -36,7 +36,7 @@ export class ObjectParser {
             });
         }
 
-        enum keywords {
+        enum ObjTokens {
             COMMENT = "#",
             VERTEX = "v",
             NORMAL = "vn",
@@ -47,25 +47,26 @@ export class ObjectParser {
         let lines = objURL.split(/\r\n|\n/);
 
         lines.forEach((line) => {
-            if (line === '' || line.startsWith(keywords.COMMENT)) {
+            if (line === '' || line.startsWith(ObjTokens.COMMENT)) {
                 return;
             }
-            let lineData = line.split(" ");
+            let lineData = line.split(" ").filter(e => e);
+
             let token = lineData.shift();
             switch (token) {
-                case keywords.VERTEX : {
+                case ObjTokens.VERTEX : {
                     objPositions.push(lineData.map(parseFloat));
                     break;
                 }
-                case keywords.NORMAL : {
+                case ObjTokens.NORMAL : {
                     objNormals.push(lineData.map(parseFloat));
                     break;
                 }
-                case keywords.TEXTURE_COORDINATE : {
+                case ObjTokens.TEXTURE_COORDINATE : {
                     objTextureCoordinates.push(lineData.map(parseFloat));
                     break;
                 }
-                case keywords.FACE : {
+                case ObjTokens.FACE : {
                     const numTriangles = lineData.length - 2;
                     for (let tri = 0; tri < numTriangles; ++tri) {
                         addVertex(lineData[0]);
@@ -79,6 +80,8 @@ export class ObjectParser {
                 }
             }
         })
+
+
         let material;
         if (!textureURL) {
             material = await Material.createDefaultMaterial();
