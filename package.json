@@ -24,7 +24,6 @@
     "test": "webpack --config ./config/webpack-test.config.js",
     "test:watch": "webpack -w --config ./config/webpack-test.config.js"
   },
-  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",

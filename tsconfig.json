@@ -2,6 +2,8 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
     "rootDir": "./src/scripts", // Путь до папки с которой надо начинать поиск входных файлов. Обычно корневая директория вычисляется по списку входных файлов. Данная опция необходима для проверки, что все найденные TypeScript-файлы находятся внутри корневой папки.
     "build": false, // TODO
     "composite": true, // TODO
