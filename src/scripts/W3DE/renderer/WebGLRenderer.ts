@@ -32,6 +32,7 @@ export class WebGLRenderer {
         return this._canvas.getContext("2d", attr);
     }
 
+    //TODO resize https://webglfundamentals.org/webgl/lessons/ru/webgl-resizing-the-canvas.html
     public setSize(width: number, height: number, updateStyle?: boolean){
         this._width = width;
         this._height = height;
