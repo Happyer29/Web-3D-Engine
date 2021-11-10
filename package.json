@@ -21,8 +21,8 @@
     "prebuild:prod": "npm-run-all clean-build",
     "build:prod": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod.config.js",
     "postbuild:prod": "npm run server:prod",
-    "test": "",
-    "test:watch": ""
+    "test": "webpack --config ./config/webpack-test.config.js",
+    "test:watch": "webpack -w --config ./config/webpack-test.config.js"
   },
   "dependencies": {},
   "devDependencies": {
