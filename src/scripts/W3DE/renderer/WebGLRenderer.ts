@@ -1,4 +1,6 @@
 import {Mesh} from "../core/Mesh";
+import {Unit, UnitType} from "../utils/unitType";
+import {config} from "./config";
 
 interface CtxAttr {
     alpha?: boolean;
@@ -13,10 +15,11 @@ interface CtxAttr {
     xrCompatible?: boolean;
 }
 
-type ObjectAlias = object;
 //Опции которые передаются в конструктор рендерера
-interface ConstructorOptions extends ObjectAlias{
-    selector?: parentCanvasSelector
+interface ConstructorOptions{
+    selector?: parentCanvasSelector, // селектор для id или body
+    width?: UnitType, //ширина канваза
+    height?: UnitType, //высота канваза
 }
 
 type parentCanvasSelector = `#${string}` | "body";
@@ -28,20 +31,19 @@ export class WebGLRenderer {
     private _options: ConstructorOptions = {};
     private _pixelRatio = 1;
 
-    private _width: number;
-    private _height: number;
+    private _width: Unit;
+    private _height: Unit;
 
     private _mesh: Mesh;
     private time: number = 1;
 
-    constructor(canvas: HTMLCanvasElement, mesh: Mesh, options?: ConstructorOptions) {
+    constructor(canvas: HTMLCanvasElement, mesh: Mesh, options: ConstructorOptions = {}) {
         this._options = options;
         this._mesh = mesh;
-        this._canvas = canvas;
-        //this._canvas = this.createCanvasElement( typeof options.selector !== "undefined"  ? this._options.selector : "body")
 
-        this._width = this._canvas.width;
-        this._height = this._canvas.height;
+        this._canvas = this.createCanvasElement(options.selector ?? undefined)
+
+        this.setSize(new Unit(options.width ?? undefined), new Unit(options.height ?? undefined), true)
     }
 
     //TODO webgl2 and webgl, now only webgl2
@@ -50,14 +52,14 @@ export class WebGLRenderer {
         return this._canvas.getContext("2d", attr);
     }
 
-    public setSize(width: number, height: number, updateStyle?: boolean) {
+    public setSize(width: Unit = config.width, height: Unit = config.height, updateStyle: boolean = false) {
         this._width = width;
         this._height = height;
 
-        this._canvas.width = Math.floor(width * this._pixelRatio);
-        this._canvas.height = Math.floor(height * this._pixelRatio);
+        this._canvas.width = Math.floor(width.intUnit * this._pixelRatio);
+        this._canvas.height = Math.floor(height.intUnit * this._pixelRatio);
 
-        if (typeof updateStyle !== 'undefined' && updateStyle !== false) {
+        if (updateStyle !== false) {
             console.log(width);
             this._canvas.style.width = width + 'px';
             this._canvas.style.height = height + 'px';
@@ -68,7 +70,7 @@ export class WebGLRenderer {
     private createCanvasElement(selector: parentCanvasSelector = "body") {
         const canvas = this.createElementNS('canvas');
 
-        let el = document.querySelector(selector)[0]
+        let el = document.querySelector(selector)
         el.appendChild(canvas);
 
         canvas.style.display = 'block';
