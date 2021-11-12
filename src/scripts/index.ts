@@ -25,7 +25,7 @@ async function readObjectFromInput(evt) {
 
     let object = await ObjectParser.parseObjectFromString(fileText);
 
-    let renderer = new WebGLRenderer(canvas, object, {selector: "#canvas-parent", width: "1000px", height: "1000px"});
+    let renderer = new WebGLRenderer(object, {selector: "#canvas-parent", width: "1000px", height: "1000px"});
     renderer.render();
     console.log(object)
 }
