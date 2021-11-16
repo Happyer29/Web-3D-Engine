@@ -37,7 +37,7 @@ export class WebGLRenderer {
     private _mesh: Mesh;
     private time: number = 1;
 
-    constructor(mesh: Mesh, options: ConstructorOptions = {}) {
+     constructor(mesh: Mesh, options: ConstructorOptions = {}) {
         this._options = options;
         this._mesh = mesh;
 
