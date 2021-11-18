@@ -27,6 +27,7 @@ type parentCanvasSelector = `#${string}` | "body";
 
 export class WebGLRenderer {
     private readonly _canvas;
+    private readonly _parentCanvasEl: HTMLElement;
     //private readonly _canvas: HTMLCanvasElement;
 
     private _options: ConstructorOptions = {};
@@ -42,7 +43,8 @@ export class WebGLRenderer {
         this._options = options;
         this._mesh = mesh;
 
-        this._canvas = this.createCanvasElement(options.selector ?? undefined)
+        this._parentCanvasEl = document.querySelector(options.selector ?? "body")
+        this._canvas = this.createCanvasElement()
 
         this.setSize(new Unit(options.width ?? undefined), new Unit(options.height ?? undefined), true)
     }
@@ -50,7 +52,7 @@ export class WebGLRenderer {
     //TODO webgl2 and webgl, now only webgl2
     //TODO now used 2d only for rectangles tests
     public getCtx(attr?: CtxAttr) {
-        return this._canvas.getContext("2d", attr);
+        return this._canvas.getContext("webgl", attr);
     }
 
     public setSize(width: Unit = config.width, height: Unit = config.height, updateStyle: boolean = false) {
@@ -61,18 +63,25 @@ export class WebGLRenderer {
         this._canvas.height = Math.floor(height.intUnit * this._pixelRatio);
 
         if (updateStyle !== false) {
-            console.log(width);
+            //console.log(width);
             this._canvas.style.width = width + 'px';
             this._canvas.style.height = height + 'px';
-            console.log(this._canvas.style.width);
+            //console.log(this._canvas.style.width);
         }
     }
 
-    private createCanvasElement(selector: parentCanvasSelector = "body") {
-        const canvas = this.createElementNS('canvas');
+    public resizeCanvasToDisplaySize(multiplier?) {
+        multiplier = multiplier || 1;
+        const width = new Unit(this._parentCanvasEl.clientWidth).multiple(multiplier);
+        const height = new Unit(this._parentCanvasEl.clientHeight).multiple(multiplier);
+        if (!Unit.equal(this._width, width) || !Unit.equal(this._height, height)) {
+            this.setSize(width, height, true);
+        }
+    }
 
-        let el = document.querySelector(selector)
-        el.appendChild(canvas);
+    private createCanvasElement() {
+        const canvas = this.createElementNS('canvas');
+        this._parentCanvasEl.appendChild(canvas);
 
         canvas.style.display = 'block';
         return canvas;
@@ -97,7 +106,7 @@ export class WebGLRenderer {
 
     public render() {
         this.time += 0.03;
-        console.log(this.time);
+        //console.log(this.time);
 
         function createShader(gl, type, source) {
             let shader = gl.createShader(type);
@@ -108,7 +117,7 @@ export class WebGLRenderer {
                 return shader;
             }
 
-            console.log(gl.getShaderInfoLog(shader));
+            //console.log(gl.getShaderInfoLog(shader));
             gl.deleteShader(shader);
         }
 
@@ -122,12 +131,12 @@ export class WebGLRenderer {
                 return program;
             }
 
-            console.log(gl.getProgramInfoLog(program));
+            //console.log(gl.getProgramInfoLog(program));
             gl.deleteProgram(program);
         }
 
         // Get A WebGL context
-        const gl = this.canvas.getContext("webgl");
+        const gl = this.getCtx();
         if (!gl) {
             return;
         }
@@ -192,19 +201,7 @@ void main() {
         // code above this line is initialization code.
         // code below this line is rendering code.
 
-        function resizeCanvasToDisplaySize(canvas, multiplier?) {
-            multiplier = multiplier || 1;
-            const width = canvas.clientWidth * multiplier | 0;
-            const height = canvas.clientHeight * multiplier | 0;
-            if (canvas.width !== width || canvas.height !== height) {
-                canvas.width = width;
-                canvas.height = height;
-                return true;
-            }
-            return false;
-        }
-
-        resizeCanvasToDisplaySize(this.canvas);
+        this.resizeCanvasToDisplaySize();
 
         // Tell WebGL how to convert from clip space to pixels
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
