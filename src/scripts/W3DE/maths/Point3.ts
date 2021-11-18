@@ -1,11 +1,11 @@
 import {fixedLengthArray} from "../utils/fixedLengthArray";
 
-export type point = fixedLengthArray<number, 3>;
+export type point3 = fixedLengthArray<number, 3>;
 export class Point3 {
-    protected _point:point;
+    protected _point:point3;
     private readonly _dimension: number = 3;
 
-    constructor(p: point) {
+    constructor(p: point3) {
         this._dimension = p.length;
         this._point = p;
     }
