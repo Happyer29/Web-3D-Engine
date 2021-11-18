@@ -1,6 +1,7 @@
 import {Mesh} from "../core/Mesh";
 import {Unit, UnitType} from "../utils/unitType";
 import {config} from "./config";
+import {WebGlShaderCreator} from "../core/WebGlShaderCreator";
 import {Matrix4} from "../maths/Matrix4";
 
 interface CtxAttr {
@@ -99,19 +100,6 @@ export class WebGLRenderer {
         this.time += 0.03;
         console.log(this.time);
 
-        function createShader(gl, type, source) {
-            let shader = gl.createShader(type);
-            gl.shaderSource(shader, source);
-            gl.compileShader(shader);
-            let success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-            if (success) {
-                return shader;
-            }
-
-            console.log(gl.getShaderInfoLog(shader));
-            gl.deleteShader(shader);
-        }
-
         function createProgram(gl, vertexShader, fragmentShader) {
             let program = gl.createProgram();
             gl.attachShader(program, vertexShader);
@@ -171,8 +159,8 @@ void main() {
         matrix = Matrix4.scale(matrix, scale[0], scale[1], scale[2]);
 
         // create GLSL shaders, upload the GLSL source, compile the shaders
-        let vertexShader = createShader(gl, gl.VERTEX_SHADER, vs);
-        let fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fs);
+        let vertexShader = new WebGlShaderCreator(gl).createVertexShader(vs);
+        let fragmentShader = new WebGlShaderCreator(gl).createFragmentShader(fs);
         // Link the two shaders into a program
         let program = createProgram(gl, vertexShader, fragmentShader);
         // look up where the vertex data needs to go.

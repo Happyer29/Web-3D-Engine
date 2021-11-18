@@ -7,7 +7,7 @@ export class Material {
         this._texture = texture;
     }
 
-    public static async createDefaultMaterial() {
+    public static async getDefaultMaterial() {
         let texture = await TextureLoader.loadFromUrl("default-texture.jpg");
         return new Material(texture);
     }

@@ -22,8 +22,7 @@ async function readObjectFromInput(evt) {
     let files = evt.currentTarget.files;
     let file = files[0];
     let fileText = await FileLoader.loadAsText(file);
-
-    let object = await ObjectParser.parseObjectFromString(fileText);
+    let object = await new ObjectParser().parseObjectFromString(fileText);
 
     let renderer = new WebGLRenderer(object, {selector: "#canvas-parent", width: "1000px", height: "1000px"});
     renderer.render();
