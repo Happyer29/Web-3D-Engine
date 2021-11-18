@@ -50,7 +50,7 @@ export class Vector3 {
     }
 
     public static sum(v1: Vector3, v2: Vector3): Vector3 {
-        let tmp: vector3 = [0, 0, 0];
+        let tmp: vector3 = Vector3.zeroVector();
         for (let i = 0; i < 3; i++) {
             tmp[i] = v1._vector[i] + v2._vector[i];
         }
@@ -58,7 +58,7 @@ export class Vector3 {
     }
 
     public static minus(v1: Vector3, v2: Vector3): Vector3 {
-        let tmp: vector3 = [0, 0, 0];
+        let tmp: vector3 = Vector3.zeroVector();
         for (let i = 0; i < 3; i++) {
             tmp[i] = v1._vector[i] - v2._vector[i];
         }
@@ -66,7 +66,7 @@ export class Vector3 {
     }
 
     public static scalarMultiplication(scalar: number, v: Vector3) {
-        let tmp: vector3 = [0, 0, 0];
+        let tmp: vector3 = Vector3.zeroVector();
         for (let i = 0; i < 3; i++) {
             tmp[i] = v._vector[i] * scalar;
         }
@@ -74,7 +74,7 @@ export class Vector3 {
     }
 
     public static scalarDivision(scalar: number, v: Vector3) {
-        let tmp: vector3 = [0, 0, 0];
+        let tmp: vector3 = Vector3.zeroVector();
         for (let i = 0; i < 3; i++) {
             tmp[i] = v._vector[i] / scalar;
         }
@@ -90,7 +90,7 @@ export class Vector3 {
     }
 
     public static normalization(v: Vector3) {
-        let tmp: vector3 = [0, 0, 0];
+        let tmp: vector3 = Vector3.zeroVector();
         for (let i = 0; i < 3; i++) {
             tmp[i] = v._vector[i] / v.length();
         }
