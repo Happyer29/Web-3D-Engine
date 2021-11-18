@@ -4,7 +4,7 @@ import {Vector3} from "./Vector3";
 type matrix3 = fixedLengthArray<fixedLengthArray<number, 3>, 3> // equal to [[0,0,0], [0,0,0], [0,0,0]]
 export class Matrix3 {
     private _matrix: matrix3;
-    private readonly _dimension: number = 3;
+    private static readonly _dimension: number = 3;
 
     constructor(m: number[][]) {
         this._matrix = Matrix3.matrixToMatrix3(m);
@@ -19,7 +19,7 @@ export class Matrix3 {
     }
 
     get dimension() {
-        return this._dimension;
+        return Matrix3._dimension;
     }
 
     public static zeroMatrix(): matrix3 {
@@ -28,8 +28,8 @@ export class Matrix3 {
 
     private static buildMatrix(value: number): matrix3 {
         let res: matrix3 = Matrix3.zeroMatrix();
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
+        for (let i = 0; i < this._dimension; i++) {
+            for (let j = 0; j < this._dimension; j++) {
                 res[i][j] = value;
             }
         }
@@ -39,8 +39,8 @@ export class Matrix3 {
     public static matrixToMatrix3(m: number[][] | matrix3): matrix3 {
         let res = Matrix3.zeroMatrix();
         //console.log(res);
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
+        for (let i = 0; i < this._dimension; i++) {
+            for (let j = 0; j < this._dimension; j++) {
                 res[i][j] = m[i] === undefined || m[i][j] === undefined  ? 0 : m[i][j];
             }
         }
@@ -50,7 +50,7 @@ export class Matrix3 {
     //TODO сделать лучше?? если можно
     public static identityMatrix() {
         let res = Matrix3.zeroMatrix();
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < this._dimension; i++) {
             res[i][i] = 1;
         }
         return res;
@@ -61,8 +61,8 @@ export class Matrix3 {
         let m2 = b.matrix;
 
         let res = Matrix3.zeroMatrix();
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
+        for (let i = 0; i < this._dimension; i++) {
+            for (let j = 0; j < this._dimension; j++) {
                 res[i][j] = (m1[i][j] || 0) + (typeof m2[i][j] === 'undefined' ? 0 : m2[i][j]);
             }
         }
@@ -73,8 +73,8 @@ export class Matrix3 {
         let vPos = v.positionArr;
 
         let res = Vector3.zeroVector();
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
+        for (let i = 0; i < this._dimension; i++) {
+            for (let j = 0; j < this._dimension; j++) {
                 res[i] += m._matrix[i][j] * vPos[j];
             }
         }
@@ -83,7 +83,7 @@ export class Matrix3 {
 
     public static transponse(m: Matrix3) {
         let arr = m._matrix;
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < this._dimension; i++) {
             for (let j = 0; j < i; j++) {
                 let tmp = arr[i][j];
                 arr[i][j] = arr[j][i];
