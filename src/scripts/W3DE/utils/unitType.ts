@@ -3,8 +3,9 @@
 export type UnitType = `${number}px`;
 export class Unit {
     private _cssUnit: UnitType;
-    constructor(cssUnit: UnitType = undefined){
-        this._cssUnit = cssUnit ?? "0px";
+    constructor(cssUnit: UnitType | number = undefined){
+        let tmp = cssUnit ?? "0px";
+        this._cssUnit = typeof tmp == "number" ? `${tmp}px` : tmp;
     }
 
     get cssUnit(){
@@ -15,5 +16,18 @@ export class Unit {
     get intUnit():number{
         return parseInt(this._cssUnit, 10);
         //return this._cssUnit.replace(/[^+\d]/g, '');
+    }
+
+    private static toPx(n:number): UnitType{
+        return `${n}px`;
+    }
+
+    public multiple(m: number){
+        this._cssUnit = Unit.toPx(this.intUnit * m);
+        return this;
+    }
+
+    public static equal(u1: Unit, u2: Unit){
+        return u1._cssUnit == u2._cssUnit;
     }
 }
