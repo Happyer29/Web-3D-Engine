@@ -1,40 +1,52 @@
-import {Geometry} from "../core/Geometry";
-import {Mesh} from "../core/Mesh";
-import {Material} from "../core/Material";
-import {TextureLoader} from "../loaders/TextureLoader";
+import { Geometry } from "../core/Geometry";
+import { Mesh } from "../core/Mesh";
+import { Material } from "../core/Material";
+import { TextureLoader } from "../loaders/TextureLoader";
 
 export class ObjectParser {
-    public static async parseObjectFromString(objURL: string, textureURL? : string): Promise<Mesh> {
-        // because indices are base 1 let's just fill in the 0th data
-        const objPositions = [[0, 0, 0]];
-        const objTextureCoordinates = [[0, 0]];
-        const objNormals = [[0, 0, 0]];
 
-        // same order as `f` indices
-        const objVertexData = [
-            objPositions,
-            objTextureCoordinates,
-            objNormals,
-        ];
+    private readonly objPositions: number[][] = [[0, 0, 0]];
+    private readonly objTextureCoordinates: number[][] = [[0, 0]];
+    private readonly objNormals: number[][] = [[0, 0, 0]];
 
-        // same order as `f` indices
-        let webglVertexData = [
-            [],   // positions
-            [],   // texcoords
-            [],   // normals
-        ];
+    private readonly objVertexData: number[][][] = [
+        this.objPositions,
+        this.objTextureCoordinates,
+        this.objNormals,
+    ];
 
-        function addVertex(vert) {
-            const ptn = vert.split('/');
-            ptn.forEach((objIndexStr, i) => {
-                if (!objIndexStr) {
-                    return;
-                }
-                const objIndex = parseInt(objIndexStr);
-                const index = objIndex + (objIndex >= 0 ? 0 : objVertexData[i].length);
-                webglVertexData[i].push(...objVertexData[i][index]);
-            });
+    private webglVertexData: number[][] = [
+        [],   // positions
+        [],   // texcoords
+        [],   // normals
+    ];
+
+    public async parseObjectFromString(objURL: string, textureURL?: string): Promise<Mesh> {
+
+        if (!this.webglVertexData[0]) {
+            console.warn("No vertex data parsed!");
+            return;
         }
+        if (!textureURL) {
+            console.warn("No material provided! Using default material instead...");
+        }
+
+        return new Mesh(this.parseGeometryFromObjFile(objURL), (!textureURL) ? await Material.getDefaultMaterial() : new Material(await TextureLoader.loadFromUrl(textureURL)));
+    }
+
+    private addVertex(vertex: string) {
+        const vertexInfo = vertex.split('/');
+        vertexInfo.forEach((objIndexStr, i) => {
+            if (!objIndexStr) {
+                return;
+            }
+            const objIndex = parseInt(objIndexStr);
+            const index = objIndex + (objIndex >= 0 ? 0 : this.objVertexData[i].length);
+            this.webglVertexData[i].push(...this.objVertexData[i][index]);
+        });
+    }
+
+    private parseGeometryFromObjFile(objURL: string): Geometry {
 
         enum ObjTokens {
             COMMENT = "#",
@@ -54,43 +66,34 @@ export class ObjectParser {
 
             let token = lineData.shift();
             switch (token) {
-                case ObjTokens.VERTEX : {
-                    objPositions.push(lineData.map(parseFloat));
+                case ObjTokens.VERTEX: {
+                    this.objPositions.push(lineData.map(parseFloat));
                     break;
                 }
-                case ObjTokens.NORMAL : {
-                    objNormals.push(lineData.map(parseFloat));
+                case ObjTokens.NORMAL: {
+                    this.objNormals.push(lineData.map(parseFloat));
                     break;
                 }
-                case ObjTokens.TEXTURE_COORDINATE : {
-                    objTextureCoordinates.push(lineData.map(parseFloat));
+                case ObjTokens.TEXTURE_COORDINATE: {
+                    this.objTextureCoordinates.push(lineData.map(parseFloat));
                     break;
                 }
-                case ObjTokens.FACE : {
+                case ObjTokens.FACE: {
                     const numTriangles = lineData.length - 2;
                     for (let tri = 0; tri < numTriangles; ++tri) {
-                        addVertex(lineData[0]);
-                        addVertex(lineData[tri + 1]);
-                        addVertex(lineData[tri + 2]);
+                        this.addVertex(lineData[0]);
+                        this.addVertex(lineData[tri + 1]);
+                        this.addVertex(lineData[tri + 2]);
                     }
                     break;
                 }
-                default : {
-                    console.warn('unhandled keyword:', token);  // eslint-disable-line no-console
+                default: {
+                    console.warn('Unhandled keyword:', token);
                 }
             }
         })
 
-
-        let material;
-        if (!textureURL) {
-            material = await Material.createDefaultMaterial();
-        } else {
-            material = new Material(await TextureLoader.loadFromUrl(textureURL));
-        }
-        return new Promise((resolve, reject) => {
-            if (!material || !webglVertexData[0]) return reject;
-            return resolve(new Mesh(new Geometry(webglVertexData[0], webglVertexData[1], webglVertexData[2]), material));
-        });
+        return new Geometry(this.webglVertexData[0], this.webglVertexData[1], this.webglVertexData[2])
     }
+
 }

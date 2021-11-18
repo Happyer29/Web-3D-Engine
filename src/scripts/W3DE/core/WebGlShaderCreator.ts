@@ -1,12 +1,12 @@
 export class WebGlShaderCreator {
 
-    private readonly gl : WebGLRenderingContext;
+    private readonly gl: WebGLRenderingContext;
 
     constructor(gl: WebGLRenderingContext) {
         this.gl = gl;
     }
 
-    private createShader(type : number, source : string) {
+    private createShader(type: number, source: string) {
         let shader = this.gl.createShader(type);
         this.gl.shaderSource(shader, source);
         this.gl.compileShader(shader);
@@ -15,15 +15,15 @@ export class WebGlShaderCreator {
             return shader;
         }
 
-        console.warn(`Shader with source have not compiled: ${source}`)
+        console.warn(`Error occurred while compiling shader with source: \n${source}`)
         this.gl.deleteShader(shader);
     }
 
-    public createVertexShader(source : string) : WebGLShader {
+    public createVertexShader(source: string): WebGLShader {
         return this.createShader(this.gl.VERTEX_SHADER, source);
 
     }
-    public createFragmentShader(source : string) : WebGLShader {
+    public createFragmentShader(source: string): WebGLShader {
         return this.createShader(this.gl.FRAGMENT_SHADER, source);
     }
 }
