@@ -1,12 +1,14 @@
 import {fixedLengthArray} from "../utils/fixedLengthArray";
 import {Vector3} from "./Vector3";
+import {Matrix4} from "./Matrix4";
 
 type matrix3 = fixedLengthArray<fixedLengthArray<number, 3>, 3> // equal to [[0,0,0], [0,0,0], [0,0,0]]
+//TODO ЧТО МЫ ВОЗВРАЩАЕМ ОТ СТАТИЧЕСКИХ МЕТОДОВ? ЭКЗЕМПЛЯР КЛАССА ИЛИ МАССИВ ЗНАЧЕНИЙ?
 export class Matrix3 {
     private _matrix: matrix3;
     private static readonly _dimension: number = 3;
 
-    constructor(m: number[][]) {
+    constructor(m: number[][] | matrix3) {
         this._matrix = Matrix3.matrixToMatrix3(m);
     }
 
@@ -90,6 +92,6 @@ export class Matrix3 {
                 arr[j][i] = tmp;
             }
         }
-        return m.setMatrix(arr);
+        return new Matrix3(arr);
     }
 }

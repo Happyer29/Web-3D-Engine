@@ -3,11 +3,12 @@ import {Vector4} from "./Vector4";
 import {Matrix3} from "./Matrix3";
 
 type matrix4 = fixedLengthArray<fixedLengthArray<number, 4>, 4> // equal to [[0,0,0,0], [0,0,0,0], [0,0,0,0], [0,0,0,0]]
+//TODO ЧТО МЫ ВОЗВРАЩАЕМ ОТ СТАТИЧЕСКИХ МЕТОДОВ? ЭКЗЕМПЛЯР КЛАССА ИЛИ МАССИВ ЗНАЧЕНИЙ?
 export class Matrix4 {
     private _matrix: matrix4;
-    private static readonly _dimension: number = 3;
+    private static readonly _dimension: number = 4;
 
-    constructor(m: number[][]) {
+    constructor(m: number[][] | matrix4) {
         this._matrix = Matrix4.matrixToMatrix4(m);
     }
 
@@ -48,6 +49,16 @@ export class Matrix4 {
         return res;
     }
 
+    public matrixToArray(){
+        let tmp:number[] = []
+        for (let i = 0; i < Matrix4._dimension; i++) {
+            for (let j = 0; j < Matrix4._dimension; j++) {
+                tmp.push(this._matrix[i][j]);
+            }
+        }
+        return tmp;
+    }
+
     //TODO сделать лучше?? если можно
     public static identityMatrix() {
         let res = Matrix4.zeroMatrix();
@@ -82,7 +93,7 @@ export class Matrix4 {
         return res;
     }
 
-    public static multiplication(a: Matrix4, b: Matrix4) {
+    public static multiplication(a: Matrix4, b: Matrix4): Matrix4 {
         const ae = a.matrix;
         const be = b.matrix;
         const te = Matrix4.zeroMatrix();
@@ -117,6 +128,7 @@ export class Matrix4 {
         te[1][3] = a41 * b12 + a42 * b22 + a43 * b32 + a44 * b42;
         te[2][3] = a41 * b13 + a42 * b23 + a43 * b33 + a44 * b43;
         te[3][3] = a41 * b14 + a42 * b24 + a43 * b34 + a44 * b44;
+        return new Matrix4(te);
     }
 
     public static transponse(m: Matrix4) {
@@ -142,7 +154,7 @@ export class Matrix4 {
         te[2][3] = te[3][2];
         te[3][2] = tmp;
 
-        return new Matrix4(tmp);
+        return new Matrix4(te);
     }
 
     public static translation(tx: number, ty: number, tz: number) {
@@ -199,7 +211,7 @@ export class Matrix4 {
         ]);
     }
 
-    public static translate(m: Matrix4, tx: number, ty: number, tz: number) {
+    public static translate(m: Matrix4, tx: number, ty: number, tz: number): Matrix4 {
         return Matrix4.multiplication(m, Matrix4.translation(tx, ty, tz));
     }
 
@@ -219,7 +231,7 @@ export class Matrix4 {
         return Matrix4.multiplication(m, Matrix4.scaling(sx, sy, sz));
     }
 
-    public static projection(width: number, height: number, depth: number) {
+    public static projection(width: number, height: number, depth: number): Matrix4 {
         return new Matrix4([
             [2 / width, 0, 0, 0],
             [0, -2 / height, 0, 0],
