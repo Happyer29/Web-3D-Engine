@@ -18,7 +18,7 @@ interface CtxAttr {
 }
 
 //Опции которые передаются в конструктор рендерера
-interface ConstructorOptions{
+interface ConstructorOptions {
     selector?: parentCanvasSelector, // селектор для id или body
     width?: UnitType, //ширина канваза
     height?: UnitType, //высота канваза
@@ -29,6 +29,7 @@ type parentCanvasSelector = `#${string}` | "body";
 export class WebGLRenderer {
     private readonly _canvas;
     private readonly _parentCanvasEl: HTMLElement;
+    private _ctx;
     //private readonly _canvas: HTMLCanvasElement;
 
     private _options: ConstructorOptions = {};
@@ -40,13 +41,13 @@ export class WebGLRenderer {
     private _mesh: Mesh;
     private time: number = 1;
 
-     constructor(mesh: Mesh, options: ConstructorOptions = {}) {
+    constructor(mesh: Mesh, options: ConstructorOptions = {}) {
         this._options = options;
         this._mesh = mesh;
 
         this._parentCanvasEl = document.querySelector(options.selector ?? "body")
         this._canvas = this.createCanvasElement()
-
+        this._ctx = this.getCtx();
         this.setSize(new Unit(options.width ?? undefined), new Unit(options.height ?? undefined), true)
     }
 
@@ -107,7 +108,26 @@ export class WebGLRenderer {
 
     public render() {
         this.time += 0.03;
-        console.log(this.time);
+
+        // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
+        let size = 3;          // 2 components per iteration
+        let type = this._ctx.FLOAT;   // the data is 32bit floats
+        let normalize = false; // don't normalize the data
+        let stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+        let offset = 0;        // start at the beginning of the buffer
+        this._ctx.vertexAttribPointer(this.init(), size, type, normalize, stride, offset);
+
+        let primitiveType = this._ctx.TRIANGLES;
+        let offsetDraw = 0;
+        let count = this.mesh.geometry.position.length / 3;
+
+        this._ctx.drawArrays(primitiveType, offsetDraw, count);
+
+        requestAnimationFrame(() => this.render());
+    }
+
+    private init(){
+        let gl = this._ctx;
 
         function createProgram(gl, vertexShader, fragmentShader) {
             let program = gl.createProgram();
@@ -121,12 +141,6 @@ export class WebGLRenderer {
 
             //console.log(gl.getProgramInfoLog(program));
             gl.deleteProgram(program);
-        }
-
-        // Get A WebGL context
-        const gl = this.getCtx();
-        if (!gl) {
-            return;
         }
 
         // Get the strings for our GLSL shaders
@@ -207,23 +221,6 @@ void main() {
         // Bind the position buffer.
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-        // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-        let size = 3;          // 2 components per iteration
-        let type = gl.FLOAT;   // the data is 32bit floats
-        let normalize = false; // don't normalize the data
-        let stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-        let offset = 0;        // start at the beginning of the buffer
-        gl.vertexAttribPointer(
-            positionAttributeLocation, size, type, normalize, stride, offset);
-
-
-        // draw
-        let primitiveType = gl.TRIANGLES;
-        let offsetDraw = 0;
-        let count = this.mesh.geometry.position.length / 3;
-
-        gl.drawArrays(primitiveType, offsetDraw, count);
-
-        requestAnimationFrame(() => this.render());
+        return positionAttributeLocation;
     }
 }
