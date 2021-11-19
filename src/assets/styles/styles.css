@@ -27,14 +27,22 @@ html{
     padding: 20px;
 }
 
-.content{
+/*.content{
     width: 98%;
-    height: 2000px;
+    height: 100vh;
     margin: 0 auto;
-    /*position:absolute;*/
-    /*top: 0;*/
-    /*left: 1%;*/
-    /*z-index: 1;*/
-    /*background: #fff;*/
+    !*position:absolute;*!
+    !*top: 0;*!
+    !*left: 1%;*!
+    !*z-index: 1;*!
+    !*background: #fff;*!
+}*/
+.loaders {
+    display: grid;
+    grid-template: "obj texture";
+}
+.loaders label {
+    font-size: 18px;
+    font-weight: bold;
 }
 
