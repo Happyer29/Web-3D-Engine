@@ -11,15 +11,17 @@ console.log(t.matrix)
 
 let objInput = document.querySelector("#obj-loader");
 let textureInput = document.querySelector("#texture-loader");
-const canvas = <HTMLCanvasElement>document.querySelector("#canvas");
+
 
 objInput.addEventListener('change', readObjectFromInput, false);
 
 
 textureInput.addEventListener('change', readTextureFromInput, false);
 
-async function readObjectFromInput(evt) {
-    let files = evt.currentTarget.files;
+async function readObjectFromInput(event : Event) {
+    const input = event.target as HTMLInputElement;
+
+    let files = input.files;
     let file = files[0];
     let fileText = await FileLoader.loadAsText(file);
     let object = await new ObjectParser().parseObjectFromString(fileText);
@@ -29,9 +31,10 @@ async function readObjectFromInput(evt) {
     console.log(object)
 }
 
-async function readTextureFromInput(evt) {
-
-    let files = evt.currentTarget.files;
+async function readTextureFromInput(event : Event) {
+    const input = event.target as HTMLInputElement;
+    
+    let files = input.files;
     let file = files[0];
 
     let texture = await TextureLoader.loadFromFile(file);
