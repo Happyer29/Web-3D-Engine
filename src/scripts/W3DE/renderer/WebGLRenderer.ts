@@ -106,7 +106,7 @@ export class WebGLRenderer {
 
     public render() {
         this.time += 0.03;
-        //console.log(this.time);
+        console.log(this.time);
 
         function createProgram(gl, vertexShader, fragmentShader) {
             let program = gl.createProgram();
