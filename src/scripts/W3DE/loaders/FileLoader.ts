@@ -1,5 +1,5 @@
 export class FileLoader {
-    public static async loadAsText(file : File): Promise<string> {
+    public static async loadAsText(file: File): Promise<string> {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
 
@@ -14,7 +14,7 @@ export class FileLoader {
             }
         })
     }
-    public static async loadAsDataURL(file : File): Promise<string> {
+    public static async loadAsDataURL(file: File): Promise<string> {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
 

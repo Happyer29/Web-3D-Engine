@@ -1,4 +1,4 @@
-import {TextureLoader} from "../loaders/TextureLoader";
+import { TextureLoader } from "../loaders/TextureLoader";
 
 export class Material {
     private _texture: HTMLImageElement;

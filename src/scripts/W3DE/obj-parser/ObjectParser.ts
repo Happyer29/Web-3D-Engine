@@ -1,6 +1,6 @@
-import { Geometry } from "../core/Geometry";
-import { Mesh } from "../core/Mesh";
-import { Material } from "../core/Material";
+import { Geometry } from "../geometries/Geometry";
+import { Mesh } from "../objects/Mesh";
+import { Material } from "../materials/Material";
 import { TextureLoader } from "../loaders/TextureLoader";
 
 export class ObjectParser {

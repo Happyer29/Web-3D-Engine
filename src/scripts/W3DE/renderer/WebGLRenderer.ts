@@ -1,7 +1,7 @@
-import {Mesh} from "../core/Mesh";
+import {Mesh} from "../objects/Mesh";
 import {Unit, UnitType} from "../utils/unitType";
 import {config} from "./config";
-import {WebGlShaderCreator} from "../core/WebGlShaderCreator";
+import {WebGlShaderCreator} from "./WebGlShaderCreator";
 
 interface CtxAttr {
     alpha?: boolean;

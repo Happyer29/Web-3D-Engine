@@ -1,8 +1,7 @@
-import {FileLoader} from "./FileLoader";
-
+import { FileLoader } from "./FileLoader";
 
 export class TextureLoader {
-    public static async loadFromUrl(textureURL : string) : Promise<HTMLImageElement> {
+    public static async loadFromUrl(textureURL: string): Promise<HTMLImageElement> {
         return new Promise((resolve, reject) => {
             let img = new Image();
             img.onload = () => {
@@ -14,7 +13,7 @@ export class TextureLoader {
             img.src = textureURL;
         })
     }
-    public static async loadFromFile(file : File) : Promise<HTMLImageElement> {
+    public static async loadFromFile(file: File): Promise<HTMLImageElement> {
         let textureURL = await FileLoader.loadAsDataURL(file);
         return TextureLoader.loadFromUrl(textureURL);
     }
