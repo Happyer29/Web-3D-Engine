@@ -1,6 +1,5 @@
 import {fixedLengthArray} from "../utils/fixedLengthArray";
 import {Vector3} from "./Vector3";
-import {Matrix4} from "./Matrix4";
 
 type matrix3 = fixedLengthArray<fixedLengthArray<number, 3>, 3> // equal to [[0,0,0], [0,0,0], [0,0,0]]
 //TODO ЧТО МЫ ВОЗВРАЩАЕМ ОТ СТАТИЧЕСКИХ МЕТОДОВ? ЭКЗЕМПЛЯР КЛАССА ИЛИ МАССИВ ЗНАЧЕНИЙ?
