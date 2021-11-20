@@ -1,6 +1,6 @@
 const assert = require("assert");
 
-import { Geometry } from "../W3DE/core/Geometry";
+import { Geometry } from "../W3DE/core/geometries/Geometry";
 
 describe('Test', () => {
     it('Mesh Test', async () => {

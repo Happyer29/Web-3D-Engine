@@ -1,8 +1,9 @@
-import {Mesh} from "../core/Mesh";
+import {Mesh} from "../objects/Mesh";
 import {Unit, UnitType} from "../utils/unitType";
 import {config} from "./config";
-import {WebGlShaderCreator} from "../core/WebGlShaderCreator";
+import {WebGlShaderCreator} from "./WebGlShaderCreator";
 import {Matrix4} from "../maths/Matrix4";
+
 
 interface CtxAttr {
     alpha?: boolean;
@@ -166,6 +167,40 @@ void main() {
     gl_FragColor = vec4(1, 0, 0.5, 1); // return redish-purple
   }`;
 
+
+//   const vs = `
+//     attribute vec4 a_position;
+//     attribute vec3 a_normal;
+
+//     uniform mat4 u_worldInverseTranspose;
+//     uniform mat4 u_matrix;
+    
+//     varying vec3 v_normal;
+//     void main() {
+//         // Multiply the position by the matrix.
+//         gl_Position = u_matrix * a_position;
+
+//         v_normal = mat3(u_worldInverseTranspose) * a_normal;
+//     }`;
+
+//         const fs = `
+//     // fragment shaders don't have a default precision so we need
+//     // to pick one. mediump is a good default
+//     precision mediump float;
+ 
+//     // Passed in from the vertex shader.
+//     varying vec3 v_normal;
+
+//     void main() {
+//         vec3 normal = normalize(v_normal);
+
+//         float light = dot(normal, u_reverseLightDirection);
+
+//         // gl_FragColor is a special variable a fragment shader
+//         // is responsible for setting
+//         gl_FragColor = vec4(1, 0, 0.5, 1); // return redish-purple
+//         gl_FragColor.rgb *= light;
+//     }`;
 
         function degToRad(d) {
             return d * Math.PI / 180;

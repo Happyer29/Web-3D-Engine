@@ -1,5 +1,5 @@
 export class Geometry {
-    private _position : number[];
+    private _position: number[];
     private _texcoord?: number[];
     private _normal?: number[];
 
