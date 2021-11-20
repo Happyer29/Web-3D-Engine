@@ -1,11 +1,6 @@
-import {Matrix3} from "./W3DE/maths/Matrix3";
-import {ObjectParser} from "./W3DE/obj-parser/ObjectParser";
-import {FileLoader} from "./W3DE/loaders/FileLoader";
-import {TextureLoader} from "./W3DE/loaders/TextureLoader";
-import {Material} from "./W3DE/materials/Material";
-import {WebGLRenderer} from "./W3DE/renderer/WebGLRenderer";
+import * as W3DE from './W3DE/W3DE';
 
-let t = new Matrix3([[0, 1, 0]]);
+let t = new W3DE.Matrix3([[0, 1, 0]]);
 
 console.log(t.matrix)
 
@@ -23,10 +18,10 @@ async function readObjectFromInput(event : Event) {
 
     let files = input.files;
     let file = files[0];
-    let fileText = await FileLoader.loadAsText(file);
-    let object = await new ObjectParser().parseObjectFromString(fileText);
+    let fileText = await W3DE.FileLoader.loadAsText(file);
+    let object = await new W3DE.ObjectParser().parseObjectFromString(fileText);
 
-    let renderer = new WebGLRenderer(object, {selector: "#canvas-parent", width: "1000px", height: "1000px"});
+    let renderer = new W3DE.WebGLRenderer(object, {selector: "#canvas-parent", width: "1000px", height: "1000px"});
     renderer.resizeCanvasToDisplaySize();
     renderer.render();
     console.log(object)
@@ -38,8 +33,7 @@ async function readTextureFromInput(event : Event) {
     let files = input.files;
     let file = files[0];
 
-    let texture = await TextureLoader.loadFromFile(file);
-    let material = new Material(texture);
+    let texture = await W3DE.TextureLoader.loadFromFile(file);
+    let material = new W3DE.Material(texture);
     console.log(material);
 }
-
