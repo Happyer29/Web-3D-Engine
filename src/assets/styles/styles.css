@@ -39,7 +39,7 @@ html{
 }*/
 .loaders {
     display: grid;
-    grid-template: "obj texture";
+    grid-template: "obj texture geometry";
 }
 .loaders label {
     font-size: 18px;
