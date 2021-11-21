@@ -1,6 +1,7 @@
 export {Object3D} from "./core/Object3D";
 export {Geometry} from "./geometries/Geometry";
 export {SphereGeometry} from "./geometries/SphereGeometry";
+
 //loaders
 export {FileLoader} from "./loaders/FileLoader";
 export {TextureLoader} from "./loaders/TextureLoader";

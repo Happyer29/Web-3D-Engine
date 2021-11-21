@@ -1,4 +1,4 @@
-import * as W3DE from "./W3DE/W3DE";
+import * as W3DE from './W3DE/W3DE';
 
 let t = new W3DE.Matrix3([[0, 1, 0]]);
 
