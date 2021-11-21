@@ -6,9 +6,9 @@ export class Object3D {
     private _material: Material;
     private _type: string;
 
-    constructor(geometry: Geometry, material: Material) {
+    constructor(geometry: Geometry, material?: Material) {
         this._geometry = geometry;
-        this._material = material;
+        if (material) this._material = material;
     }
 
     public get geometry(): Geometry {
@@ -24,6 +24,10 @@ export class Object3D {
     }
     public set type(value: string) {
         this._type = value;
+    }
+
+    public set material(value: Material) {
+        this._material = value;
     }
     
 }
