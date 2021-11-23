@@ -3,7 +3,7 @@ import { Mesh } from "../objects/Mesh";
 import { Material } from "../materials/Material";
 import { TextureLoader } from "../loaders/TextureLoader";
 
-export class ObjectParser {
+export class ObjParser {
 
     private readonly objPositions: number[][] = [[0, 0, 0]];
     private readonly objTextureCoordinates: number[][] = [[0, 0]];
@@ -31,7 +31,7 @@ export class ObjectParser {
             console.warn("No material provided! Using default material instead...");
         }
 
-        return new Mesh(this.parseGeometryFromObjFile(objURL), (!textureURL) ? await Material.getDefaultMaterial() : new Material(await TextureLoader.loadFromUrl(textureURL)));
+        return new Mesh(this.parseGeometryFromObjFile(objURL), (!textureURL) ? await Material.getDefaultMaterial() : await new Material().setFromURL(textureURL));
     }
 
     private addVertex(vertex: string) {

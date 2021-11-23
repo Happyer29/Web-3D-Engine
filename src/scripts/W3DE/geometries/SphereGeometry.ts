@@ -1,10 +1,10 @@
 import { Geometry } from "./Geometry";
 
 export class SphereGeometry extends Geometry {
-    constructor(radius: number, roundness: number = 100) {
+    constructor(radius: number = 70, roundness: number = 100) {
 
         if (radius < 0) throw new Error("Radius must be greater than 0");
-        if (roundness < 1 || roundness > 100) throw new Error("Roundness must be in range [10; 100]");
+        if (roundness < 1 || roundness > 100) throw new Error("Roundness must be in range [1; 100]");
 
         const width = roundness % 2 == 0 ? roundness : roundness + 1;
         const height = width / 2;

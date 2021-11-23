@@ -1,7 +1,7 @@
 import { Object3D } from "../core/Object3D";
 
 export class Scene {
-    private itemsToRender: Object3D[];
+    private itemsToRender: Object3D[] = []; // TODO: SceneGraph with nodes and world/local Matrices.
 
     private _ambientLight: Object; // todo Light class
 
@@ -10,7 +10,7 @@ export class Scene {
     }
 
     constructor() {
-        // set ambientLight to default
+        // TODO: set ambientLight to default
     }
 
     public changeAmbientLight(ambientLight: Object) { // todo Light class
@@ -23,5 +23,13 @@ export class Scene {
 
     public clear() {
         this.itemsToRender = [];
+    }
+
+    public getObjectByIndex(index : number) {
+        return this.itemsToRender[index];
+    }
+
+    public getItemsToRender() {
+        return this.itemsToRender;
     }
 }
