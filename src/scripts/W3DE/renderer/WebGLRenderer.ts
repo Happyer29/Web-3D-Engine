@@ -6,7 +6,6 @@ import { Matrix4 } from "../maths/Matrix4";
 import { Scene } from "../scenes/Scene";
 import { Object3D } from "../W3DE";
 
-
 interface CtxAttr {
     alpha?: boolean;
     depth?: boolean;
@@ -143,6 +142,21 @@ export class WebGLRenderer {
         requestAnimationFrame(() => this.render());
     }
 
+    private mainMatrix(){
+        function degToRad(d) {
+            return d * Math.PI / 180;
+        }
+
+        let matrix = Matrix4.projection(this._ctx.canvas.clientWidth, this._ctx.canvas.clientHeight, 1000);
+        matrix = Matrix4.translate(matrix, config.translation[0], config.translation[1], config.translation[2]);
+        matrix = Matrix4.xRotate(matrix, degToRad(config.rotation[0]));
+        matrix = Matrix4.yRotate(matrix, degToRad(config.rotation[1] * this.time));
+        matrix = Matrix4.zRotate(matrix, degToRad(config.rotation[2]));
+        matrix = Matrix4.scale(matrix, config.scale[0], config.scale[1], config.scale[2]);
+
+        return matrix.matrixToArray();
+    }
+  
     private init(object3d : Object3D) {
         let gl = this._ctx;
 
@@ -183,22 +197,6 @@ void main() {
     gl_FragColor = vec4(1, 0, 0.5, 1); // return redish-purple
   }`;
 
-        function degToRad(d) {
-            return d * Math.PI / 180;
-        }
-
-        let translation = [this.canvas.clientWidth / 2, this.canvas.clientHeight / 2, 0];
-        // todo: you can use mesh.rotation.x or smth if implemented
-        // todo: may be create another class for animation if possible
-        let rotation = [degToRad(100 + this.time), degToRad(0), degToRad(0)];
-        let scale = [1, 1, 1];
-        let matrix = Matrix4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 4000);
-        matrix = Matrix4.translate(matrix, translation[0], translation[1], translation[2]);
-        matrix = Matrix4.xRotate(matrix, rotation[0]);
-        matrix = Matrix4.yRotate(matrix, rotation[1]);
-        matrix = Matrix4.zRotate(matrix, rotation[2]);
-        matrix = Matrix4.scale(matrix, scale[0], scale[1], scale[2]);
-
         // create GLSL shaders, upload the GLSL source, compile the shaders
         let vertexShader = new WebGlShaderCreator(gl).createVertexShader(vs);
         let fragmentShader = new WebGlShaderCreator(gl).createFragmentShader(fs);
@@ -231,7 +229,7 @@ void main() {
 
         // Tell it to use our program (pair of shaders)
         gl.useProgram(program);
-        gl.uniformMatrix4fv(matrixLocation, false, matrix.matrixToArray());
+        gl.uniformMatrix4fv(matrixLocation, false, this.mainMatrix());
         // Turn on the attribute
         gl.enableVertexAttribArray(positionAttributeLocation);
 
