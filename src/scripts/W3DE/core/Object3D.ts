@@ -7,9 +7,9 @@ export class Object3D {
     private _material: Material;
     private _type: string;
 
-    private scale: number[] = [1, 1, 1];
-    private rotation: number[] = [0, 0, 0];
-    private translation: number[] = [0, 0, 0];
+    private _scale: number[] = [1, 1, 1];
+    private _rotation: number[] = [0, 0, 0];
+    private _translation: number[] = [0, 0, 0];
 
     constructor(geometry: Geometry, material?: Material) {
         this._geometry = geometry;
@@ -36,15 +36,26 @@ export class Object3D {
     }
 
     public setScale(x: number, y: number, z: number) {
-        this.scale = [x, y, z];
+        this._scale = [x, y, z];
     }
 
     public setRotation(x: number, y: number, z: number) {
-        this.rotation = [x, y, z];
+        this._rotation = [x, y, z];
     }
 
     public setTranslation(x: number, y: number, z: number) {
-        this.translation = [x, y, z];
+        this._translation = [x, y, z];
     }
 
+    get scale(): number[] {
+        return this._scale;
+    }
+
+    get rotation(): number[] {
+        return this._rotation;
+    }
+
+    get translation(): number[] {
+        return this._translation;
+    }
 }

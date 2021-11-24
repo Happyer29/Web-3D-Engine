@@ -38,17 +38,32 @@ async function readObjectFromInput(event : Event) {
 
     const renderer = new W3DE.WebGLRenderer(scene, {selector: "#canvas-parent", width: "1000px", height: "1000px"});
     renderer.animationSpeed = 0.03;
+    sphere.setTranslation(500, 900, 0)
+
+
+    object.setRotation(190,20,30)
+    object.setTranslation(500, 500, 0)
+    object.setScale(1,1,1);
+
 
     scene.add(object);
     scene.add(sphere);
 
     renderer.resizeCanvasToDisplaySize();
+    renderer.animation = animate;
     renderer.render();
 
     buttons.forEach(button => {
         button.disabled = true;
-    })    
+    })
+
+    function animate(){
+        object.setScale(object.scale[0] + 0.1,object.scale[1] + 0.1,object.scale[2] + 0.1);
+        object.setRotation(object.rotation[0] + 0.1,object.rotation[1] + 0.1,object.rotation[2] + 0.1);
+    }
 }
+
+
 
 async function readTextureFromInput(event : Event) {
     const input = event.target as HTMLInputElement;

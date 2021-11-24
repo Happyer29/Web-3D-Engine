@@ -2,7 +2,7 @@ import {vector3, Vector3} from "../maths/Vector3";
 import {matrix3, Matrix3} from "../maths/Matrix3";
 
 export class Matrix3Utils {
-    protected static _dimension = 4;
+    protected static _dimension = 3;
 
     public static zeroMatrix(): matrix3 {
         return [[0, 0, 0], [0, 0, 0], [0, 0, 0]];

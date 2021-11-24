@@ -1,10 +1,10 @@
-import { Mesh } from "../objects/Mesh";
-import { Unit, UnitType } from "../utils/unitType";
-import { config } from "./config";
-import { WebGlShaderCreator } from "./WebGlShaderCreator";
-import { Matrix4 } from "../maths/Matrix4";
-import { Scene } from "../scenes/Scene";
-import { Object3D } from "../W3DE";
+import {Mesh} from "../objects/Mesh";
+import {Unit, UnitType} from "../utils/unitType";
+import {config} from "./config";
+import {WebGlShaderCreator} from "./WebGlShaderCreator";
+import {Matrix4} from "../maths/Matrix4";
+import {Scene} from "../scenes/Scene";
+import {Object3D} from "../W3DE";
 
 interface CtxAttr {
     alpha?: boolean;
@@ -44,6 +44,8 @@ export class WebGLRenderer {
     private _animationSpeed: number = 0;
     private time: number = 1;
 
+    private _animation;
+
     constructor(scene: Scene, options: ConstructorOptions = {}) {
         this._options = options;
         this._scene = scene;
@@ -58,6 +60,10 @@ export class WebGLRenderer {
     //TODO now used 2d only for rectangles tests
     public getCtx(attr?: CtxAttr) {
         return this._canvas.getContext("webgl", attr);
+    }
+
+    set animation(value) {
+        this._animation = value;
     }
 
     public setSize(width: Unit = config.width, height: Unit = config.height, updateStyle: boolean = false) {
@@ -112,6 +118,7 @@ export class WebGLRenderer {
     public get animationSpeed(): number {
         return this._animationSpeed;
     }
+
     public set animationSpeed(value: number) {
         this._animationSpeed = value;
     }
@@ -120,12 +127,11 @@ export class WebGLRenderer {
         this.time += this.animationSpeed;
 
         this.scene.getItemsToRender().forEach(object3d => {
-            // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-            let size = 3;          // 2 components per iteration
-            let type = this._ctx.FLOAT;   // the data is 32bit floats
-            let normalize = false; // don't normalize the data
-            let stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-            let offset = 0;        // start at the beginning of the buffer
+            let size = 3;
+            let type = this._ctx.FLOAT;
+            let normalize = false;
+            let stride = 0;
+            let offset = 0;
             // TODO: Rename this.init, cause init = initialize (now returns array)
             // TODO: May be refactor to 1 function render() using utils functions like createAttributeSetters(), setAttributes(), 
             // TODO: Reference: https://webglfundamentals.org/webgl/lessons/webgl-less-code-more-fun.html
@@ -137,27 +143,30 @@ export class WebGLRenderer {
 
             this._ctx.drawArrays(primitiveType, offsetDraw, count);
         })
-        
 
-        requestAnimationFrame(() => this.render());
+        requestAnimationFrame(() => {
+            if (this._animation)
+                this._animation(this.time)
+            this.render()
+        });
     }
 
-    private mainMatrix(){
+    private mainMatrix(object3d: Object3D) {
         function degToRad(d) {
             return d * Math.PI / 180;
         }
 
         let matrix = new Matrix4().projection(this._ctx.canvas.clientWidth, this._ctx.canvas.clientHeight, 1000);
-        matrix = matrix.translate(config.translation[0], config.translation[1], config.translation[2]);
-        matrix = matrix.xRotate(degToRad(config.rotation[0]));
-        matrix = matrix.yRotate(degToRad(config.rotation[1] * this.time));
-        matrix = matrix.zRotate(degToRad(config.rotation[2]));
-        matrix = matrix.scale(config.scale[0], config.scale[1], config.scale[2]);
+        matrix = matrix.translate(object3d.translation[0], object3d.translation[1], object3d.translation[2]);
+        matrix = matrix.xRotate(object3d.rotation[0]);
+        matrix = matrix.yRotate(object3d.rotation[1]);
+        matrix = matrix.zRotate(object3d.rotation[2]);
+        matrix = matrix.scale(object3d.scale[0], object3d.scale[1], object3d.scale[2]);
 
         return matrix.matrixToArray();
     }
-  
-    private init(object3d : Object3D) {
+
+    private init(object3d: Object3D) {
         let gl = this._ctx;
 
         gl.enable(gl.CULL_FACE);
@@ -228,7 +237,7 @@ void main() {
 
         // Tell it to use our program (pair of shaders)
         gl.useProgram(program);
-        gl.uniformMatrix4fv(matrixLocation, false, this.mainMatrix());
+        gl.uniformMatrix4fv(matrixLocation, false, this.mainMatrix(object3d));
         // Turn on the attribute
         gl.enableVertexAttribArray(positionAttributeLocation);
 
