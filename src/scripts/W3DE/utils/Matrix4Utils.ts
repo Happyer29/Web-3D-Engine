@@ -122,6 +122,7 @@ export class Matrix4Utils {
         ];
     }
 
+    //TODO посчитать один раз синусы косинусы
     public static yRotation(angleInRadians): matrix4 {
         let c = Math.cos(angleInRadians);
         let s = Math.sin(angleInRadians);

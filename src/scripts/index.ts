@@ -25,7 +25,7 @@ async function readObjectFromInput(event: Event) {
     const file = files[0];
     const fileText = await W3DE.FileLoader.loadAsText(file);
 
-    const object = await new W3DE.ObjParser().parseObjectFromString(fileText);
+    const object = await new W3DE.ObjParser().parseObjectFromString(fileText);//TODO
 
     const sphereGeometry = new W3DE.SphereGeometry(75, 100); // change roundness to 10-20 to clearly see rotation
 
@@ -33,11 +33,10 @@ async function readObjectFromInput(event: Event) {
 
     const sphere = new W3DE.Mesh(sphereGeometry, defaultMaterial);
 
-    const scene = new W3DE.Scene();
+    const scene = new W3DE.Scene();//scene builder
     // TODO object.move(x,y,z); object.rotate.x();
 
     const renderer = new W3DE.WebGLRenderer(scene, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
-    renderer.animationSpeed = 0.03;
     sphere.setTranslation(500, 900, 0)
 
 
@@ -58,8 +57,8 @@ async function readObjectFromInput(event: Event) {
     })
 
     function animate() {
-        object.setScale(object.scale[0] + 0.1, object.scale[1] + 0.1, object.scale[2] + 0.1);
-        object.setRotation(object.rotation[0] + 0.1, object.rotation[1] + 0.1, object.rotation[2] + 0.1);
+        object.setScale(object.scaleX + 0.01, object.scaleY + 0.5, object.scaleZ + 0.01);
+        object.setRotationX(object.rotationX + 1);
     }
 }
 
