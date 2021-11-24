@@ -210,11 +210,11 @@ void main() {
         let rotation = [degToRad(180), degToRad(20 * this.time), degToRad(20)];
         let scale = [2, 2, 2];
         let matrix = new Matrix4().projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 1000);
-        let translate = new Matrix4(matrix).translate(translation[0], translation[1], translation[2]);
-        matrix = Matrix4.xRotate(matrix, rotation[0]);
-        matrix = Matrix4.yRotate(matrix, rotation[1]);
-        matrix = Matrix4.zRotate(matrix, rotation[2]);
-        matrix = Matrix4.scale(matrix, scale[0], scale[1], scale[2]);
+        matrix.translate(translation[0], translation[1], translation[2]);
+        matrix.xRotate(rotation[0]);
+        matrix.yRotate(rotation[1]);
+        matrix.zRotate(rotation[2]);
+        matrix.scale(scale[0], scale[1], scale[2]);
 
         // create GLSL shaders, upload the GLSL source, compile the shaders
         let vertexShader = new WebGlShaderCreator(gl).createVertexShader(vs);

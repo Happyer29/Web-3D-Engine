@@ -63,46 +63,57 @@ export class Matrix4 {
     //MATRIXUTILS
     public identityMatrix(){
         this._matrix = Matrix4Utils.identityMatrix();
+        return this;
     }
 
     public translate(tx: number, ty: number, tz: number){
         this._matrix = Matrix4Utils.translate(this._matrix, tx, ty, tz);
+        return this;
     }
 
     public xRotation(angleInRadians){
         this._matrix = Matrix4Utils.xRotation(angleInRadians);
+        return this;
     }
 
     public yRotation(angleInRadians){
         this._matrix = Matrix4Utils.yRotation(angleInRadians);
+        return this;
     }
 
     public zRotation(angleInRadians){
         this._matrix = Matrix4Utils.zRotation(angleInRadians);
+        return this;
     }
 
     public scaling(sx: number, sy: number, sz: number){
         this._matrix = Matrix4Utils.scaling(sx, sy, sz);
+        return this;
     }
 
     public xRotate(angleInRadians){
         this._matrix = Matrix4Utils.xRotate(this._matrix, angleInRadians);
+        return this;
     }
 
     public yRotate(angleInRadians){
         this._matrix = Matrix4Utils.yRotate(this._matrix, angleInRadians);
+        return this;
     }
 
     public zRotate(angleInRadians){
         this._matrix = Matrix4Utils.zRotate(this._matrix, angleInRadians);
+        return this;
     }
 
     public scale(sx: number, sy: number, sz: number) {
         this._matrix = Matrix4Utils.scale(this._matrix, sx, sy, sz);
+        return this;
     }
 
     public projection(width: number, height: number, depth: number){
         this._matrix = Matrix4Utils.projection(width, height, depth);
+        return this;
     }
 
 }
