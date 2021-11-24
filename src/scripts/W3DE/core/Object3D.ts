@@ -87,11 +87,45 @@ export class Object3D {
         return this._scale;
     }
 
+    get scaleX() {
+        return this._scale[0];
+    }
+    get scaleY() {
+        return this._scale[1];
+    }
+    get scaleZ() {
+        return this._scale[2];
+
+    }
+
     get rotation(): number[] {
         return this._rotation;
     }
 
+    get rotationX() {
+        return this._rotation[0];
+    }
+    get rotationY() {
+        return this._rotation[1];
+    }
+    get rotationZ() {
+        return this._rotation[2];
+
+    }
+
+
     get translation(): number[] {
         return this._translation;
+    }
+
+    get translationX() {
+        return this._translation[0];
+    }
+    get translationY() {
+        return this._translation[1];
+    }
+    get translationZ() {
+        return this._translation[2];
+
     }
 }
