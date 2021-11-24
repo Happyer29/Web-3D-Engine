@@ -147,12 +147,12 @@ export class WebGLRenderer {
             return d * Math.PI / 180;
         }
 
-        let matrix = Matrix4.projection(this._ctx.canvas.clientWidth, this._ctx.canvas.clientHeight, 1000);
-        matrix = Matrix4.translate(matrix, config.translation[0], config.translation[1], config.translation[2]);
-        matrix = Matrix4.xRotate(matrix, degToRad(config.rotation[0]));
-        matrix = Matrix4.yRotate(matrix, degToRad(config.rotation[1] * this.time));
-        matrix = Matrix4.zRotate(matrix, degToRad(config.rotation[2]));
-        matrix = Matrix4.scale(matrix, config.scale[0], config.scale[1], config.scale[2]);
+        let matrix = new Matrix4().projection(this._ctx.canvas.clientWidth, this._ctx.canvas.clientHeight, 1000);
+        matrix = matrix.translate(config.translation[0], config.translation[1], config.translation[2]);
+        matrix = matrix.xRotate(degToRad(config.rotation[0]));
+        matrix = matrix.yRotate(degToRad(config.rotation[1] * this.time));
+        matrix = matrix.zRotate(degToRad(config.rotation[2]));
+        matrix = matrix.scale(config.scale[0], config.scale[1], config.scale[2]);
 
         return matrix.matrixToArray();
     }
