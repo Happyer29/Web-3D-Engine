@@ -196,7 +196,6 @@ void main() {
     // is responsible for setting
     gl_FragColor = vec4(1, 0, 0.5, 1); // return redish-purple
   }`;
-
         // create GLSL shaders, upload the GLSL source, compile the shaders
         let vertexShader = new WebGlShaderCreator(gl).createVertexShader(vs);
         let fragmentShader = new WebGlShaderCreator(gl).createFragmentShader(fs);
