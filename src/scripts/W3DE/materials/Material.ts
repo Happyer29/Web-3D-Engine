@@ -3,8 +3,8 @@ import { TextureLoader } from "../loaders/TextureLoader";
 export class Material {
     private _texture: HTMLImageElement;
 
-    constructor(texture: HTMLImageElement) {
-        this._texture = texture;
+    constructor(texture?: HTMLImageElement) {
+        if (texture) this._texture = texture;
     }
 
     public static async getDefaultMaterial() {
@@ -18,5 +18,10 @@ export class Material {
 
     get texture(): HTMLImageElement {
         return this._texture;
+    }
+
+    public async setFromURL(URL: string): Promise<Material> {
+        this.texture = await TextureLoader.loadFromUrl(URL);
+        return this;
     }
 }
