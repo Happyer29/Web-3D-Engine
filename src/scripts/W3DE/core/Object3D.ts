@@ -1,5 +1,6 @@
 import { Geometry } from "../geometries/Geometry";
 import { Material } from "../materials/Material";
+import { Vector3 } from "../W3DE";
 
 export class Object3D {
     private _geometry: Geometry;
@@ -29,5 +30,6 @@ export class Object3D {
     public set material(value: Material) {
         this._material = value;
     }
+    
     
 }

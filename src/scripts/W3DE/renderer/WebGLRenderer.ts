@@ -3,6 +3,8 @@ import { Unit, UnitType } from "../utils/unitType";
 import { config } from "./config";
 import { WebGlShaderCreator } from "./WebGlShaderCreator";
 import { Matrix4 } from "../maths/Matrix4";
+import { Scene } from "../scenes/Scene";
+import { Object3D } from "../W3DE";
 
 
 interface CtxAttr {
@@ -39,12 +41,13 @@ export class WebGLRenderer {
     private _width: Unit;
     private _height: Unit;
 
-    private _mesh: Mesh;
+    private _scene: Scene;
+    private _animationSpeed: number = 0;
     private time: number = 1;
 
-    constructor(mesh: Mesh, options: ConstructorOptions = {}) {
+    constructor(scene: Scene, options: ConstructorOptions = {}) {
         this._options = options;
-        this._mesh = mesh;
+        this._scene = scene;
 
         this._parentCanvasEl = document.querySelector(options.selector ?? "body")
         this._canvas = this.createCanvasElement()
@@ -95,39 +98,52 @@ export class WebGLRenderer {
         return document.createElementNS('http://www.w3.org/1999/xhtml', name);
     }
 
-    get mesh(): Mesh {
-        return this._mesh;
+    public get scene(): Scene {
+        return this._scene;
     }
 
-    set mesh(value: Mesh) {
-        this._mesh = value;
+    public set scene(value: Scene) {
+        this._scene = value;
     }
 
     get canvas(): HTMLCanvasElement {
         return this._canvas;
     }
 
+    public get animationSpeed(): number {
+        return this._animationSpeed;
+    }
+    public set animationSpeed(value: number) {
+        this._animationSpeed = value;
+    }
+
     public render() {
-        this.time += 0.03;
+        this.time += this.animationSpeed;
 
-        // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-        let size = 3;          // 2 components per iteration
-        let type = this._ctx.FLOAT;   // the data is 32bit floats
-        let normalize = false; // don't normalize the data
-        let stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-        let offset = 0;        // start at the beginning of the buffer
-        this._ctx.vertexAttribPointer(this.init(), size, type, normalize, stride, offset);
+        this.scene.getItemsToRender().forEach(object3d => {
+            // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
+            let size = 3;          // 2 components per iteration
+            let type = this._ctx.FLOAT;   // the data is 32bit floats
+            let normalize = false; // don't normalize the data
+            let stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+            let offset = 0;        // start at the beginning of the buffer
+            // TODO: Rename this.init, cause init = initialize (now returns array)
+            // TODO: May be refactor to 1 function render() using utils functions like createAttributeSetters(), setAttributes(), 
+            // TODO: Reference: https://webglfundamentals.org/webgl/lessons/webgl-less-code-more-fun.html
+            this._ctx.vertexAttribPointer(this.init(object3d), size, type, normalize, stride, offset);
 
-        let primitiveType = this._ctx.TRIANGLES;
-        let offsetDraw = 0;
-        let count = this.mesh.geometry.position.length / 3;
+            let primitiveType = this._ctx.TRIANGLES;
+            let offsetDraw = 0;
+            let count = object3d.geometry.position.length / 3;
 
-        this._ctx.drawArrays(primitiveType, offsetDraw, count);
+            this._ctx.drawArrays(primitiveType, offsetDraw, count);
+        })
+        
 
         requestAnimationFrame(() => this.render());
     }
 
-    private init() {
+    private init(object3d : Object3D) {
         let gl = this._ctx;
 
         gl.enable(gl.CULL_FACE);
@@ -143,11 +159,10 @@ export class WebGLRenderer {
                 return program;
             }
 
-            //console.log(gl.getProgramInfoLog(program));
+            console.log(gl.getProgramInfoLog(program));
             gl.deleteProgram(program);
         }
 
-        // Get the strings for our GLSL shaders
         const vs = `
         attribute vec4 a_position;
  
@@ -160,9 +175,7 @@ void main() {
         `;
 
         const fs = `
-        // fragment shaders don't have a default precision so we need
-  // to pick one. mediump is a good default
-  precision mediump float;
+  precision highp float;
  
   void main() {
     // gl_FragColor is a special variable a fragment shader
@@ -170,49 +183,16 @@ void main() {
     gl_FragColor = vec4(1, 0, 0.5, 1); // return redish-purple
   }`;
 
-
-        //   const vs = `
-        //     attribute vec4 a_position;
-        //     attribute vec3 a_normal;
-
-        //     uniform mat4 u_worldInverseTranspose;
-        //     uniform mat4 u_matrix;
-
-        //     varying vec3 v_normal;
-        //     void main() {
-        //         // Multiply the position by the matrix.
-        //         gl_Position = u_matrix * a_position;
-
-        //         v_normal = mat3(u_worldInverseTranspose) * a_normal;
-        //     }`;
-
-        //         const fs = `
-        //     // fragment shaders don't have a default precision so we need
-        //     // to pick one. mediump is a good default
-        //     precision mediump float;
-
-        //     // Passed in from the vertex shader.
-        //     varying vec3 v_normal;
-
-        //     void main() {
-        //         vec3 normal = normalize(v_normal);
-
-        //         float light = dot(normal, u_reverseLightDirection);
-
-        //         // gl_FragColor is a special variable a fragment shader
-        //         // is responsible for setting
-        //         gl_FragColor = vec4(1, 0, 0.5, 1); // return redish-purple
-        //         gl_FragColor.rgb *= light;
-        //     }`;
-
         function degToRad(d) {
             return d * Math.PI / 180;
         }
 
-        let translation = [450, 450, 0];
-        let rotation = [degToRad(180), degToRad(20 * this.time), degToRad(20)];
-        let scale = [2, 2, 2];
-        let matrix = Matrix4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 1000);
+        let translation = [this.canvas.clientWidth / 2, this.canvas.clientHeight / 2, 0];
+        // todo: you can use mesh.rotation.x or smth if implemented
+        // todo: may be create another class for animation if possible
+        let rotation = [degToRad(100 + this.time), degToRad(0), degToRad(0)];
+        let scale = [1, 1, 1];
+        let matrix = Matrix4.projection(gl.canvas.clientWidth, gl.canvas.clientHeight, 4000);
         matrix = Matrix4.translate(matrix, translation[0], translation[1], translation[2]);
         matrix = Matrix4.xRotate(matrix, rotation[0]);
         matrix = Matrix4.yRotate(matrix, rotation[1]);
@@ -235,7 +215,7 @@ void main() {
         // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-        let positions = this.mesh.geometry.position;
+        let positions = object3d.geometry.position;
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
         // code above this line is initialization code.
@@ -247,8 +227,7 @@ void main() {
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
         // Clear the canvas
-        gl.clearColor(0, 0, 0, 0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+
 
         // Tell it to use our program (pair of shaders)
         gl.useProgram(program);

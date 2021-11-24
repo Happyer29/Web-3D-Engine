@@ -16,7 +16,7 @@ export {Vector4} from "./maths/Vector4";
 export {Point3} from "./maths/Point3";
 export {Point4} from "./maths/Point4";
 
-export {ObjectParser} from "./obj-parser/ObjectParser";
+export {ObjParser} from "./obj-parser/ObjParser";
 export {Mesh} from "./objects/Mesh";
 
 export {WebGLRenderer} from "./renderer/WebGLRenderer";
