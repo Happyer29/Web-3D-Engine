@@ -159,16 +159,19 @@ export class Matrix4Utils {
         return Matrix4Utils.multiplication(m, Matrix4Utils.translation(tx, ty, tz));
     }
 
-    public static xRotate(m: matrix4, angleInRadians) {
-        return Matrix4Utils.multiplication(m, Matrix4Utils.xRotation(angleInRadians));
+    public static xRotate(m: matrix4, angle) {
+        let inRadians = angle * Math.PI / 180;
+        return Matrix4Utils.multiplication(m, Matrix4Utils.xRotation(inRadians));
     }
 
-    public static yRotate(m: matrix4, angleInRadians) {
-        return Matrix4Utils.multiplication(m, Matrix4Utils.yRotation(angleInRadians));
+    public static yRotate(m: matrix4, angle) {
+        let inRadians = angle * Math.PI / 180;
+        return Matrix4Utils.multiplication(m, Matrix4Utils.yRotation(inRadians));
     }
 
-    public static zRotate(m: matrix4, angleInRadians) {
-        return Matrix4Utils.multiplication(m, Matrix4Utils.zRotation(angleInRadians));
+    public static zRotate(m: matrix4, angle) {
+        let inRadians = angle * Math.PI / 180;
+        return Matrix4Utils.multiplication(m, Matrix4Utils.zRotation(inRadians));
     }
 
     public static scale(m: matrix4, sx: number, sy: number, sz: number) {
