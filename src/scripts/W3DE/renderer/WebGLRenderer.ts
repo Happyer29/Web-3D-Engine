@@ -141,7 +141,7 @@ export class WebGLRenderer {
         return matrix.matrixToArray();
     }
 
-    private init() {
+    private init(object3d : Object3D) {
         let gl = this._ctx;
 
         gl.enable(gl.CULL_FACE);
