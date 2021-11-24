@@ -1,10 +1,10 @@
 export class Geometry {
     private _position: number[];
-    private _texcoord?: number[];
+    private _texcoord?: number[]; // TODO: Implement Vector2
     private _normal?: number[];
     private _type?: string;
 
-    constructor(position: number[], textureCoordinates?: number[], normal?: number[]) {
+    constructor(position: number[] = [], textureCoordinates?: number[], normal?: number[]) {
         this._position = position;
         if (textureCoordinates) this._texcoord = textureCoordinates;
         if (normal) this._normal = normal;
