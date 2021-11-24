@@ -1,6 +1,5 @@
 import { Geometry } from "../geometries/Geometry";
 import { Material } from "../materials/Material";
-import { Vector3 } from "../W3DE";
 
 export class Object3D {
     private _geometry: Geometry;
@@ -38,14 +37,51 @@ export class Object3D {
     public setScale(x: number, y: number, z: number) {
         this._scale = [x, y, z];
     }
+    public setScaleX(x: number) {
+        this._scale = [x, this.scale[1], this.scale[2]];
+    }
+    public setScaleY(y: number) {
+        this._scale = [this.scale[0], y, this.scale[2]];
+    }
+    public setScaleZ(z: number) {
+        this._scale = [this.scale[0], this.scale[1], z];
+    }
+    public setScaleAll(scale : number) {
+        this._scale = [scale, scale, scale];
+    }
 
     public setRotation(x: number, y: number, z: number) {
         this._rotation = [x, y, z];
+    }
+    public setRotationX(x: number) {
+        this._rotation = [x, this.rotation[1], this.rotation[2]];
+    }
+    public setRotationY(y: number) {
+        this._rotation = [this.rotation[0], y, this.rotation[2]];
+    }
+    public setRotationZ(z: number) {
+        this._rotation = [this.rotation[0], this.rotation[1], z];
+    }
+    public setRotationAll(rotation : number) {
+        this._rotation = [rotation, rotation, rotation];
     }
 
     public setTranslation(x: number, y: number, z: number) {
         this._translation = [x, y, z];
     }
+    public setTranslationX(x: number) {
+        this._translation = [x, this.translation[1], this.translation[2]];
+    }
+    public setTranslationY(y: number) {
+        this._translation = [this.translation[0], y, this.translation[2]];
+    }
+    public setTranslationZ(z: number) {
+        this._translation = [this.translation[0], this.translation[1], z];
+    }
+    public setTranslationAll(translation : number) {
+        this._translation = [translation, translation, translation];
+    }
+
 
     get scale(): number[] {
         return this._scale;

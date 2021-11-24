@@ -4,11 +4,11 @@ let t = new W3DE.Matrix3([[0, 1, 0]]);
 
 console.log(t.matrix)
 
-let objInput : HTMLButtonElement = document.querySelector("#obj-loader");
-let textureInput : HTMLButtonElement = document.querySelector("#texture-loader");
-let drawGeometryBtn : HTMLButtonElement = document.querySelector("#draw-geometry");
+let objInput: HTMLButtonElement = document.querySelector("#obj-loader");
+let textureInput: HTMLButtonElement = document.querySelector("#texture-loader");
+let drawGeometryBtn: HTMLButtonElement = document.querySelector("#draw-geometry");
 
-let buttons : HTMLButtonElement[] = [
+let buttons: HTMLButtonElement[] = [
     objInput,
     textureInput,
     drawGeometryBtn,
@@ -18,7 +18,7 @@ objInput.addEventListener('change', readObjectFromInput, false);
 textureInput.addEventListener('change', readTextureFromInput, false);
 drawGeometryBtn.addEventListener('click', drawGeometry, false);
 
-async function readObjectFromInput(event : Event) {
+async function readObjectFromInput(event: Event) {
     const input = event.target as HTMLInputElement;
 
     const files = input.files;
@@ -36,14 +36,14 @@ async function readObjectFromInput(event : Event) {
     const scene = new W3DE.Scene();
     // TODO object.move(x,y,z); object.rotate.x();
 
-    const renderer = new W3DE.WebGLRenderer(scene, {selector: "#canvas-parent", width: "1000px", height: "1000px"});
+    const renderer = new W3DE.WebGLRenderer(scene, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
     renderer.animationSpeed = 0.03;
     sphere.setTranslation(500, 900, 0)
 
 
-    object.setRotation(190,20,30)
+    object.setRotation(190, 20, 30)
     object.setTranslation(500, 500, 0)
-    object.setScale(1,1,1);
+    object.setScale(1, 1, 1);
 
 
     scene.add(object);
@@ -57,17 +57,15 @@ async function readObjectFromInput(event : Event) {
         button.disabled = true;
     })
 
-    function animate(){
-        object.setScale(object.scale[0] + 0.1,object.scale[1] + 0.1,object.scale[2] + 0.1);
-        object.setRotation(object.rotation[0] + 0.1,object.rotation[1] + 0.1,object.rotation[2] + 0.1);
+    function animate() {
+        object.setScale(object.scale[0] + 0.1, object.scale[1] + 0.1, object.scale[2] + 0.1);
+        object.setRotation(object.rotation[0] + 0.1, object.rotation[1] + 0.1, object.rotation[2] + 0.1);
     }
 }
 
-
-
-async function readTextureFromInput(event : Event) {
+async function readTextureFromInput(event: Event) {
     const input = event.target as HTMLInputElement;
-    
+
     const files = input.files;
     const file = files[0];
 
@@ -77,7 +75,7 @@ async function readTextureFromInput(event : Event) {
 
     buttons.forEach(button => {
         button.disabled = true;
-    }) 
+    })
 }
 
 async function drawGeometry() {
@@ -87,8 +85,8 @@ async function drawGeometry() {
     const sphere = new W3DE.Mesh(sphereGeometry, defaultMaterial);
 
     const scene = new W3DE.Scene();
-    
-    const renderer = new W3DE.WebGLRenderer(scene, {selector: "#canvas-parent", width: "1000px", height: "1000px"});
+
+    const renderer = new W3DE.WebGLRenderer(scene, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
     renderer.animationSpeed = 0.5;
     scene.add(sphere);
 
@@ -97,5 +95,5 @@ async function drawGeometry() {
 
     buttons.forEach(button => {
         button.disabled = true;
-    }) 
+    })
 }
