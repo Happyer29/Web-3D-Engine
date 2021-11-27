@@ -156,7 +156,7 @@ export class WebGLRenderer {
             return d * Math.PI / 180;
         }
 
-        let matrix = new Matrix4().projection(this._ctx.canvas.clientWidth, this._ctx.canvas.clientHeight, 1000);
+        let matrix = new Matrix4().projection(this._ctx.canvas.clientWidth, this._ctx.canvas.clientHeight, 10000);
         matrix = matrix.translate(object3d.translation[0], object3d.translation[1], object3d.translation[2]);
         matrix = matrix.xRotate(object3d.rotation[0]);
         matrix = matrix.yRotate(object3d.rotation[1]);
@@ -222,6 +222,7 @@ void main() {
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
         let positions = object3d.geometry.position;
+        console.log(positions)
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
         // code above this line is initialization code.
