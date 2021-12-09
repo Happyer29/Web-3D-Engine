@@ -11,8 +11,11 @@ export type vector3Points = fixedLengthArray<Point3, 2>// equal to [:Point3, :Po
 export type vector3 = fixedLengthArray<number, 3>;
 
 export class Vector3 {
-    protected _vector: fixedLengthArray<number, 3>;
+    protected _vector: vector3;
     protected readonly _dimension: number = 3;
+    private _x:number = 0;
+    private _y:number = 0;
+    private _z:number = 0;
 
     constructor(v: vector3 | vector3Points) {
         if (Vector3.instanceOfVector3Points(v)) {
@@ -20,6 +23,33 @@ export class Vector3 {
         } else {
             this._vector = v;
         }
+        this._x = this._vector[0];
+        this._y = this._vector[1];
+        this._z = this._vector[2];
+    }
+
+    get x(): number {
+        return this._x;
+    }
+
+    set x(value: number) {
+        this._x = value;
+    }
+
+    get y(): number {
+        return this._y;
+    }
+
+    set y(value: number) {
+        this._y = value;
+    }
+
+    get z(): number {
+        return this._z;
+    }
+
+    set z(value: number) {
+        this._z = value;
     }
 
     private betweenPoints(v: vector3Points) {
