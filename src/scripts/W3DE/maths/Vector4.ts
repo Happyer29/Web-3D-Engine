@@ -5,15 +5,19 @@ interface Vector4Obj {
     x: number,
     y: number,
     z: number,
-    w:number
+    w: number
 }
 
 export type vector4Points = fixedLengthArray<Point4, 2>// equal to [:Point3, :Point3]
 export type vector4 = fixedLengthArray<number, 4>;
 
 export class Vector4 {
-    protected _vector: fixedLengthArray<number, 4>;
+    protected _vector: vector4;
     protected readonly _dimension: number = 4;
+    private _x:number = 0;
+    private _y:number = 0;
+    private _z:number = 0;
+    private _w:number = 0;
 
     constructor(v: vector4 | vector4Points) {
         if (Vector4.instanceOfVector4Points(v)) {
@@ -21,6 +25,42 @@ export class Vector4 {
         } else {
             this._vector = v;
         }
+        this._x = this._vector[0];
+        this._y = this._vector[1];
+        this._z = this._vector[2];
+        this._w = this._vector[3];
+    }
+
+    get x(): number {
+        return this._x;
+    }
+
+    set x(value: number) {
+        this._x = value;
+    }
+
+    get y(): number {
+        return this._y;
+    }
+
+    set y(value: number) {
+        this._y = value;
+    }
+
+    get z(): number {
+        return this._z;
+    }
+
+    set z(value: number) {
+        this._z = value;
+    }
+
+    get w(): number {
+        return this._w;
+    }
+
+    set w(value: number) {
+        this._w = value;
     }
 
     private betweenPoints(v: vector4Points) {

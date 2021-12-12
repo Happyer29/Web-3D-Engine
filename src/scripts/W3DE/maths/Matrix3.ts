@@ -3,7 +3,6 @@ import {Vector3} from "./Vector3";
 import {Matrix3Utils} from "../utils/Matrix3Utils";
 
 export type matrix3 = fixedLengthArray<fixedLengthArray<number, 3>, 3> // equal to [[0,0,0], [0,0,0], [0,0,0]]
-//TODO ЧТО МЫ ВОЗВРАЩАЕМ ОТ СТАТИЧЕСКИХ МЕТОДОВ? ЭКЗЕМПЛЯР КЛАССА ИЛИ МАССИВ ЗНАЧЕНИЙ?
 export class Matrix3 {
     private _matrix: matrix3;
     private readonly _dimension: number = 3;
