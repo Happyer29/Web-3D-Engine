@@ -1,18 +1,6 @@
 import { Vector4 } from "../maths/Vector4";
 import { matrix4, Matrix4 } from "../maths/Matrix4";
-import { MathGPU } from "./MathGPU";
-import { GPU } from "gpu.js";
 import { matrix3 } from "../maths/Matrix3";
-
-const gpu = new GPU({ mode: "cpu" });
-function miltiplic(a: number[][], b: number[][]) {
-    let sum = 0;
-    for (let i = 0; i < 4; i++) {
-        sum += a[this.thread.y][i] * b[i][this.thread.x];
-    }
-    return sum;
-}
-const kernelMult = gpu.createKernel(miltiplic).setOutput([4, 4]);
 
 export class Matrix4Utils {
     protected static _dimension = 4;

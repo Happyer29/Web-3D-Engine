@@ -57,8 +57,5 @@
     "webpack-shell-plugin-next": "^2.2.2"
   },
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "gpu.js": "^2.11.4"
-  }
+  "license": "ISC"
 }
