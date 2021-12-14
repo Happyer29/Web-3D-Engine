@@ -40,7 +40,6 @@ export class Matrix4 {
 
     public static matrixToMatrix4(m: number[][] | matrix4): matrix4 {
         let res = Matrix4.zeroMatrix();
-        //console.log(res);
         for (let i = 0; i < this._dimension; i++) {
             for (let j = 0; j < this._dimension; j++) {
                 res[i][j] = m[i] === undefined || m[i][j] === undefined ? 0 : m[i][j];

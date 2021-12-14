@@ -222,7 +222,7 @@ void main() {
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
         let positions = object3d.geometry.position;
-        console.log(positions)
+
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
         // code above this line is initialization code.

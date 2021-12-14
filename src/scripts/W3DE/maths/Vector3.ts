@@ -14,10 +14,11 @@ export class Vector3 {
     protected _vector: fixedLengthArray<number, 3>;
     protected readonly _dimension: number = 3;
 
-    constructor(v: vector3 | vector3Points) {
+    constructor(v: vector3) {
         if (Vector3.instanceOfVector3Points(v)) {
             this.betweenPoints(v);
         } else {
+            console.log(v[0]);
             this._vector = v;
         }
     }

@@ -20,7 +20,6 @@ export class Matrix3Utils {
 
     public static matrixToMatrix3(m: number[][] | matrix3): matrix3 {
         let res = Matrix3Utils.zeroMatrix();
-        //console.log(res);
         for (let i = 0; i < this._dimension; i++) {
             for (let j = 0; j < this._dimension; j++) {
                 res[i][j] = m[i] === undefined || m[i][j] === undefined ? 0 : m[i][j];
