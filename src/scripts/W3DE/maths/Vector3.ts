@@ -1,5 +1,6 @@
 import {Point3} from "./Point3";
 import {fixedLengthArray} from "../utils/fixedLengthArray";
+import {vector4Points} from "./Vector4";
 
 interface Vector3Obj {
     x: number,
@@ -14,7 +15,8 @@ export class Vector3 {
     protected _vector: fixedLengthArray<number, 3>;
     protected readonly _dimension: number = 3;
 
-    constructor(v: vector3) {
+    constructor(v: vector3 | vector3Points) {
+        console.log(Vector3.instanceOfVector3Points(v));
         if (Vector3.instanceOfVector3Points(v)) {
             this.betweenPoints(v);
         } else {
@@ -103,7 +105,7 @@ export class Vector3 {
     }
 
     private static instanceOfVector3Points(obj: any): obj is vector3Points {
-        return (<vector3Points>obj)[0] !== undefined;
+        return (<vector3Points>obj[0].z) !== undefined;
     }
 }
 
