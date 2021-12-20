@@ -8,7 +8,8 @@ let PAGES_DIR,
     ENTRY_TESTS = `./src/scripts/tests/index.spec.ts`,
     PATHS = {
         src     : path.join(__dirname, '../', 'src'),
-        dist    : path.join(__dirname, '../', 'dist'),
+        //засовываем сбилженные файлы в папку паблик чтобы работал dev сервер
+        dist    : path.join(__dirname, '../', 'public'),
         root    : path.join(__dirname, '../'),
     }
 

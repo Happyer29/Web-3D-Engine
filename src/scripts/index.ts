@@ -57,8 +57,8 @@ async function readObjectFromInput(event: Event) {
     })
 
     function animate() {
-        object.setScale(object.scaleX + 0.01, object.scaleY + 0.5, object.scaleZ + 0.01);
-        object.setRotationX(object.rotationX + 1);
+        // object.setScale(object.scaleX + 0.01, object.scaleY + 0.5, object.scaleZ + 0.01);
+        object.setRotationY(object.rotationY + 1);
     }
 }
 

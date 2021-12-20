@@ -12,6 +12,11 @@ export class Material {
         return new Material(texture);
     }
 
+    public static async getDefaultTestMaterial() {
+        let texture = await TextureLoader.loadFromUrl("/src/assets/textures/NeutralWrapped.jpg");
+        return new Material(texture);
+    }
+
     set texture(value: HTMLImageElement) {
         this._texture = value;
     }
