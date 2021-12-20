@@ -1,12 +1,25 @@
 import { Matrix4, matrix4 } from "../maths/Matrix4";
 import { Matrix4Utils } from "../utils/Matrix4Utils";
+import { Object3D } from "../W3DE";
 
 export class SceneNode {
     private children: SceneNode[];
     private localMatrix = Matrix4Utils.identityMatrix();
     private _worldMatrix = Matrix4Utils.identityMatrix();
-
+    private _drawObject: Object3D;
     private parent: SceneNode;
+
+    constructor(drawObject : Object3D) {
+        this.drawObject = drawObject;
+    }
+
+    public get drawObject(): Object3D {
+        return this._drawObject;
+    }
+
+    public set drawObject(value: Object3D) {
+        this._drawObject = value;
+    }
 
     public setParent(parent: SceneNode) {
         // remove us from our parent

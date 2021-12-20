@@ -1,7 +1,9 @@
+import { Camera } from './W3DE/cameras/Camera';
 import * as W3DE from './W3DE/W3DE';
 
 let t = new W3DE.Matrix3([[0, 1, 0]]);
-
+let a = new W3DE.Vector3([1,2,3]);
+console.log(a.positionArr[1])
 console.log(t.matrix)
 
 let objInput: HTMLButtonElement = document.querySelector("#obj-loader");
@@ -34,9 +36,14 @@ async function readObjectFromInput(event: Event) {
     const sphere = new W3DE.Mesh(sphereGeometry, defaultMaterial);
 
     const scene = new W3DE.Scene();
-    // TODO object.move(x,y,z); object.rotate.x();
 
-    const renderer = new W3DE.WebGLRenderer(scene, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
+    const cameraPosition = new W3DE.Vector3([0, 0, 2]);
+    const up = new W3DE.Vector3([0, 1, 0]);
+    const target = new W3DE.Vector3([0, 0, 0]);
+
+    // TODO object.move(x,y,z); object.rotate.x();
+    const camera = new Camera(cameraPosition, up, target);
+    const renderer = new W3DE.WebGLRenderer(scene, camera, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
     renderer.animationSpeed = 0.03;
     // sphere.setTranslation(500, 900, 0)
 
@@ -91,15 +98,20 @@ async function drawGeometry() {
 
     const scene = new W3DE.Scene();
 
-    const renderer = new W3DE.WebGLRenderer(scene, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
+    const cameraPosition = new W3DE.Vector3([1, 0, 0]);
+    const up = new W3DE.Vector3([0, 1, 0]);
+    const target = new W3DE.Vector3([0, 0, 1]);
+
+    const camera = new Camera(cameraPosition, up, target);
+    const renderer = new W3DE.WebGLRenderer(scene, camera, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
     renderer.animationSpeed = 0.5;
 
     // scene.add(object);
     for (let index = 0; index < 10; index++) {
-        const sphereGeometry = new W3DE.SphereGeometry(40, 10); // change roundness to 10-20 to clearly see rotation
+        const sphereGeometry = new W3DE.SphereGeometry(40, 100); // change roundness to 10-20 to clearly see rotation
         const sphere = new W3DE.Mesh(sphereGeometry, defaultMaterial);
-        sphere.setTranslationX(Math.random()*renderer.canvas.clientWidth + 100);
-        sphere.setTranslationY(Math.random()*renderer.canvas.clientHeight + 100);
+        sphere.setTranslationX(Math.random()*renderer.canvas.clientWidth + 10);
+        sphere.setTranslationY(Math.random()*renderer.canvas.clientHeight + 10);
         scene.add(sphere);
     }
 

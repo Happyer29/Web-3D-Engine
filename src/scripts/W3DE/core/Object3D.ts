@@ -1,10 +1,11 @@
 import { Geometry } from "../geometries/Geometry";
 import { Material } from "../materials/Material";
 import { SceneNode } from "../scenes/SceneNode";
-import { Vector3 } from "../W3DE";
+import { Vector3 } from "../maths/Vector3";
+import { Matrix4Utils } from "../utils/Matrix4Utils";
+import { Matrix4 } from "../maths/Matrix4";
 
-
-export class Object3D extends SceneNode {
+export class Object3D {
     private _geometry: Geometry;
     private _material: Material;
     private _type: string;
@@ -13,8 +14,13 @@ export class Object3D extends SceneNode {
     private _rotation: Vector3 = new Vector3([0, 0, 0]);
     private _translation: Vector3 = new Vector3([0, 0, 0]);
 
+    private parent = null;
+    private children : Object3D[] = [];
+
+    private modelViewMatrix = new Matrix4().identityMatrix();
+    private normalMatrix = new Matrix4().identityMatrix();
+
     constructor(geometry: Geometry, material?: Material) {
-        super();
         this._geometry = geometry;
         if (material) this._material = material;
     }
@@ -87,15 +93,15 @@ export class Object3D extends SceneNode {
     }
 
 
-    get scale(): Vector3 {
-        return this._scale;
+    get scale(): number[] {
+        return Array.from(this._scale.positionArr);
     }
 
-    get rotation(): Vector3 {
-        return this._rotation;
+    get rotation(): number[] {
+        return Array.from(this._rotation.positionArr);
     }
 
-    get translation(): Vector3 {
-        return this._translation;
+    get translation(): number[] {
+        return Array.from(this._translation.positionArr);
     }
 }

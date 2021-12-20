@@ -115,4 +115,9 @@ export class Matrix4 {
         return this;
     }
 
+    public inverse() {
+        this._matrix = Matrix4Utils.inverse(this._matrix);
+        return this;
+    }
+
 }
