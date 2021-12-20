@@ -1,4 +1,5 @@
 import { Camera } from './W3DE/cameras/Camera';
+import { Matrix4Utils } from './W3DE/utils/Matrix4Utils';
 import * as W3DE from './W3DE/W3DE';
 
 let t = new W3DE.Matrix3([[0, 1, 0]]);
@@ -37,42 +38,59 @@ async function readObjectFromInput(event: Event) {
 
     const scene = new W3DE.Scene();
 
-    const cameraPosition = new W3DE.Vector3([0, 0, 2]);
+    const cameraPosition = new W3DE.Vector3([1, 0, 0]);
     const up = new W3DE.Vector3([0, 1, 0]);
-    const target = new W3DE.Vector3([0, 0, 0]);
-
+    const target = new W3DE.Vector3([0, 0, 1]);
+    
     // TODO object.move(x,y,z); object.rotate.x();
     const camera = new Camera(cameraPosition, up, target);
     const renderer = new W3DE.WebGLRenderer(scene, camera, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
     renderer.animationSpeed = 0.03;
     // sphere.setTranslation(500, 900, 0)
-
-
-    object.setTranslation(0, 500, 0)
-    object.setScale(1, 1, 1);
+    window.addEventListener("wheel", event => {
+        camera.translate(0, 0, event.deltaY / 10);
+    });
+    window.addEventListener("keydown", event => {
+        switch (event.key) {
+            case "ArrowLeft":
+                camera.translate(-10, 0, 0);
+                break;
+            case "ArrowRight":
+                camera.translate(10, 0, 0);
+                break;
+            case "ArrowUp":
+                camera.translate(0, 10, 0);
+                break;
+            case "ArrowDown":
+                camera.translate(0, -10, 0);
+                break;
+        }
+    });
+    // object.setTranslation(0, 500, 0)
+    object.setScale(0.5, 0.5, 0.5);
     object.setRotationX(180);
 
     scene.add(object);
     scene.add(sphere);
 
     renderer.resizeCanvasToDisplaySize();
-    renderer.animation = animate;
+    // renderer.animation = animate;
     renderer.render();
 
     buttons.forEach(button => {
         button.disabled = true;
     })
 
-    function animate() {
-        if (object.translation[0] <= renderer.canvas.clientWidth / 2) {
-            object.setTranslationX(object.translation[0] + 2.5);
-            object.setScale(object.scale[0] + 0.1, object.scale[1] + 0.1, object.scale[2] + 0.1);
-            object.setRotationX(object.rotation[0] + 0.1);
-            object.setRotationY(object.rotation[1] + 0.1);
-            return;
-        }
-        return;
-    }
+    // function animate() {
+    //     if (object.translation[0] <= renderer.canvas.clientWidth / 2) {
+    //         object.setTranslationX(object.translation[0] + 2.5);
+    //         object.setScale(object.scale[0] + 0.1, object.scale[1] + 0.1, object.scale[2] + 0.1);
+    //         object.setRotationX(object.rotation[0] + 0.1);
+    //         object.setRotationY(object.rotation[1] + 0.1);
+    //         return;
+    //     }
+    //     return;
+    // }
 }
 
 async function readTextureFromInput(event: Event) {
@@ -91,7 +109,7 @@ async function readTextureFromInput(event: Event) {
 }
 
 async function drawGeometry() {
-    const sphereGeometry = new W3DE.SphereGeometry(50, 100); // change roundness to 10-20 to clearly see rotation
+    const sphereGeometry = new W3DE.SphereGeometry(50, 10); // change roundness to 10-20 to clearly see rotation
     const defaultMaterial = await W3DE.Material.getDefaultMaterial();
 
     const sphere = new W3DE.Mesh(sphereGeometry, defaultMaterial);
@@ -106,9 +124,29 @@ async function drawGeometry() {
     const renderer = new W3DE.WebGLRenderer(scene, camera, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
     renderer.animationSpeed = 0.5;
 
+    window.addEventListener("wheel", event => {
+        camera.translate(0, 0, event.deltaY / 10);
+    });
+    window.addEventListener("keydown", event => {
+        switch (event.key) {
+            case "ArrowLeft":
+                camera.translate(-10, 0, 0);
+                break;
+            case "ArrowRight":
+                camera.translate(10, 0, 0);
+                break;
+            case "ArrowUp":
+                camera.translate(0, 10, 0);
+                break;
+            case "ArrowDown":
+                camera.translate(0, -10, 0);
+                break;
+        }
+    });
+
     // scene.add(object);
     for (let index = 0; index < 10; index++) {
-        const sphereGeometry = new W3DE.SphereGeometry(40, 100); // change roundness to 10-20 to clearly see rotation
+        const sphereGeometry = new W3DE.SphereGeometry(40, 5); // change roundness to 10-20 to clearly see rotation
         const sphere = new W3DE.Mesh(sphereGeometry, defaultMaterial);
         sphere.setTranslationX(Math.random()*renderer.canvas.clientWidth + 10);
         sphere.setTranslationY(Math.random()*renderer.canvas.clientHeight + 10);
@@ -116,13 +154,13 @@ async function drawGeometry() {
     }
 
     let sceneGraph = renderer.scene.getItemsToRender();
-    renderer.animation = animate;
-    function animate() {
-        sceneGraph.forEach(element => {
-            element.setRotationX(element.rotation[0] + 5);
-        });
-        return;
-    }
+    // renderer.animation = animate;
+    // function animate() {
+    //     sceneGraph.forEach(element => {
+    //         element.setRotationX(element.rotation[0] + 5);
+    //     });
+    //     return;
+    // }
     renderer.resizeCanvasToDisplaySize();
     renderer.render();
 
@@ -130,3 +168,4 @@ async function drawGeometry() {
         button.disabled = true;
     })
 }
+

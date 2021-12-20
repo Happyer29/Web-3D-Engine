@@ -8,7 +8,7 @@ export class Camera {
     private target: Vector3 = new Vector3([0, 0, 0]);
     private up: Vector3 = new Vector3([0, 1, 0]);
 
-    private fovInRadians: number = this.degToRad(120);
+    private fovInRadians: number = this.degToRad(90);
     private _aspect: number = 16.0 / 9.0;
     private near: number = 1;
     private far: number = 10000;
@@ -53,5 +53,15 @@ export class Camera {
 
     public set aspect(aspect : number) {
         this._aspect = aspect;
+    }
+
+    public updateMatrix(matrix : Matrix4) {
+        this.matrix = matrix;
+        this.viewMatrix = new Matrix4(Matrix4Utils.inverse(this.matrix.matrix));
+        this._viewProjectionMatrix = Matrix4Utils.multiplication(this.projectionMatrix.matrix, this.viewMatrix.matrix);
+    }
+
+    public translate(x, y, z) {
+        this.updateMatrix(new Matrix4(Matrix4Utils.translate(this.matrix.matrix, x, y, z)));
     }
 }
