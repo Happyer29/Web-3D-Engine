@@ -60,7 +60,6 @@ export class CubeGeometry extends Geometry {
       }
     }
 	
-		console.log(positions);
 		super(positions, normals, texCoords);
 		this.type = "CubeGeometry"
 	}

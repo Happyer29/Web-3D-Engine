@@ -1,10 +1,12 @@
-import {Mesh} from "../objects/Mesh";
-import {Unit, UnitType} from "../utils/unitType";
-import {config} from "./config";
-import {WebGlShaderCreator} from "./WebGlShaderCreator";
-import {Matrix4} from "../maths/Matrix4";
-import {Scene} from "../scenes/Scene";
-import {Object3D} from "../W3DE";
+import { Mesh } from "../objects/Mesh";
+import { Unit, UnitType } from "../utils/unitType";
+import { config } from "./config";
+import { WebGlShaderCreator } from "./WebGlShaderCreator";
+import { Matrix4 } from "../maths/Matrix4";
+import { Scene } from "../scenes/Scene";
+import { Object3D } from "../W3DE";
+import { Camera } from "../cameras/Camera";
+import { Matrix4Utils } from "../utils/Matrix4Utils";
 
 interface CtxAttr {
     alpha?: boolean;
@@ -45,14 +47,20 @@ export class WebGLRenderer {
     private time: number = 1;
 
     private _animation;
+    private camera: Camera;
 
-    constructor(scene: Scene, options: ConstructorOptions = {}) {
+    constructor(scene: Scene, camera: Camera, options: ConstructorOptions = {}) {
         this._options = options;
         this._scene = scene;
 
         this._parentCanvasEl = document.querySelector(options.selector ?? "body")
         this._canvas = this.createCanvasElement()
         this._ctx = this.getCtx();
+
+        this.camera = camera;
+        this.camera.aspect = this._ctx.canvas.clientWidth / this._ctx.canvas.clientHeight;
+
+
         this.setSize(new Unit(options.width ?? undefined), new Unit(options.height ?? undefined), true)
     }
 
@@ -156,14 +164,24 @@ export class WebGLRenderer {
             return d * Math.PI / 180;
         }
 
-        let matrix = new Matrix4().projection(this._ctx.canvas.clientWidth, this._ctx.canvas.clientHeight, 1000);
-        matrix = matrix.translate(object3d.translation[0], object3d.translation[1], object3d.translation[2]);
-        matrix = matrix.xRotate(object3d.rotation[0]);
-        matrix = matrix.yRotate(object3d.rotation[1]);
-        matrix = matrix.zRotate(object3d.rotation[2]);
-        matrix = matrix.scale(object3d.scale[0], object3d.scale[1], object3d.scale[2]);
+        // let matrix = new Matrix4().projection(this._ctx.canvas.clientWidth, this._ctx.canvas.clientHeight, 10000);
+        
+        // matrix = matrix.translate(object3d.translation[0], object3d.translation[1], object3d.translation[2]);
+        // matrix = matrix.xRotate(object3d.rotation[0]);
+        // matrix = matrix.yRotate(object3d.rotation[1]);
+        // matrix = matrix.zRotate(object3d.rotation[2]);
+        // matrix = matrix.scale(object3d.scale[0], object3d.scale[1], object3d.scale[2]);
 
-        return matrix.matrixToArray();
+        // matrix = new Matrix4(Matrix4Utils.multiplication(this.camera.viewProjectionMatrix, matrix.matrix));
+        
+        let matrix = Matrix4Utils.translate(this.camera.viewProjectionMatrix, object3d.translation[0], object3d.translation[1], object3d.translation[2]);
+        matrix = Matrix4Utils.xRotate(matrix, object3d.rotation[0]);
+        matrix = Matrix4Utils.zRotate(matrix, object3d.rotation[2]);
+        matrix = Matrix4Utils.yRotate(matrix, object3d.rotation[1]);
+
+        matrix = Matrix4Utils.scale(matrix, object3d.scale[0], object3d.scale[1], object3d.scale[2]);
+        
+        return new Matrix4(matrix).matrixToArray();
     }
 
     private init(object3d: Object3D) {
@@ -222,6 +240,7 @@ void main() {
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
         let positions = object3d.geometry.position;
+
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
         // code above this line is initialization code.

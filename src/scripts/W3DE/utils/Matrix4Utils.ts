@@ -1,8 +1,12 @@
-import {Vector4} from "../maths/Vector4";
-import {matrix4, Matrix4} from "../maths/Matrix4";
+import { Vector4 } from "../maths/Vector4";
+import { matrix4, Matrix4 } from "../maths/Matrix4";
+import { matrix3 } from "../maths/Matrix3";
+import { Vector3 } from "../W3DE";
 
 export class Matrix4Utils {
     protected static _dimension = 4;
+
+
 
     public static identityMatrix() {
         let res = Matrix4.zeroMatrix();
@@ -37,7 +41,7 @@ export class Matrix4Utils {
         return res;
     }
 
-    public static multiplication(a: matrix4, b: matrix4){
+    public static multiplication(a: matrix4, b: matrix4) {
         const ae = a;
         const be = b;
         const te = Matrix4.zeroMatrix();
@@ -75,9 +79,19 @@ export class Matrix4Utils {
         return te;
     }
 
+    public static to2Array(matrix: matrix4) {
+        let tmp: number[][] = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+        for (let i = 0; i < Matrix4Utils._dimension; i++) {
+            for (let j = 0; j < Matrix4Utils._dimension; j++) {
+                tmp[i][j] = matrix[i][j];
+            }
+        }
+        return tmp;
+    }
+
     public static transponse(m: matrix4) {
         const te = m;
-        let tmp;
+        let tmp: number;
 
         tmp = te[0][1];
         te[0][1] = te[1][0];
@@ -111,9 +125,10 @@ export class Matrix4Utils {
     }
 
     //TODO radians
-    public static xRotation(angleInRadians): matrix4 {
-        let c = Math.cos(angleInRadians);
-        let s = Math.sin(angleInRadians);
+    public static xRotation(angleInRadians: number): matrix4 {
+        const c = Math.cos(angleInRadians);
+        const s = Math.sin(angleInRadians);
+
         return [
             [1, 0, 0, 0],
             [0, c, s, 0],
@@ -122,10 +137,9 @@ export class Matrix4Utils {
         ];
     }
 
-    //TODO посчитать один раз синусы косинусы
-    public static yRotation(angleInRadians): matrix4 {
-        let c = Math.cos(angleInRadians);
-        let s = Math.sin(angleInRadians);
+    public static yRotation(angleInRadians: number): matrix4 {
+        const c = Math.cos(angleInRadians);
+        const s = Math.sin(angleInRadians);
 
         return [
             [c, 0, -s, 0],
@@ -135,9 +149,9 @@ export class Matrix4Utils {
         ];
     }
 
-    public static zRotation(angleInRadians): matrix4 {
-        let c = Math.cos(angleInRadians);
-        let s = Math.sin(angleInRadians);
+    public static zRotation(angleInRadians: number): matrix4 {
+        const c = Math.cos(angleInRadians);
+        const s = Math.sin(angleInRadians);
 
         return [
             [c, s, 0, 0],
@@ -156,27 +170,99 @@ export class Matrix4Utils {
         ];
     }
 
-    public static translate(m: matrix4, tx: number, ty: number, tz: number): matrix4{
+    public static translate(m: matrix4, tx: number, ty: number, tz: number): matrix4 {
         return Matrix4Utils.multiplication(m, Matrix4Utils.translation(tx, ty, tz));
     }
 
-    public static xRotate(m: matrix4, angle) {
+    public static xRotate(m: matrix4, angle: number) {
         let inRadians = angle * Math.PI / 180;
         return Matrix4Utils.multiplication(m, Matrix4Utils.xRotation(inRadians));
     }
 
-    public static yRotate(m: matrix4, angle) {
+    public static yRotate(m: matrix4, angle: number) {
         let inRadians = angle * Math.PI / 180;
         return Matrix4Utils.multiplication(m, Matrix4Utils.yRotation(inRadians));
     }
 
-    public static zRotate(m: matrix4, angle) {
+    public static zRotate(m: matrix4, angle: number) {
         let inRadians = angle * Math.PI / 180;
         return Matrix4Utils.multiplication(m, Matrix4Utils.zRotation(inRadians));
     }
 
     public static scale(m: matrix4, sx: number, sy: number, sz: number) {
         return Matrix4Utils.multiplication(m, Matrix4Utils.scaling(sx, sy, sz));
+    }
+
+    public static inverse(m: matrix4) : matrix4 {
+        let m00 = m[0][0];
+        let m01 = m[0][1];
+        let m02 = m[0][2];
+        let m03 = m[0][3];
+        let m10 = m[1][0];
+        let m11 = m[1][1];
+        let m12 = m[1][2];
+        let m13 = m[1][3];
+        let m20 = m[2][0];
+        let m21 = m[2][1];
+        let m22 = m[2][2];
+        let m23 = m[2][3];
+        let m30 = m[3][0];
+        let m31 = m[3][1];
+        let m32 = m[3][2];
+        let m33 = m[3][3];
+        let tmp_0 = m22 * m33;
+        let tmp_1 = m32 * m23;
+        let tmp_2 = m12 * m33;
+        let tmp_3 = m32 * m13;
+        let tmp_4 = m12 * m23;
+        let tmp_5 = m22 * m13;
+        let tmp_6 = m02 * m33;
+        let tmp_7 = m32 * m03;
+        let tmp_8 = m02 * m23;
+        let tmp_9 = m22 * m03;
+        let tmp_10 = m02 * m13;
+        let tmp_11 = m12 * m03;
+        let tmp_12 = m20 * m31;
+        let tmp_13 = m30 * m21;
+        let tmp_14 = m10 * m31;
+        let tmp_15 = m30 * m11;
+        let tmp_16 = m10 * m21;
+        let tmp_17 = m20 * m11;
+        let tmp_18 = m00 * m31;
+        let tmp_19 = m30 * m01;
+        let tmp_20 = m00 * m21;
+        let tmp_21 = m20 * m01;
+        let tmp_22 = m00 * m11;
+        let tmp_23 = m10 * m01;
+
+        let t0 = (tmp_0 * m11 + tmp_3 * m21 + tmp_4 * m31) -
+            (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31);
+        let t1 = (tmp_1 * m01 + tmp_6 * m21 + tmp_9 * m31) -
+            (tmp_0 * m01 + tmp_7 * m21 + tmp_8 * m31);
+        let t2 = (tmp_2 * m01 + tmp_7 * m11 + tmp_10 * m31) -
+            (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31);
+        let t3 = (tmp_5 * m01 + tmp_8 * m11 + tmp_11 * m21) -
+            (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21);
+
+        let d = 1.0 / (m00 * t0 + m10 * t1 + m20 * t2 + m30 * t3);
+        
+        
+        return [
+            [d * t0, d * t1, d * t2, d * t3],
+            [d * ((tmp_1 * m10 + tmp_2 * m20 + tmp_5 * m30) - (tmp_0 * m10 + tmp_3 * m20 + tmp_4 * m30)),
+             d * ((tmp_0 * m00 + tmp_7 * m20 + tmp_8 * m30) - (tmp_1 * m00 + tmp_6 * m20 + tmp_9 * m30)),
+             d * ((tmp_3 * m00 + tmp_6 * m10 + tmp_11 * m30) - (tmp_2 * m00 + tmp_7 * m10 + tmp_10 * m30)),
+             d * ((tmp_4 * m00 + tmp_9 * m10 + tmp_10 * m20) - (tmp_5 * m00 + tmp_8 * m10 + tmp_11 * m20))],
+            [d * ((tmp_12 * m13 + tmp_15 * m23 + tmp_16 * m33) - (tmp_13 * m13 + tmp_14 * m23 + tmp_17 * m33)),
+             d * ((tmp_13 * m03 + tmp_18 * m23 + tmp_21 * m33) - (tmp_12 * m03 + tmp_19 * m23 + tmp_20 * m33)),
+             d * ((tmp_14 * m03 + tmp_19 * m13 + tmp_22 * m33) - (tmp_15 * m03 + tmp_18 * m13 + tmp_23 * m33)),
+             d * ((tmp_17 * m03 + tmp_20 * m13 + tmp_23 * m23) - (tmp_16 * m03 + tmp_21 * m13 + tmp_22 * m23))],
+            [d * ((tmp_14 * m22 + tmp_17 * m32 + tmp_13 * m12) - (tmp_16 * m32 + tmp_12 * m12 + tmp_15 * m22)),
+             d * ((tmp_20 * m32 + tmp_12 * m02 + tmp_19 * m22) - (tmp_18 * m22 + tmp_21 * m32 + tmp_13 * m02)),
+             d * ((tmp_18 * m12 + tmp_23 * m32 + tmp_15 * m02) - (tmp_22 * m32 + tmp_14 * m02 + tmp_19 * m12)),
+             d * ((tmp_22 * m22 + tmp_16 * m02 + tmp_21 * m12) - (tmp_20 * m12 + tmp_23 * m22 + tmp_17 * m02))]
+        ]
+
     }
 
     public static projection(width: number, height: number, depth: number): matrix4 {
@@ -186,5 +272,38 @@ export class Matrix4Utils {
             [0, 0, 2 / depth, 0],
             [-1, 1, 0, 1],
         ];
+    }
+
+    public static lookAt(cameraPosition: Vector3, target: Vector3, up: Vector3): matrix4 {
+        let zAxis = Vector3.normalization(Vector3.minus(cameraPosition, target));
+        let xAxis = Vector3.normalization(Vector3.cross(up, zAxis));
+        let yAxis = Vector3.normalization(Vector3.cross(zAxis, xAxis));
+        
+        let zAxisArr = zAxis.positionArr;
+        let xAxisArr = xAxis.positionArr;
+        let yAxisArr = yAxis.positionArr;
+        
+        let cameraPositionArr = cameraPosition.positionArr;
+
+        console.log(xAxisArr, yAxisArr, zAxisArr, cameraPositionArr);
+        return [
+            [xAxisArr[0], xAxisArr[1], xAxisArr[2], 0],
+            [yAxisArr[0], yAxisArr[1], yAxisArr[2], 0],
+            [zAxisArr[0], zAxisArr[1], zAxisArr[2], 0],
+            [cameraPositionArr[0], cameraPositionArr[1], cameraPositionArr[2], 1]
+        ]
+
+    }
+
+    public static perspective(fieldOfViewInRadians: number, aspect: number, near: number, far: number) {
+        let f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
+        let rangeInv = 1.0 / (near - far);
+
+        return [
+            [f / aspect, 0, 0, 0],
+            [0, f, 0 ,0],
+            [0, 0, (near + far) * rangeInv, -1],
+            [0, 0, near * far * rangeInv * 2, 0]
+        ]
     }
 }

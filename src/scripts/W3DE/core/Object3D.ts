@@ -1,15 +1,27 @@
 import { Geometry } from "../geometries/Geometry";
 import { Material } from "../materials/Material";
+import { Vector3 } from "../maths/Vector3";
+import { Matrix4 } from "../maths/Matrix4";
+import { Controls } from "../controls/Controls";
+import { Mouse, MOUSE_EVENTS } from "../controls/Mouse";
+import { Key } from "../controls/Key";
 
 export class Object3D {
     private _geometry: Geometry;
     private _material: Material;
     private _type: string;
 
-    private _scale: number[] = [1, 1, 1];
-    private _rotation: number[] = [0, 0, 0];
-    private _translation: number[] = [0, 0, 0];
+    private _scale: Vector3 = new Vector3([1, 1, 1]);
+    private _rotation: Vector3 = new Vector3([0, 0, 0]);
+    private _translation: Vector3 = new Vector3([0, 0, 0]);
 
+    private parent = null;
+    private children: Object3D[] = [];
+
+    private modelViewMatrix = new Matrix4().identityMatrix();
+    private normalMatrix = new Matrix4().identityMatrix();
+
+    private controls: Controls;
     constructor(geometry: Geometry, material?: Material) {
         this._geometry = geometry;
         if (material) this._material = material;
@@ -35,56 +47,56 @@ export class Object3D {
     }
 
     public setScale(x: number, y: number, z: number) {
-        this._scale = [x, y, z];
+        this._scale = new Vector3([x, y, z]);
     }
     public setScaleX(x: number) {
-        this._scale = [x, this.scale[1], this.scale[2]];
+        this._scale = new Vector3([x, this.scale[1], this.scale[2]]);
     }
     public setScaleY(y: number) {
-        this._scale = [this.scale[0], y, this.scale[2]];
+        this._scale = new Vector3([this.scale[0], y, this.scale[2]]);
     }
     public setScaleZ(z: number) {
-        this._scale = [this.scale[0], this.scale[1], z];
+        this._scale = new Vector3([this.scale[0], this.scale[1], z]);
     }
-    public setScaleAll(scale : number) {
-        this._scale = [scale, scale, scale];
+    public setScaleAll(scale: number) {
+        this._scale = new Vector3([scale, scale, scale]);
     }
 
     public setRotation(x: number, y: number, z: number) {
-        this._rotation = [x, y, z];
+        this._rotation = new Vector3([x, y, z]);
     }
     public setRotationX(x: number) {
-        this._rotation = [x, this.rotation[1], this.rotation[2]];
+        this._rotation = new Vector3([x, this.rotation[1], this.rotation[2]]);
     }
     public setRotationY(y: number) {
-        this._rotation = [this.rotation[0], y, this.rotation[2]];
+        this._rotation = new Vector3([this.rotation[0], y, this.rotation[2]]);
     }
     public setRotationZ(z: number) {
-        this._rotation = [this.rotation[0], this.rotation[1], z];
+        this._rotation = new Vector3([this.rotation[0], this.rotation[1], z]);
     }
-    public setRotationAll(rotation : number) {
-        this._rotation = [rotation, rotation, rotation];
+    public setRotationAll(rotation: number) {
+        this._rotation = new Vector3([rotation, rotation, rotation]);
     }
 
     public setTranslation(x: number, y: number, z: number) {
-        this._translation = [x, y, z];
+        this._translation = new Vector3([x, y, z]);
     }
     public setTranslationX(x: number) {
-        this._translation = [x, this.translation[1], this.translation[2]];
+        this._translation = new Vector3([x, this.translation[1], this.translation[2]]);
     }
     public setTranslationY(y: number) {
-        this._translation = [this.translation[0], y, this.translation[2]];
+        this._translation = new Vector3([this.translation[0], y, this.translation[2]]);
     }
     public setTranslationZ(z: number) {
-        this._translation = [this.translation[0], this.translation[1], z];
+        this._translation = new Vector3([this.translation[0], this.translation[1], z]);
     }
-    public setTranslationAll(translation : number) {
-        this._translation = [translation, translation, translation];
+    public setTranslationAll(translation: number) {
+        this._translation = new Vector3([translation, translation, translation]);
     }
 
 
     get scale(): number[] {
-        return this._scale;
+        return Array.from(this._scale.positionArr);
     }
 
     get scaleX() {
@@ -99,7 +111,7 @@ export class Object3D {
     }
 
     get rotation(): number[] {
-        return this._rotation;
+        return Array.from(this._rotation.positionArr);
     }
 
     get rotationX() {
@@ -115,7 +127,50 @@ export class Object3D {
 
 
     get translation(): number[] {
-        return this._translation;
+        return Array.from(this._translation.positionArr);
+    }
+    public toDefaultTRS() {
+        this.setRotationAll(0);
+        this.setTranslationAll(0);
+        this.setScaleAll(1);
+    }
+
+    public attachControls(controls: Controls) {
+        this.controls = controls;
+    }
+
+    public attachDefaultControls() {
+
+        let mouse = new Mouse();
+        mouse.sensitivity = 30;
+        let toggleZModeKey = new Key("z");
+        let toggleCModeKey = new Key("c");
+        
+        let rotateZ = (event: WheelEvent) => {
+            if (toggleZModeKey.isPressed) {
+                this.setRotationZ(this.rotation[2] + event.deltaY / 25)
+            }
+        }
+
+        let rotateXY = (event: MouseEvent) => {
+            if (mouse.isDragging) {
+                let dX = (event.pageX - mouse.old_x) * 2 * Math.PI / 1000 * mouse.sensitivity;
+                let dY = (event.pageY - mouse.old_y) * 2 * Math.PI / 1000 * mouse.sensitivity;
+
+                mouse.old_x = event.pageX;
+                mouse.old_y = event.pageY;
+
+                if (!toggleCModeKey.isPressed) {
+                    this.setRotationX(this.rotation[0] + dY);
+                    this.setRotationY(this.rotation[1] + dX);
+                }
+            }
+        }
+        mouse.setFunction(MOUSE_EVENTS.MOUSE_WHEEL, rotateZ);
+        mouse.setFunction(MOUSE_EVENTS.MOUSE_MOVE, rotateXY);
+
+        this.controls = new Controls(mouse, toggleCModeKey, toggleZModeKey);
+        this.controls.addListenersToWindow();
     }
 
     get translationX() {

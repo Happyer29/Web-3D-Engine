@@ -1,5 +1,6 @@
-import {Point3} from "./Point3";
-import {fixedLengthArray} from "../utils/fixedLengthArray";
+import { Point3 } from "./Point3";
+import { fixedLengthArray } from "../utils/fixedLengthArray";
+import { vector4Points } from "./Vector4";
 
 interface Vector3Obj {
     x: number,
@@ -18,6 +19,7 @@ export class Vector3 {
     private _z:number = 0;
 
     constructor(v: vector3 | vector3Points) {
+
         if (Vector3.instanceOfVector3Points(v)) {
             this.betweenPoints(v);
         } else {
@@ -66,13 +68,13 @@ export class Vector3 {
     public length(): number {
         let tmp = 0;
         for (let i = 0; i < this._dimension; i++) {
-            tmp += Math.pow(this._vector[i], 2);
+            tmp += Math.pow(this.positionArr[i], 2);
         }
         return Math.sqrt(tmp);
     }
 
     get positionObj(): Vector3Obj {
-        return {x: this._vector[0], y: this._vector[1], z: this._vector[2]}
+        return { x: this._vector[0], y: this._vector[1], z: this._vector[2] }
     }
 
     get positionArr() {
@@ -119,12 +121,16 @@ export class Vector3 {
         return tmp;
     }
 
-    public static normalization(v: Vector3) {
-        let tmp: vector3 = Vector3.zeroVector();
-        for (let i = 0; i < 3; i++) {
-            tmp[i] = v._vector[i] / v.length();
+    public static normalization(vector: Vector3) {
+        let v = vector.positionArr;
+        var length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+        // make sure we don't divide by 0.
+        if (length > 0.00001) {
+            return new Vector3([v[0] / length, v[1] / length, v[2] / length]);
+        } else {
+            return new Vector3([0, 0, 0]);
         }
-        return new Vector3(tmp);
+
     }
 
     public static zeroVector(): vector3 {
@@ -132,7 +138,14 @@ export class Vector3 {
     }
 
     private static instanceOfVector3Points(obj: any): obj is vector3Points {
-        return (<vector3Points>obj)[0] !== undefined;
+        return (<vector3Points>obj[0].z) !== undefined;
+    }
+
+    public static cross(v1: Vector3, v2: Vector3) {
+        let v1Arr = v1.positionArr;
+        let v2Arr = v2.positionArr;
+
+        return new Vector3([v1Arr[1] * v2Arr[2] - v1Arr[2] * v2Arr[1], v1Arr[2] * v2Arr[0] - v1Arr[0] * v2Arr[2], v1Arr[0] * v2Arr[1] - v1Arr[1] * v2Arr[0]]);
     }
 }
 

@@ -40,7 +40,6 @@ export class Matrix4 {
 
     public static matrixToMatrix4(m: number[][] | matrix4): matrix4 {
         let res = Matrix4.zeroMatrix();
-        //console.log(res);
         for (let i = 0; i < this._dimension; i++) {
             for (let j = 0; j < this._dimension; j++) {
                 res[i][j] = m[i] === undefined || m[i][j] === undefined ? 0 : m[i][j];
@@ -71,17 +70,17 @@ export class Matrix4 {
         return this;
     }
 
-    public xRotation(angleInRadians){
+    public xRotation(angleInRadians : number){
         this._matrix = Matrix4Utils.xRotation(angleInRadians);
         return this;
     }
 
-    public yRotation(angleInRadians){
+    public yRotation(angleInRadians : number){
         this._matrix = Matrix4Utils.yRotation(angleInRadians);
         return this;
     }
 
-    public zRotation(angleInRadians){
+    public zRotation(angleInRadians : number){
         this._matrix = Matrix4Utils.zRotation(angleInRadians);
         return this;
     }
@@ -91,17 +90,17 @@ export class Matrix4 {
         return this;
     }
 
-    public xRotate(angleInRadians){
+    public xRotate(angleInRadians : number){
         this._matrix = Matrix4Utils.xRotate(this._matrix, angleInRadians);
         return this;
     }
 
-    public yRotate(angleInRadians){
+    public yRotate(angleInRadians : number){
         this._matrix = Matrix4Utils.yRotate(this._matrix, angleInRadians);
         return this;
     }
 
-    public zRotate(angleInRadians){
+    public zRotate(angleInRadians : number){
         this._matrix = Matrix4Utils.zRotate(this._matrix, angleInRadians);
         return this;
     }
@@ -113,6 +112,11 @@ export class Matrix4 {
 
     public projection(width: number, height: number, depth: number){
         this._matrix = Matrix4Utils.projection(width, height, depth);
+        return this;
+    }
+
+    public inverse() {
+        this._matrix = Matrix4Utils.inverse(this._matrix);
         return this;
     }
 
