@@ -110,10 +110,26 @@ export class Camera {
                 this.rotate(dY, dX);
             }
         }
-        let aKey = new Key("a").setFunction(KEY_EVENTS.KEY_DOWN, () => this.translate(-10, 0, 0));
-        let dKey = new Key("d").setFunction(KEY_EVENTS.KEY_DOWN, () => this.translate(10, 0, 0));
-        let wKey = new Key("w").setFunction(KEY_EVENTS.KEY_DOWN, () => this.translate(0, 10, 0));
-        let sKey = new Key("s").setFunction(KEY_EVENTS.KEY_DOWN, () => this.translate(0, -10, 0));
+        let aKey = new Key("a").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (toggleCModeKey.isPressed)
+                this.translate(-10, 0, 0)
+        }
+        );
+        let dKey = new Key("d").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (toggleCModeKey.isPressed)
+                this.translate(10, 0, 0)
+        }
+        );
+        let wKey = new Key("w").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (toggleCModeKey.isPressed)
+                this.translate(0, 10, 0)
+        }
+        );
+        let sKey = new Key("s").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (toggleCModeKey.isPressed)
+                this.translate(0, -10, 0)
+        }
+        );
 
         mouse.setFunction(MOUSE_EVENTS.MOUSE_WHEEL, translateZ);
         mouse.setFunction(MOUSE_EVENTS.MOUSE_MOVE, rotateXY);

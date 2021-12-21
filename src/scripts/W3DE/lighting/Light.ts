@@ -2,7 +2,7 @@ import { Vector3, vector3 } from "../maths/Vector3";
 
 export class Light {
     private _position: Vector3 = new Vector3([0, 0, 0]);
-    private _shininess: number = 2;
+    private _shininess: number = 100;
     
 
     constructor(position? : vector3, shininess? : number) {

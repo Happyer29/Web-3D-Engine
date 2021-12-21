@@ -4,7 +4,7 @@ import { Vector3 } from "../maths/Vector3";
 import { Matrix4 } from "../maths/Matrix4";
 import { Controls } from "../controls/Controls";
 import { Mouse, MOUSE_EVENTS } from "../controls/Mouse";
-import { Key } from "../controls/Key";
+import { Key, KEY_EVENTS } from "../controls/Key";
 
 export class Object3D {
     private _geometry: Geometry;
@@ -142,7 +142,7 @@ export class Object3D {
         mouse.sensitivity = 30;
         let toggleZModeKey = new Key("z");
         let toggleCModeKey = new Key("c");
-        
+
         let rotateZ = (event: WheelEvent) => {
             if (toggleZModeKey.isPressed) {
                 this.setRotationZ(this.rotation[2] + event.deltaY / 25)
@@ -163,10 +163,35 @@ export class Object3D {
                 }
             }
         }
+
+        let aKey = new Key("a").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (!toggleCModeKey.isPressed) {
+                console.log("object");
+
+                this.setTranslationX(this.translation[0] - 10);
+            }
+        }
+        );
+        let dKey = new Key("d").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (!toggleCModeKey.isPressed)
+                this.setTranslationX(this.translation[0] + 10);
+        }
+        );
+        let wKey = new Key("w").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (!toggleCModeKey.isPressed)
+                this.setTranslationY(this.translation[1] + 10);
+        }
+        );
+        let sKey = new Key("s").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (!toggleCModeKey.isPressed)
+                this.setTranslationY(this.translation[1] - 10);
+        }
+        );
+
         mouse.setFunction(MOUSE_EVENTS.MOUSE_WHEEL, rotateZ);
         mouse.setFunction(MOUSE_EVENTS.MOUSE_MOVE, rotateXY);
 
-        this.controls = new Controls(mouse, toggleCModeKey, toggleZModeKey);
+        this.controls = new Controls(mouse, toggleCModeKey, toggleZModeKey, aKey, dKey, wKey, sKey);
         this.controls.addListenersToWindow();
     }
 

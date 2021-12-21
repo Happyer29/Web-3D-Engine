@@ -93,7 +93,7 @@ export class ObjParser {
             }
         })
 
-        return new Geometry(this.webglVertexData[0], this.webglVertexData[1], this.webglVertexData[2])
+        return new Geometry(this.webglVertexData[0], this.webglVertexData[1], this.webglVertexData[0])
     }
 
 }

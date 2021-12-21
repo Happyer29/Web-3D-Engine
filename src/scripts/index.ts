@@ -43,11 +43,11 @@ async function readObjectFromInput(event: Event) {
 
     const object = await new W3DE.ObjParser().parseObjectFromString(fileText);//TODO
 
-    const sphereGeometry = new W3DE.SphereGeometry(10, 100); // change roundness to 10-20 to clearly see rotation
+    const sphereGeometry = new W3DE.SphereGeometry(1, 100); // change roundness to 10-20 to clearly see rotation
 
     const defaultMaterial = await W3DE.Material.getDefaultMaterial();
 
-    const sphere = new W3DE.Mesh(sphereGeometry, defaultMaterial);
+    const sphere = new W3DE.Mesh(sphereGeometry);
 
     const scene = new W3DE.Scene();
 
@@ -61,8 +61,10 @@ async function readObjectFromInput(event: Event) {
     camera.attachDefaultControls();
     object.attachDefaultControls();
  
+    sphere.setTranslation(200, 200, 200);
     scene.add(object);
-
+    // scene.add(sphere);
+    console.log(object)
     const renderer = new W3DE.WebGLRenderer(scene, camera, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
 
 
@@ -121,11 +123,12 @@ async function drawGeometry() {
 
     const scene = new W3DE.Scene();
 
-    const cameraPosition = new W3DE.Vector3([1, 0, 0]);
-    const up = new W3DE.Vector3([0, 1, 0]);
+    const cameraPosition = new W3DE.Vector3([0, 20, 60]);
+    const up = new W3DE.Vector3([1, 0, 0]);
     const target = new W3DE.Vector3([0, 0, 1]);
 
     const camera = new Camera(cameraPosition, up, target);
+    camera.attachDefaultControls();
     const renderer = new W3DE.WebGLRenderer(scene, camera, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
     renderer.animationSpeed = 0.5;
 
@@ -248,6 +251,7 @@ async function drawGeometry() {
         
     //     e.preventDefault();
     // })
+    
 resetCameraButton.onclick = () => {
         camera.rotate(0, 0);
         camera.setTranslation(cameraPosition.positionArr[0],cameraPosition.positionArr[1],cameraPosition.positionArr[2]);
