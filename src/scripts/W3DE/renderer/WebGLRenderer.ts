@@ -33,7 +33,7 @@ type parentCanvasSelector = `#${string}` | "body";
 export class WebGLRenderer {
     private readonly _canvas;
     private readonly _parentCanvasEl: HTMLElement;
-    private _ctx;
+    private _ctx : WebGLRenderingContext;
     //private readonly _canvas: HTMLCanvasElement;
 
     private _options: ConstructorOptions = {};
@@ -172,22 +172,28 @@ export class WebGLRenderer {
         // matrix = matrix.zRotate(object3d.rotation[2]);
         // matrix = matrix.scale(object3d.scale[0], object3d.scale[1], object3d.scale[2]);
 
-        // matrix = new Matrix4(Matrix4Utils.multiplication(this.camera.viewProjectionMatrix, matrix.matrix));
-        
-        let matrix = Matrix4Utils.translate(this.camera.viewProjectionMatrix, object3d.translation[0], object3d.translation[1], object3d.translation[2]);
-        matrix = Matrix4Utils.xRotate(matrix, object3d.rotation[0]);
-        matrix = Matrix4Utils.zRotate(matrix, object3d.rotation[2]);
-        matrix = Matrix4Utils.yRotate(matrix, object3d.rotation[1]);
+        let matrix = new Matrix4(Matrix4Utils.multiplication(this.camera.viewProjectionMatrix, matrix));
+    
+        matrix = matrix.xRotate(object3d.rotation[0]);
+        matrix = matrix.zRotate(object3d.rotation[2]);
+        matrix = matrix.yRotate(object3d.rotation[1]);
 
-        matrix = Matrix4Utils.scale(matrix, object3d.scale[0], object3d.scale[1], object3d.scale[2]);
+        matrix = matrix.scale(object3d.scale[0], object3d.scale[1], object3d.scale[2]);
         
-        return new Matrix4(matrix).matrixToArray();
+        return matrix;
     }
 
     private init(object3d: Object3D) {
         let gl = this._ctx;
 
+            // Clear the canvas AND the depth buffer.
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        // Turn on culling. By default backfacing triangles
+        // will be culled.
         gl.enable(gl.CULL_FACE);
+
+        // Enable the depth buffer
         gl.enable(gl.DEPTH_TEST);
 
         function createProgram(gl, vertexShader, fragmentShader) {
@@ -206,22 +212,74 @@ export class WebGLRenderer {
 
         const vs = `
         attribute vec4 a_position;
- 
-uniform mat4 u_matrix;
- 
-void main() {
-  // Multiply the position by the matrix.
-  gl_Position = u_matrix * a_position;
+        attribute vec3 a_normal;
+        
+        uniform vec3 u_lightWorldPosition;
+        uniform vec3 u_viewWorldPosition;
+        
+        uniform mat4 u_world;
+        uniform mat4 u_worldViewProjection;
+        uniform mat4 u_worldInverseTranspose;
+        
+        varying vec3 v_normal;
+        
+        varying vec3 v_surfaceToLight;
+        varying vec3 v_surfaceToView;
+        
+        void main() {
+          // Multiply the position by the matrix.
+          gl_Position = u_worldViewProjection * a_position;
+        
+          // orient the normals and pass to the fragment shader
+          v_normal = mat3(u_worldInverseTranspose) * a_normal;
+        
+          // compute the world position of the surface
+          vec3 surfaceWorldPosition = (u_world * a_position).xyz;
+        
+          // compute the vector of the surface to the light
+          // and pass it to the fragment shader
+          v_surfaceToLight = u_lightWorldPosition - surfaceWorldPosition;
+        
+          // compute the vector of the surface to the view/camera
+          // and pass it to the fragment shader
+          v_surfaceToView = u_viewWorldPosition - surfaceWorldPosition;
 }
         `;
 
         const fs = `
-  precision highp float;
- 
-  void main() {
-    // gl_FragColor is a special variable a fragment shader
-    // is responsible for setting
-    gl_FragColor = vec4(1, 0, 0.5, 1); // return redish-purple
+        precision highp float;
+
+        // Passed in from the vertex shader.
+        varying vec3 v_normal;
+        varying vec3 v_surfaceToLight;
+        varying vec3 v_surfaceToView;
+        
+        uniform vec4 u_color;
+        uniform float u_shininess;
+        
+        void main() {
+          // because v_normal is a varying it's interpolated
+          // so it will not be a unit vector. Normalizing it
+          // will make it a unit vector again
+          vec3 normal = normalize(v_normal);
+        
+          vec3 surfaceToLightDirection = normalize(v_surfaceToLight);
+          vec3 surfaceToViewDirection = normalize(v_surfaceToView);
+          vec3 halfVector = normalize(surfaceToLightDirection + surfaceToViewDirection);
+        
+          float light = dot(normal, surfaceToLightDirection);
+          float specular = 0.0;
+          if (light > 0.0) {
+            specular = pow(dot(normal, halfVector), u_shininess);
+          }
+        
+          gl_FragColor = vec4(1, 0, 0.5, 1);
+        
+          // Lets multiply just the color portion (not the alpha)
+          // by the light
+          gl_FragColor.rgb *= light * (u_shininess / 100.0);
+        
+          // Just add in the specular
   }`;
         // create GLSL shaders, upload the GLSL source, compile the shaders
         let vertexShader = new WebGlShaderCreator(gl).createVertexShader(vs);
@@ -231,7 +289,19 @@ void main() {
         // look up where the vertex data needs to go.
         let positionAttributeLocation = gl.getAttribLocation(program, "a_position");
         let matrixLocation = gl.getUniformLocation(program, "u_matrix");
+        var worldViewProjectionLocation = gl.getUniformLocation(program, "u_worldViewProjection");
+        var worldInverseTransposeLocation = gl.getUniformLocation(program, "u_worldInverseTranspose");
+ 
+        var shininessLocation = gl.getUniformLocation(program, "u_shininess");
+        
+        var lightWorldPositionLocation =
+            gl.getUniformLocation(program, "u_lightWorldPosition");
 
+        var viewWorldPositionLocation =
+            gl.getUniformLocation(program, "u_viewWorldPosition");
+
+        var worldLocation =
+            gl.getUniformLocation(program, "u_world");
         // Create a buffer and put three 2d clip space points in it
 
         let positionBuffer = gl.createBuffer();
@@ -253,15 +323,38 @@ void main() {
 
         // Clear the canvas
 
-
+        let worldMatrix = this.mainMatrix(object3d);
         // Tell it to use our program (pair of shaders)
         gl.useProgram(program);
-        gl.uniformMatrix4fv(matrixLocation, false, this.mainMatrix(object3d));
+ 
         // Turn on the attribute
         gl.enableVertexAttribArray(positionAttributeLocation);
 
         // Bind the position buffer.
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+        // Multiply the matrices.        
+
+        let worldViewProjectionMatrix = new Matrix4(Matrix4Utils.multiplication(this.camera.viewProjectionMatrix, worldMatrix.matrix));
+        
+        
+        let worldInverseMatrix = new Matrix4(Matrix4Utils.inverse(worldMatrix.matrix));
+        let worldInverseTransposeMatrix = new Matrix4(Matrix4Utils.transpose(worldInverseMatrix.matrix));
+        console.log(worldViewProjectionMatrix, worldInverseMatrix, worldInverseTransposeMatrix);
+        // Set the matrices
+        gl.uniformMatrix4fv(worldViewProjectionLocation, false, worldViewProjectionMatrix.matrixToArray());
+        gl.uniformMatrix4fv(worldInverseTransposeLocation, false, worldInverseTransposeMatrix.matrixToArray());
+        gl.uniformMatrix4fv(worldLocation, false, worldMatrix.matrixToArray());
+
+        
+        // set the light position
+        gl.uniform3fv(lightWorldPositionLocation, Array.from(this.scene.light.position.positionArr));
+
+        // set the camera/view position
+        gl.uniform3fv(viewWorldPositionLocation, this.camera.getPositionAsArray());
+
+        // set the shininess
+        gl.uniform1f(shininessLocation, this.scene.light.shininess);
 
         return positionAttributeLocation;
     }
