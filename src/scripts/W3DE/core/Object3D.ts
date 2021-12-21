@@ -1,9 +1,10 @@
 import { Geometry } from "../geometries/Geometry";
 import { Material } from "../materials/Material";
-import { SceneNode } from "../scenes/SceneNode";
 import { Vector3 } from "../maths/Vector3";
-import { Matrix4Utils } from "../utils/Matrix4Utils";
 import { Matrix4 } from "../maths/Matrix4";
+import { Controls } from "../controls/Controls";
+import { Mouse, MOUSE_EVENTS } from "../controls/Mouse";
+import { Key } from "../controls/Key";
 
 export class Object3D {
     private _geometry: Geometry;
@@ -15,11 +16,12 @@ export class Object3D {
     private _translation: Vector3 = new Vector3([0, 0, 0]);
 
     private parent = null;
-    private children : Object3D[] = [];
+    private children: Object3D[] = [];
 
     private modelViewMatrix = new Matrix4().identityMatrix();
     private normalMatrix = new Matrix4().identityMatrix();
 
+    private controls: Controls;
     constructor(geometry: Geometry, material?: Material) {
         this._geometry = geometry;
         if (material) this._material = material;
@@ -56,7 +58,7 @@ export class Object3D {
     public setScaleZ(z: number) {
         this._scale = new Vector3([this.scale[0], this.scale[1], z]);
     }
-    public setScaleAll(scale : number) {
+    public setScaleAll(scale: number) {
         this._scale = new Vector3([scale, scale, scale]);
     }
 
@@ -72,7 +74,7 @@ export class Object3D {
     public setRotationZ(z: number) {
         this._rotation = new Vector3([this.rotation[0], this.rotation[1], z]);
     }
-    public setRotationAll(rotation : number) {
+    public setRotationAll(rotation: number) {
         this._rotation = new Vector3([rotation, rotation, rotation]);
     }
 
@@ -88,7 +90,7 @@ export class Object3D {
     public setTranslationZ(z: number) {
         this._translation = new Vector3([this.translation[0], this.translation[1], z]);
     }
-    public setTranslationAll(translation : number) {
+    public setTranslationAll(translation: number) {
         this._translation = new Vector3([translation, translation, translation]);
     }
 
@@ -108,5 +110,43 @@ export class Object3D {
         this.setRotationAll(0);
         this.setTranslationAll(0);
         this.setScaleAll(1);
+    }
+
+    public attachControls(controls: Controls) {
+        this.controls = controls;
+    }
+
+    public attachDefaultControls() {
+
+        let mouse = new Mouse();
+        mouse.sensitivity = 30;
+        let toggleZModeKey = new Key("z");
+        let toggleCModeKey = new Key("c");
+        
+        let rotateZ = (event: WheelEvent) => {
+            if (toggleZModeKey.isPressed) {
+                this.setRotationZ(this.rotation[2] + event.deltaY / 25)
+            }
+        }
+
+        let rotateXY = (event: MouseEvent) => {
+            if (mouse.isDragging) {
+                let dX = (event.pageX - mouse.old_x) * 2 * Math.PI / 1000 * mouse.sensitivity;
+                let dY = (event.pageY - mouse.old_y) * 2 * Math.PI / 1000 * mouse.sensitivity;
+
+                mouse.old_x = event.pageX;
+                mouse.old_y = event.pageY;
+
+                if (!toggleCModeKey.isPressed) {
+                    this.setRotationX(this.rotation[0] + dY);
+                    this.setRotationY(this.rotation[1] + dX);
+                }
+            }
+        }
+        mouse.setFunction(MOUSE_EVENTS.MOUSE_WHEEL, rotateZ);
+        mouse.setFunction(MOUSE_EVENTS.MOUSE_MOVE, rotateXY);
+
+        this.controls = new Controls(mouse, toggleCModeKey, toggleZModeKey);
+        this.controls.addListenersToWindow();
     }
 }
