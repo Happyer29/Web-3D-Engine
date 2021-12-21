@@ -23,7 +23,7 @@
     "postbuild:prod": "npm run server:prod",
     "test": "webpack --config ./config/webpack-test.config.js",
     "test:watch": "webpack -w --config ./config/webpack-test.config.js",
-    "serve": "npm run serve --content-base ./dist/scripts/app.bundle.js --hot --inline --colors --open"
+    "serve": "webpack serve --hot --open"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
