@@ -70,17 +70,17 @@ export class Matrix4 {
         return this;
     }
 
-    public xRotation(angleInRadians){
+    public xRotation(angleInRadians : number){
         this._matrix = Matrix4Utils.xRotation(angleInRadians);
         return this;
     }
 
-    public yRotation(angleInRadians){
+    public yRotation(angleInRadians : number){
         this._matrix = Matrix4Utils.yRotation(angleInRadians);
         return this;
     }
 
-    public zRotation(angleInRadians){
+    public zRotation(angleInRadians : number){
         this._matrix = Matrix4Utils.zRotation(angleInRadians);
         return this;
     }
@@ -90,17 +90,17 @@ export class Matrix4 {
         return this;
     }
 
-    public xRotate(angleInRadians){
+    public xRotate(angleInRadians : number){
         this._matrix = Matrix4Utils.xRotate(this._matrix, angleInRadians);
         return this;
     }
 
-    public yRotate(angleInRadians){
+    public yRotate(angleInRadians : number){
         this._matrix = Matrix4Utils.yRotate(this._matrix, angleInRadians);
         return this;
     }
 
-    public zRotate(angleInRadians){
+    public zRotate(angleInRadians : number){
         this._matrix = Matrix4Utils.zRotate(this._matrix, angleInRadians);
         return this;
     }

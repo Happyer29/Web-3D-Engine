@@ -61,7 +61,17 @@ export class Camera {
         this._viewProjectionMatrix = Matrix4Utils.multiplication(this.projectionMatrix.matrix, this.viewMatrix.matrix);
     }
 
-    public translate(x, y, z) {
+    public translate(x: number, y: number, z: number) {
         this.updateMatrix(new Matrix4(Matrix4Utils.translate(this.matrix.matrix, x, y, z)));
+
+    }
+    public rotate(x: number, y: number) {
+        this.updateMatrix(new Matrix4(Matrix4Utils.xRotate(this.matrix.matrix, x)).yRotate(y));
+    }
+    public setTranslation(x: number, y: number, z: number) {
+        this.updateMatrix(new Matrix4(Matrix4Utils.translation(x, y, z)));
+    }
+    public rotateQ(x: number, y: number) {
+        this.updateMatrix(new Matrix4(Matrix4Utils.xRotate(this.matrix.matrix, x)).yRotate(y));
     }
 }

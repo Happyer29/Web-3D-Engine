@@ -104,4 +104,9 @@ export class Object3D {
     get translation(): number[] {
         return Array.from(this._translation.positionArr);
     }
+    public toDefaultTRS() {
+        this.setRotationAll(0);
+        this.setTranslationAll(0);
+        this.setScaleAll(1);
+    }
 }

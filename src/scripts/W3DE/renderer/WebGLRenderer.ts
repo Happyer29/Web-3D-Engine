@@ -173,11 +173,12 @@ export class WebGLRenderer {
         // matrix = matrix.scale(object3d.scale[0], object3d.scale[1], object3d.scale[2]);
 
         // matrix = new Matrix4(Matrix4Utils.multiplication(this.camera.viewProjectionMatrix, matrix.matrix));
-
+        
         let matrix = Matrix4Utils.translate(this.camera.viewProjectionMatrix, object3d.translation[0], object3d.translation[1], object3d.translation[2]);
         matrix = Matrix4Utils.xRotate(matrix, object3d.rotation[0]);
-        matrix = Matrix4Utils.yRotate(matrix, object3d.rotation[1]);
         matrix = Matrix4Utils.zRotate(matrix, object3d.rotation[2]);
+        matrix = Matrix4Utils.yRotate(matrix, object3d.rotation[1]);
+
         matrix = Matrix4Utils.scale(matrix, object3d.scale[0], object3d.scale[1], object3d.scale[2]);
         
         return new Matrix4(matrix).matrixToArray();
