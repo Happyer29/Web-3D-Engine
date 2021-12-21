@@ -99,9 +99,32 @@ export class Object3D {
         return Array.from(this._scale.positionArr);
     }
 
+    get scaleX() {
+        return this._scale[0];
+    }
+    get scaleY() {
+        return this._scale[1];
+    }
+    get scaleZ() {
+        return this._scale[2];
+
+    }
+
     get rotation(): number[] {
         return Array.from(this._rotation.positionArr);
     }
+
+    get rotationX() {
+        return this._rotation[0];
+    }
+    get rotationY() {
+        return this._rotation[1];
+    }
+    get rotationZ() {
+        return this._rotation[2];
+
+    }
+
 
     get translation(): number[] {
         return Array.from(this._translation.positionArr);
@@ -148,5 +171,16 @@ export class Object3D {
 
         this.controls = new Controls(mouse, toggleCModeKey, toggleZModeKey);
         this.controls.addListenersToWindow();
+    }
+
+    get translationX() {
+        return this._translation[0];
+    }
+    get translationY() {
+        return this._translation[1];
+    }
+    get translationZ() {
+        return this._translation[2];
+
     }
 }

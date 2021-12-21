@@ -41,7 +41,7 @@ async function readObjectFromInput(event: Event) {
     const file = files[0];
     const fileText = await W3DE.FileLoader.loadAsText(file);
 
-    const object = await new W3DE.ObjParser().parseObjectFromString(fileText);
+    const object = await new W3DE.ObjParser().parseObjectFromString(fileText);//TODO
 
     const sphereGeometry = new W3DE.SphereGeometry(10, 100); // change roundness to 10-20 to clearly see rotation
 
@@ -82,6 +82,7 @@ async function readObjectFromInput(event: Event) {
         button.disabled = true;
     })
 
+
     // function animate() {
     //     if (object.translation[0] <= renderer.canvas.clientWidth / 2) {
     //         object.setTranslationX(object.translation[0] + 2.5);
@@ -92,6 +93,7 @@ async function readObjectFromInput(event: Event) {
     //     }
     //     return;
     // }
+
 }
 
 async function readTextureFromInput(event: Event) {
