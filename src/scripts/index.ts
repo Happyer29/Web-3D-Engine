@@ -25,12 +25,13 @@ async function readObjectFromInput(event: Event) {
     const file = files[0];
     const fileText = await W3DE.FileLoader.loadAsText(file);
 
-    const object = await new W3DE.ObjParser().parseObjectFromString(fileText);//TODO
+    const objectGeometry = await new W3DE.ObjParser().parseObjectFromString(fileText);//TODO
 
     const sphereGeometry = new W3DE.SphereGeometry(75, 100); // change roundness to 10-20 to clearly see rotation
 
     const defaultMaterial = await W3DE.Material.getDefaultMaterial();
-
+    //const customMaterial = await new W3DE.Material().setFromURL("NeutralWrapped.jpg");
+    const object = new W3DE.Mesh(objectGeometry, defaultMaterial);
     const sphere = new W3DE.Mesh(sphereGeometry, defaultMaterial);
 
     const scene = new W3DE.Scene();//scene builder

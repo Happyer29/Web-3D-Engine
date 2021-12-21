@@ -3,18 +3,20 @@ import { TextureLoader } from "../loaders/TextureLoader";
 export class Material {
     private _texture: HTMLImageElement;
 
-    constructor(texture?: HTMLImageElement) {
+    constructor(texture: HTMLImageElement = null) {
         if (texture) this._texture = texture;
+        else this.setDefaultMaterial();
     }
 
-    public static async getDefaultMaterial() {
+    public static async getDefaultMaterial(): Promise<Material> {
         let texture = await TextureLoader.loadFromUrl("default-texture.jpg");
         return new Material(texture);
     }
 
-    public static async getDefaultTestMaterial() {
-        let texture = await TextureLoader.loadFromUrl("/src/assets/textures/NeutralWrapped.jpg");
-        return new Material(texture);
+    private setDefaultMaterial(){
+        Material.getDefaultMaterial().then((material) => {
+            this._texture = material.texture;
+        })
     }
 
     set texture(value: HTMLImageElement) {
