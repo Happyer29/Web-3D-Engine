@@ -18,9 +18,6 @@ export class Object3D {
     private parent = null;
     private children: Object3D[] = [];
 
-    private modelViewMatrix = new Matrix4().identityMatrix();
-    private normalMatrix = new Matrix4().identityMatrix();
-
     private controls: Controls;
     constructor(geometry: Geometry, material?: Material) {
         this._geometry = geometry;

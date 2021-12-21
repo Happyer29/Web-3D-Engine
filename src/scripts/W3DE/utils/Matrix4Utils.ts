@@ -89,7 +89,7 @@ export class Matrix4Utils {
         return tmp;
     }
 
-    public static transponse(m: matrix4) {
+    public static transpose(m: matrix4) {
         const te = m;
         let tmp: number;
 

@@ -53,7 +53,7 @@ async function readObjectFromInput(event: Event) {
 
     const cameraPosition = new W3DE.Vector3([0, 20, 60]);
     const up = new W3DE.Vector3([0, 1, 0]);
-    const target = new W3DE.Vector3([0, 1, 0]);
+    const target = new W3DE.Vector3([1, 0, 0]);
 
     // TODO object.move(x,y,z); object.rotate.x();
     const camera = new Camera(cameraPosition, target, up);
