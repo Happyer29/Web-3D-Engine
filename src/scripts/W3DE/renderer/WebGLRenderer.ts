@@ -187,8 +187,7 @@ export class WebGLRenderer {
     private init(object3d: Object3D) {
         let gl = this._ctx;
 
-        // Clear the canvas AND the depth buffer.
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
 
         // Turn on culling. By default backfacing triangles
         // will be culled.
