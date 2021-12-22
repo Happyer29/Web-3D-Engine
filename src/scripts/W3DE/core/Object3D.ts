@@ -16,6 +16,14 @@ export class Object3D {
     private _translation: Vector3 = new Vector3([0, 0, 0]);
 
     private _parent : Object3D;
+    private _children: Object3D[] = [];
+
+    public get children(): Object3D[] {
+        return this._children;
+    }
+    public set children(value: Object3D[]) {
+        this._children = value;
+    }
 
     private _matrix: Matrix4 = new Matrix4().identityMatrix();
     public get matrix(): Matrix4 {
@@ -29,9 +37,22 @@ export class Object3D {
         return this._parent;
     }
     public set parent(value) {
+        // remove us from our parent
+        if (this.parent) {
+            var ndx = this.parent.children.indexOf(this);
+            if (ndx >= 0) {
+            this.parent.children.splice(ndx, 1);
+            }
+        }
         this._parent = value;
+        // Add us to our new parent
+        if (value) {
+            this.parent.children.push(this);
+        }
+
+        
+        
     }
-    private children: Object3D[] = [];
 
     private controls: Controls;
     constructor(geometry: Geometry, material?: Material) {

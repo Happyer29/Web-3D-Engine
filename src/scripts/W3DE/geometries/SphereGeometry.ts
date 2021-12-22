@@ -30,7 +30,7 @@ export class SphereGeometry extends Geometry {
             const uz = sin2PIu * sinPIv;
 
             positions.push(radius * ux, radius * uy, radius * uz);
-            normals.push(radius * ux, radius * uy, radius * uz);
+            normals.push(ux, uy, uz);
             texCoords.push(1 - u, v);
         }
 

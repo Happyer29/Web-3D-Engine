@@ -88,7 +88,7 @@ export class Vector4 {
     }
 
     get positionArr() {
-        return this._vector;
+        return Array.from(this._vector);
     }
 
     public static sum(v1: Vector4, v2: Vector4): Vector4 {

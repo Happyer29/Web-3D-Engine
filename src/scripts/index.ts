@@ -43,7 +43,7 @@ async function readObjectFromInput(event: Event) {
 
     const object1 = await new W3DE.ObjParser().parseObjectFromString(fileText);//TODO
     //const object2 = await new W3DE.ObjParser().parseObjectFromString(fileText);//TODO
-    const sphereGeometry = new W3DE.SphereGeometry(1, 100); // change roundness to 10-20 to clearly see rotation
+    const sphereGeometry = new W3DE.SphereGeometry(30, 100); // change roundness to 10-20 to clearly see rotation
 
     const defaultMaterial = await W3DE.Material.getDefaultMaterial();
 
@@ -61,13 +61,18 @@ async function readObjectFromInput(event: Event) {
 
     // TODO object.move(x,y,z); object.rotate.x();
     const camera = new Camera(cameraPosition, target, up);
-    object2.parent = object1;
+    
+    const object1orbit = new W3DE.Mesh();
+    
+    object1.parent = object1orbit;
+    object1orbit.parent = object2.parent;
+    object1orbit.setTranslationX(100);
 
-    object1.setTranslationY(500);
+
     camera.attachDefaultControls();
     object2.attachDefaultControls();
  
-    object2.setTranslation(300, 300, 300);
+    object1.setTranslationY(300);
     scene.add(object2);
     // scene.add(sphere);
     scene.add(object1);
@@ -86,7 +91,7 @@ async function readObjectFromInput(event: Event) {
     }
 
     let animate = () => {
-        // object2.setTranslationY(object2.translation[1] + 1)
+        object1orbit.setRotationY(object2.rotation[1] + 2)
     }
 
     renderer.resizeCanvasToDisplaySize();
@@ -158,10 +163,10 @@ async function drawGeometry() {
     }
     
     // scene.add(object);
-    for (let index = 0; index < 10; index++) {
+    for (let index = 0; index < 2; index++) {
         const sphereGeometry = new W3DE.SphereGeometry(40, 70); // change roundness to 5-10 to clearly see rotation
         const sphere = new W3DE.Mesh(sphereGeometry, defaultMaterial);
-        sphere.setTranslationX(index * 50);
+        sphere.setTranslationX(index * 150);
 
         scene.add(sphere);
     }

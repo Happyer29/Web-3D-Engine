@@ -135,15 +135,8 @@ export class WebGLRenderer {
         this.time += this.animationSpeed;
 
         this.scene.getItemsToRender().forEach(object3d => {
-            let size = 3;
-            let type = this._ctx.FLOAT;
-            let normalize = false;
-            let stride = 0;
-            let offset = 0;
-            // TODO: Rename this.init, cause init = initialize (now returns array)
-            // TODO: May be refactor to 1 function render() using utils functions like createAttributeSetters(), setAttributes(), 
-            // TODO: Reference: https://webglfundamentals.org/webgl/lessons/webgl-less-code-more-fun.html
-            this._ctx.vertexAttribPointer(this.init(object3d), size, type, normalize, stride, offset);
+            this.init(object3d)
+            
 
             let primitiveType = this._ctx.TRIANGLES;
             let offsetDraw = 0;
@@ -172,15 +165,23 @@ export class WebGLRenderer {
         // matrix = matrix.yRotate(object3d.rotation[1]);
         // matrix = matrix.zRotate(object3d.rotation[2]);
         // matrix = matrix.scale(object3d.scale[0], object3d.scale[1], object3d.scale[2]);
-        let parentMatrix = new Matrix4().identityMatrix();
-        if (object3d.parent) parentMatrix = object3d.parent.matrix;
-        let matrix = new Matrix4(Matrix4Utils.translate(parentMatrix.matrix, object3d.translation[0], object3d.translation[1], object3d.translation[2]));
+
+        let matrix = new Matrix4(Matrix4Utils.translate(new Matrix4().identityMatrix().matrix, object3d.translation[0], object3d.translation[1], object3d.translation[2]));
 
         matrix = matrix.xRotate(object3d.rotation[0]);
         matrix = matrix.zRotate(object3d.rotation[2]);
         matrix = matrix.yRotate(object3d.rotation[1]);
 
         matrix = matrix.scale(object3d.scale[0], object3d.scale[1], object3d.scale[2]);
+
+        if (object3d.parent) matrix = new Matrix4(Matrix4Utils.multiplication(object3d.parent.matrix.matrix, matrix.matrix));
+
+        object3d.children.forEach(function(child) {
+            if (child.parent) {
+                // a matrix was passed in so do the math
+                child.parent.matrix = new Matrix4(Matrix4Utils.multiplication(matrix.matrix, child.parent.matrix.matrix));
+              }
+        });
         object3d.matrix = matrix;
         return matrix;
     }
@@ -273,7 +274,7 @@ void main() {
     specular = pow(dot(normal, halfVector), u_shininess / 3.0);
   }
 
-  gl_FragColor = vec4(0.2, 1, 0.2, 1);
+  gl_FragColor = u_color;
 
   // Lets multiply just the color portion (not the alpha)
   // by the light
@@ -290,8 +291,9 @@ void main() {
         let program = createProgram(gl, vertexShader, fragmentShader);
         // look up where the vertex data needs to go.
         let positionAttributeLocation = gl.getAttribLocation(program, "a_position");
-        let normalLocation = gl.getAttribLocation(program, "a_normal");
+        let normalAttributeLocation = gl.getAttribLocation(program, "a_normal");
         let matrixLocation = gl.getUniformLocation(program, "u_matrix");
+        let colorLocation = gl.getUniformLocation(program, "u_color");
         let worldViewProjectionLocation = gl.getUniformLocation(program, "u_worldViewProjection");
         let worldInverseTransposeLocation = gl.getUniformLocation(program, "u_worldInverseTranspose");
         let reverseLightDirectionLocation = gl.getUniformLocation(program, "u_reverseLightDirection")
@@ -341,20 +343,30 @@ void main() {
         // Bind the position buffer.
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
+        let size = 3;
+            let type = this._ctx.FLOAT;
+            let normalize = false;
+            let stride = 0;
+            let offset = 0;
+            // TODO: Rename this.init, cause init = initialize (now returns array)
+            // TODO: May be refactor to 1 function render() using utils functions like createAttributeSetters(), setAttributes(), 
+            // TODO: Reference: https://webglfundamentals.org/webgl/lessons/webgl-less-code-more-fun.html
+            this._ctx.vertexAttribPointer(positionAttributeLocation, size, type, normalize, stride, offset);
+
         // Turn on the normal attribute
-        gl.enableVertexAttribArray(normalLocation);
+        gl.enableVertexAttribArray(normalAttributeLocation);
 
         // Bind the normal buffer.
         gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
 
         // Tell the attribute how to get data out of normalBuffer (ARRAY_BUFFER)
-        var size = 3;          // 3 components per iteration
-        var type = gl.FLOAT;   // the data is 32bit floating point values
-        var normalize = false; // normalize the data (convert from 0-255 to 0-1)
-        var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
-        var offset = 0;        // start at the beginning of the buffer
+        size = 3;          // 3 components per iteration
+        type = gl.FLOAT;   // the data is 32bit floating point values
+        normalize = false; // normalize the data (convert from 0-255 to 0-1)
+        stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+        offset = 0;        // start at the beginning of the buffer
         gl.vertexAttribPointer(
-            normalLocation, size, type, normalize, stride, offset);
+            normalAttributeLocation, size, type, normalize, stride, offset);
 
         // Multiply the matrices.        
         gl.useProgram(program);
@@ -367,14 +379,14 @@ void main() {
         gl.uniformMatrix4fv(worldInverseTransposeLocation, false, worldInverseTransposeMatrix.matrixToArray());
         gl.uniformMatrix4fv(worldLocation, false, worldMatrix.matrixToArray());
 
-        this.scene.light.position = new Vector3([1, 0, 0]);
+        this.scene.light.position = new Vector3([0, 250, 0]);
         this.scene.light.shininess = 150;
         // set the light position
         gl.uniform3fv(lightWorldPositionLocation, Array.from(this.scene.light.position.positionArr));
 
         // set the camera/view position
         gl.uniform3fv(viewWorldPositionLocation, this.camera.getPositionAsArray());
-
+        gl.uniform4fv(colorLocation, object3d.material.color.positionArr);
         // set the shininess
         gl.uniform1f(shininessLocation, this.scene.light.shininess);
         
