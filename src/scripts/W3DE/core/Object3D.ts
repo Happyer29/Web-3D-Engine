@@ -15,7 +15,22 @@ export class Object3D {
     private _rotation: Vector3 = new Vector3([0, 0, 0]);
     private _translation: Vector3 = new Vector3([0, 0, 0]);
 
-    private parent = null;
+    private _parent : Object3D;
+
+    private _matrix: Matrix4 = new Matrix4().identityMatrix();
+    public get matrix(): Matrix4 {
+        return this._matrix;
+    }
+    public set matrix(value: Matrix4) {
+        this._matrix = value;
+    }
+
+    public get parent() {
+        return this._parent;
+    }
+    public set parent(value) {
+        this._parent = value;
+    }
     private children: Object3D[] = [];
 
     private controls: Controls;

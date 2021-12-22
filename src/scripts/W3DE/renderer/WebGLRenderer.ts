@@ -160,7 +160,7 @@ export class WebGLRenderer {
         });
     }
 
-    private mainMatrix(object3d: Object3D) {
+    private mainMatrix(object3d: Object3D) : Matrix4 {
         function degToRad(d) {
             return d * Math.PI / 180;
         }
@@ -172,15 +172,16 @@ export class WebGLRenderer {
         // matrix = matrix.yRotate(object3d.rotation[1]);
         // matrix = matrix.zRotate(object3d.rotation[2]);
         // matrix = matrix.scale(object3d.scale[0], object3d.scale[1], object3d.scale[2]);
-
-        let matrix = new Matrix4(Matrix4Utils.translate(Matrix4Utils.identityMatrix(), object3d.translation[0], object3d.translation[1], object3d.translation[2]));
+        let parentMatrix = new Matrix4().identityMatrix();
+        if (object3d.parent) parentMatrix = object3d.parent.matrix;
+        let matrix = new Matrix4(Matrix4Utils.translate(parentMatrix.matrix, object3d.translation[0], object3d.translation[1], object3d.translation[2]));
 
         matrix = matrix.xRotate(object3d.rotation[0]);
         matrix = matrix.zRotate(object3d.rotation[2]);
         matrix = matrix.yRotate(object3d.rotation[1]);
 
         matrix = matrix.scale(object3d.scale[0], object3d.scale[1], object3d.scale[2]);
-
+        object3d.matrix = matrix;
         return matrix;
     }
 
