@@ -175,12 +175,16 @@ export class WebGLRenderer {
         matrix = matrix.scale(object3d.scale[0], object3d.scale[1], object3d.scale[2]);
 
         if (object3d.parent) matrix = new Matrix4(Matrix4Utils.multiplication(object3d.parent.matrix.matrix, matrix.matrix));
-
+        function updateMatrix(object3d : Object3D, matrix : Matrix4) {
+            object3d.matrix = new Matrix4(Matrix4Utils.multiplication(object3d.matrix.matrix, matrix.matrix));
+            if (object3d.parent) {
+                object3d.children.forEach((child) => {
+                    updateMatrix(child, object3d.matrix)
+                }
+                )}
+            }
         object3d.children.forEach(function(child) {
-            if (child.parent) {
-                // a matrix was passed in so do the math
-                child.parent.matrix = new Matrix4(Matrix4Utils.multiplication(matrix.matrix, child.parent.matrix.matrix));
-              }
+            updateMatrix(child, matrix);
         });
         object3d.matrix = matrix;
         return matrix;

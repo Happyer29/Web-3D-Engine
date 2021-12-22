@@ -26,6 +26,7 @@ export class Object3D {
     }
 
     private _matrix: Matrix4 = new Matrix4().identityMatrix();
+    
     public get matrix(): Matrix4 {
         return this._matrix;
     }

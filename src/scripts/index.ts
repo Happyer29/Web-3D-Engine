@@ -45,10 +45,11 @@ async function readObjectFromInput(event: Event) {
     //const object2 = await new W3DE.ObjParser().parseObjectFromString(fileText);//TODO
     const sphereGeometry = new W3DE.SphereGeometry(30, 100); // change roundness to 10-20 to clearly see rotation
 
+    const sphereGeometry1 = new W3DE.SphereGeometry(30, 5); // change roundness to 10-20 to clearly see rotation
     const defaultMaterial = await W3DE.Material.getDefaultMaterial();
 
     const object2 = new W3DE.Mesh(sphereGeometry);
-
+    const object3 = new W3DE.Mesh(sphereGeometry1);
     const scene = new W3DE.Scene();
     // const axes = new W3DE.Axes(500);
     // axes.setTranslation(100, 0, 100)
@@ -64,19 +65,22 @@ async function readObjectFromInput(event: Event) {
     
     const object1orbit = new W3DE.Mesh();
     
-    object1.parent = object1orbit;
-    object1orbit.parent = object2.parent;
-    object1orbit.setTranslationX(100);
 
+    object2.parent = object1;
+    object3.parent = object2;
 
+    object2.setTranslationX(200);
+    object3.setTranslationX(100);
     camera.attachDefaultControls();
-    object2.attachDefaultControls();
+    object1.attachDefaultControls();
  
-    object1.setTranslationY(300);
-    scene.add(object2);
-    // scene.add(sphere);
+   
     scene.add(object1);
+    scene.add(object2);
+    scene.add(object3);
+    // scene.add(sphere);
     
+    // scene.add(object1orbit);
     const renderer = new W3DE.WebGLRenderer(scene, camera, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
 
     resetCameraButton.onclick = () => {
@@ -84,14 +88,12 @@ async function readObjectFromInput(event: Event) {
         camera.setTranslation(cameraPosition.positionArr[0],cameraPosition.positionArr[1],cameraPosition.positionArr[2]);
     }
     resetObjectButton.onclick = () => {
-        object1.setRotation(0, 0, 0);
-        object1.toDefaultTRS();
-        object2.setRotation(300, 300, 300);
-        object2.toDefaultTRS();
+
     }
 
     let animate = () => {
-        object1orbit.setRotationY(object2.rotation[1] + 2)
+        object1.setRotationY(object1.rotation[1] + 0.5)
+        object2.setRotationY(object2.rotation[1] + 0.5)
     }
 
     renderer.resizeCanvasToDisplaySize();
