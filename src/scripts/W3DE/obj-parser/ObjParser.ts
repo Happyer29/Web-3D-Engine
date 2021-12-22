@@ -21,7 +21,7 @@ export class ObjParser {
         [],   // normals
     ];
 
-    public async parseObjectFromString(objURL: string, textureURL?: string): Promise<Mesh> {
+    public async parseObjectFromString(objURL: string, textureURL?: string): Promise<Geometry> {
 
         if (!this.webglVertexData[0]) {
             console.warn("No vertex data parsed!");
@@ -31,7 +31,7 @@ export class ObjParser {
             console.warn("No material provided! Using default material instead...");
         }
 
-        return new Mesh(this.parseGeometryFromObjFile(objURL), (!textureURL) ? await Material.getDefaultMaterial() : await new Material().setFromURL(textureURL));
+        return this.parseGeometryFromObjFile(objURL);
     }
 
     private addVertex(vertex: string) {

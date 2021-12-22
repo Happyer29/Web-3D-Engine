@@ -25,28 +25,31 @@ async function readObjectFromInput(event: Event) {
     const file = files[0];
     const fileText = await W3DE.FileLoader.loadAsText(file);
 
-    const object = await new W3DE.ObjParser().parseObjectFromString(fileText);//TODO
-
+    const objectGeometry = await new W3DE.ObjParser().parseObjectFromString(fileText);//TODO
     const sphereGeometry = new W3DE.SphereGeometry(75, 100); // change roundness to 10-20 to clearly see rotation
 
-    const defaultMaterial = await W3DE.Material.getDefaultMaterial();
+    const defaultMaterial = await new W3DE.Material().setFromURL("1556708032_1.jpg");
+    const customMaterial = await new W3DE.Material().setFromURL("NeutralWrapped.jpg");
 
-    const sphere = new W3DE.Mesh(sphereGeometry, defaultMaterial);
+    console.log(defaultMaterial, customMaterial)
+
+    const object1 = new W3DE.Mesh(objectGeometry, customMaterial);
+    const object2 = new W3DE.Mesh(objectGeometry, defaultMaterial);
 
     const scene = new W3DE.Scene();//scene builder
     // TODO object.move(x,y,z); object.rotate.x();
 
     const renderer = new W3DE.WebGLRenderer(scene, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
-    sphere.setTranslation(500, 900, 0)
+    object2.setTranslation(500, 900, 0)
 
 
-    object.setRotation(190, 20, 30)
-    object.setTranslation(500, 500, 0)
-    object.setScale(1, 1, 1);
+    object1.setRotation(190, 20, 30)
+    object1.setTranslation(500, 500, 0)
+    object1.setScale(10, 10, 10);
 
 
-    scene.add(object);
-    scene.add(sphere);
+    scene.add(object1);
+    scene.add(object2);
 
     renderer.resizeCanvasToDisplaySize();
     renderer.animation = animate;
@@ -58,7 +61,7 @@ async function readObjectFromInput(event: Event) {
 
     function animate() {
         // object.setScale(object.scaleX + 0.01, object.scaleY + 0.5, object.scaleZ + 0.01);
-        object.setRotationY(object.rotationY + 1);
+        object1.setRotationY(object1.rotationY + 1);
     }
 }
 

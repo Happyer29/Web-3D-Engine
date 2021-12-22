@@ -1,14 +1,37 @@
 import { Geometry } from "../geometries/Geometry";
 import { Material } from "../materials/Material";
 
+interface buffers{
+    positionBuffer  ?: WebGLBuffer,
+    textureBuffer   ?: WebGLBuffer,
+    //normalsBuffer   ?: WebGLBuffer
+}
+
+interface attribs{
+    position?,
+    texture?
+}
+
 export class Object3D {
     private _geometry: Geometry;
     private _material: Material;
     private _type: string;
 
+    private _buffers:buffers = {
+        positionBuffer: undefined,
+        textureBuffer: undefined,
+        //normalsBuffer: null
+    };
+
+    private _programGL: WebGLProgram;
+
     private _scale: number[] = [1, 1, 1];
     private _rotation: number[] = [0, 0, 0];
     private _translation: number[] = [0, 0, 0];
+
+    //private _uniforms
+    texture: WebGLTexture;
+
 
     constructor(geometry: Geometry, material?: Material) {
         this._geometry = geometry;
@@ -113,7 +136,6 @@ export class Object3D {
 
     }
 
-
     get translation(): number[] {
         return this._translation;
     }
@@ -127,5 +149,21 @@ export class Object3D {
     get translationZ() {
         return this._translation[2];
 
+    }
+
+    get program(): any {
+        return this._programGL;
+    }
+
+    set program(value: any) {
+        this._programGL = value;
+    }
+
+    get buffers(): buffers {
+        return this._buffers;
+    }
+
+    set buffers(value: buffers) {
+        this._buffers = value;
     }
 }
