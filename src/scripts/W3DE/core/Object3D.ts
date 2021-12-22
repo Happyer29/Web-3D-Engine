@@ -146,6 +146,8 @@ export class Object3D {
         let rotateZ = (event: WheelEvent) => {
             if (toggleZModeKey.isPressed) {
                 this.setRotationZ(this.rotation[2] + event.deltaY / 25)
+            } else if (!toggleCModeKey.isPressed) {
+                this.setTranslationZ(this.translation[2] + event.deltaY / 25)
             }
         }
 

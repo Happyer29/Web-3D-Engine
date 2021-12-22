@@ -149,6 +149,7 @@ export class WebGLRenderer {
             let offsetDraw = 0;
             let count = object3d.geometry.position.length / 3;
 
+            
             this._ctx.drawArrays(primitiveType, offsetDraw, count);
         })
 
@@ -196,7 +197,7 @@ export class WebGLRenderer {
         // Enable the depth buffer
         gl.enable(gl.DEPTH_TEST);
 
-        function createProgram(gl, vertexShader, fragmentShader) {
+        function createProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader) {
             let program = gl.createProgram();
             gl.attachShader(program, vertexShader);
             gl.attachShader(program, fragmentShader);
@@ -276,7 +277,8 @@ void main() {
 
   // Lets multiply just the color portion (not the alpha)
   // by the light
-  gl_FragColor.rgb *= light;
+  gl_FragColor.rgb *= (light + 0.1);
+
 
   // Just add in the specular
   gl_FragColor.rgb += specular;
@@ -301,6 +303,7 @@ void main() {
 
         let worldLocation = gl.getUniformLocation(program, "u_world");
         // Create a buffer and put three 2d clip space points in it
+        // Tell it to use our program (pair of shaders)
         
         let positionBuffer = gl.createBuffer();
 
@@ -330,8 +333,7 @@ void main() {
         // Clear the canvas
 
         let worldMatrix = this.mainMatrix(object3d);
-        // Tell it to use our program (pair of shaders)
-        gl.useProgram(program);
+        
 
         // Turn on the attribute
         gl.enableVertexAttribArray(positionAttributeLocation);
@@ -355,7 +357,7 @@ void main() {
             normalLocation, size, type, normalize, stride, offset);
 
         // Multiply the matrices.        
-
+        gl.useProgram(program);
         let worldViewProjectionMatrix = new Matrix4(Matrix4Utils.multiplication(this.camera.viewProjectionMatrix, worldMatrix.matrix));
         let worldInverseMatrix = new Matrix4(Matrix4Utils.inverse(worldMatrix.matrix));
         let worldInverseTransposeMatrix = new Matrix4(Matrix4Utils.transpose(worldInverseMatrix.matrix));
@@ -365,7 +367,7 @@ void main() {
         gl.uniformMatrix4fv(worldInverseTransposeLocation, false, worldInverseTransposeMatrix.matrixToArray());
         gl.uniformMatrix4fv(worldLocation, false, worldMatrix.matrixToArray());
 
-        this.scene.light.position = new Vector3([0.5, 0.7, 1]);
+        this.scene.light.position = new Vector3([1, 0, 0]);
         this.scene.light.shininess = 150;
         // set the light position
         gl.uniform3fv(lightWorldPositionLocation, Array.from(this.scene.light.position.positionArr));
@@ -375,7 +377,7 @@ void main() {
 
         // set the shininess
         gl.uniform1f(shininessLocation, this.scene.light.shininess);
-
+        
         return positionAttributeLocation;
     }
 }

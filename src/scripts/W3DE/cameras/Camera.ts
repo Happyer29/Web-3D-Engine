@@ -96,7 +96,7 @@ export class Camera {
         let toggleCModeKey = new Key("c");
 
         let translateZ = (event : WheelEvent) => {
-            if (!toggleZModeKey.isPressed) this.translate(0, 0, event.deltaY / 25);
+            if (toggleCModeKey.isPressed) this.translate(0, 0, event.deltaY / 5);
         }
 
         let rotateXY = (event : MouseEvent) => {

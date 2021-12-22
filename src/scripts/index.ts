@@ -50,6 +50,10 @@ async function readObjectFromInput(event: Event) {
     const sphere = new W3DE.Mesh(sphereGeometry);
 
     const scene = new W3DE.Scene();
+    const axes = new W3DE.Axes(500);
+    axes.setTranslation(100, 0, 100)
+    scene.add(axes);
+    console.log(axes);
 
     const cameraPosition = new W3DE.Vector3([0, 20, 60]);
     const up = new W3DE.Vector3([0, 1, 0]);
@@ -62,6 +66,7 @@ async function readObjectFromInput(event: Event) {
     object.attachDefaultControls();
  
     sphere.setTranslation(200, 200, 200);
+    object.setScaleAll(200);
     scene.add(object);
     // scene.add(sphere);
     console.log(object)
@@ -83,7 +88,8 @@ async function readObjectFromInput(event: Event) {
     buttons.forEach(button => {
         button.disabled = true;
     })
-
+    console.log(scene);
+    
 
     // function animate() {
     //     if (object.translation[0] <= renderer.canvas.clientWidth / 2) {
