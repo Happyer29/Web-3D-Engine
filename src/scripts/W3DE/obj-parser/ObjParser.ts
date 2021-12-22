@@ -2,6 +2,7 @@ import { Geometry } from "../geometries/Geometry";
 import { Mesh } from "../objects/Mesh";
 import { Material } from "../materials/Material";
 import { TextureLoader } from "../loaders/TextureLoader";
+import { Vector3 } from "../W3DE";
 
 export class ObjParser {
 
@@ -92,7 +93,21 @@ export class ObjParser {
                 }
             }
         })
+        if (this.webglVertexData[2].length == 0) {
+            this.webglVertexData[2] = this.webglVertexData[0];
+        //     const numTriangles = this.webglVertexData[0].length - 2;
+        //     const positions = this.webglVertexData[0];
+        //     for (let tri = 0; tri < numTriangles; ++tri) {
+        //         let p0 = positions[0];
+        //         let p1 = positions[tri + 1];
+        //         let p2 = positions[tri + 2];
+        //         let length = (p0 + p1 + p2) / 3;
+        //         if (length < 0.00001) this.webglVertexData[2].push(0)
+        //         else this.webglVertexData[2].push((p1 - p0 ) * (p2 - p1) / length);
+        //     }
 
+        }
+        console.log(new Geometry(this.webglVertexData[0], this.webglVertexData[1], this.webglVertexData[2]))
         return new Geometry(this.webglVertexData[0], this.webglVertexData[1], this.webglVertexData[2])
     }
 

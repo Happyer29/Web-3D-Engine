@@ -1,5 +1,6 @@
 import {Point4} from "./Point4";
 import {fixedLengthArray} from "../utils/fixedLengthArray";
+import {vector3Points} from "./Vector3";
 
 interface Vector4Obj {
     x: number,
@@ -87,7 +88,7 @@ export class Vector4 {
     }
 
     get positionArr() {
-        return this._vector;
+        return Array.from(this._vector);
     }
 
     public static sum(v1: Vector4, v2: Vector4): Vector4 {
@@ -143,7 +144,7 @@ export class Vector4 {
     }
 
     private static instanceOfVector4Points(obj: any): obj is vector4Points {
-        return (<vector4Points>obj)[0] !== undefined;
+        return (<vector4Points>obj[0].w) !== undefined;
     }
 }
 

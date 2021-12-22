@@ -46,3 +46,19 @@ html{
     font-weight: bold;
 }
 
+.controls-block {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 100;
+    width: 15vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    transform: translateX(150%);
+}
+.pressed-key {
+    display: none;
+    font-size: 24px;
+}
+

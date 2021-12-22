@@ -1,6 +1,7 @@
 export {Object3D} from "./core/Object3D";
 export {Geometry} from "./geometries/Geometry";
 export {SphereGeometry} from "./geometries/SphereGeometry";
+export {Axes} from "./geometries/Axes";
 
 //loaders
 export {FileLoader} from "./loaders/FileLoader";
@@ -22,6 +23,7 @@ export {Mesh} from "./objects/Mesh";
 export {WebGLRenderer} from "./renderer/WebGLRenderer";
 
 export {Scene} from "./scenes/Scene";
+
 
 //utils
 export {UnitType} from "./utils/unitType";

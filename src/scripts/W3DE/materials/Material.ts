@@ -1,7 +1,16 @@
 import { TextureLoader } from "../loaders/TextureLoader";
+import { Vector4 } from "../maths/Vector4";
 
 export class Material {
     private _texture: HTMLImageElement;
+    private _color: Vector4 = new Vector4([0.5, 0, 0.2, 1]);
+
+    public get color(): Vector4 {
+        return this._color;
+    }
+    public set color(value: Vector4) {
+        this._color = value;
+    }
 
     constructor(texture: HTMLImageElement = null) {
         if (texture) this._texture = texture;
