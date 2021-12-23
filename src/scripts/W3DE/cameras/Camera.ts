@@ -5,7 +5,6 @@ import { Object3D } from "../core/Object3D";
 import { matrix4, Matrix4 } from "../maths/Matrix4";
 import { Vector3 } from "../maths/Vector3";
 import { Matrix4Utils } from "../utils/Matrix4Utils";
-import { Scene } from "../W3DE";
 
 export class Camera {
     private position: Vector3 = new Vector3([0, 0, 0]);
@@ -17,13 +16,26 @@ export class Camera {
     private near: number = 1;
     private far: number = 10000;
 
-    private matrix: Matrix4;
-    private viewMatrix: Matrix4;
-    private projectionMatrix: Matrix4;
+    private _viewMatrix: Matrix4;
+    public get viewMatrix(): Matrix4 {
+        return this._viewMatrix;
+    }
+    public set viewMatrix(value: Matrix4) {
+        this._viewMatrix = value;
+    }
+    private _projectionMatrix: Matrix4;
+    public get projectionMatrix(): Matrix4 {
+        return this._projectionMatrix;
+    }
+    public set projectionMatrix(value: Matrix4) {
+        this._projectionMatrix = value;
+    }
 
     private _viewProjectionMatrix : matrix4;
 
     private controls : Controls;
+
+    private matrix : Matrix4 = new Matrix4().identityMatrix();
 
     public getPositionAsArray() {
         return this.position.positionArr;
@@ -34,6 +46,7 @@ export class Camera {
         near?: number,
         far?: number
     }) {
+        
         if (cameraPosition) this.position = cameraPosition;
         if (target) this.target = target;
         if (up) this.up = up;
@@ -49,6 +62,7 @@ export class Camera {
         this.viewMatrix = new Matrix4(Matrix4Utils.inverse(this.matrix.matrix));
         this.projectionMatrix = new Matrix4(Matrix4Utils.perspective(this.fovInRadians, this._aspect, this.near, this.far));
         this._viewProjectionMatrix = Matrix4Utils.multiplication(this.projectionMatrix.matrix, this.viewMatrix.matrix);
+        
     }
 
     public get viewProjectionMatrix() {

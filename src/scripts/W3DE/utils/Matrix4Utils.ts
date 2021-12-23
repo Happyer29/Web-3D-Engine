@@ -284,8 +284,6 @@ export class Matrix4Utils {
         let yAxisArr = yAxis.positionArr;
         
         let cameraPositionArr = cameraPosition.positionArr;
-
-        console.log(xAxisArr, yAxisArr, zAxisArr, cameraPositionArr);
         return [
             [xAxisArr[0], xAxisArr[1], xAxisArr[2], 0],
             [yAxisArr[0], yAxisArr[1], yAxisArr[2], 0],

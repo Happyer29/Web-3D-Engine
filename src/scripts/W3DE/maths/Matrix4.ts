@@ -65,6 +65,11 @@ export class Matrix4 {
         return this;
     }
 
+    public transpose() {
+        this._matrix = Matrix4Utils.transpose(this.matrix)
+        return this;
+    }
+
     public translate(tx: number, ty: number, tz: number){
         this._matrix = Matrix4Utils.translate(this._matrix, tx, ty, tz);
         return this;

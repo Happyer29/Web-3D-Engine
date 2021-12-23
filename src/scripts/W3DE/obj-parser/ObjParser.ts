@@ -34,12 +34,12 @@ export class ObjParser {
         });
     }
 
-    public async parseObjFromFile(file: File) {
+    public async parseObjFromFileAsGeometry(file: File) {
         let fileText = await FileLoader.loadAsText(file);
-        return this.parseObjFromString(fileText)
+        return this.parseObjFromStringAsGeometry(fileText)
     }
 
-    public parseObjFromString(objString: string): Geometry {
+    public parseObjFromStringAsGeometry(objString: string): Geometry {
 
         enum ObjTokens {
             COMMENT = "#",

@@ -1,24 +1,55 @@
+import { Camera } from "../cameras/Camera";
 import { Object3D } from "../core/Object3D";
-import { Light } from "../lighting/Light";
+import { AmbientLight } from "../lighting/AmbientLight";
+import { PointLight } from "../lighting/PointLight";
+
+import { Vector3 } from "../W3DE";
 
 export class Scene {
     private _itemsToRender: Object3D[] = []; // TODO: SceneGraph with nodes and world/local Matrices.
+    public get itemsToRender(): Object3D[] {
+        return this._itemsToRender;
+    }
+    public set itemsToRender(value: Object3D[]) {
+        this._itemsToRender = value;
+    }
+    private _camera: Camera;
 
-    private _light: Light;
+    public get camera(): Camera {
+        return this._camera;
+    }
+    public set camera(value: Camera) {
+        this._camera = value;
+    }
 
-    public get light(): Light {
+    private _light: PointLight; // todo multiple lightning sources
+
+    public get light(): PointLight {
         return this._light;
     }
-    public set light(value: Light) {
+    public set light(value: PointLight) {
         this._light = value;
     }
 
+    private _ambientLight: AmbientLight = new AmbientLight(0.01, new Vector3([1, 1, 1]));
+
+    public get ambientLight(): AmbientLight {
+        return this._ambientLight;
+    }
+    public set ambientLight(value: AmbientLight) {
+        this._ambientLight = value;
+    }
+
     constructor() {
-        this.light = new Light()
     }
 
     public add(item: Object3D) {
         this._itemsToRender.push(item);
+    }
+
+    public attachCamera(camera: Camera) {
+        this._camera = camera;
+        return this;
     }
 
     public clear() {

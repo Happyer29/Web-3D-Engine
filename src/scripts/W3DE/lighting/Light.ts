@@ -1,21 +1,30 @@
-import { Vector3, vector3 } from "../maths/Vector3";
+import { Vector3 } from "../maths/Vector3";
 
 export class Light {
-    private _position: Vector3 = new Vector3([0, 0, 0]);
-    private _shininess: number = 100;
+
+    protected _shininess: number = 100;
+    private _color: Vector3 = new Vector3([1, 1, 1]);
     
+    public get color(): Vector3 {
+        return this._color;
+    }
+    public set color(value: Vector3) {
+        this._color = value;
+    }
+    protected _type: String;
 
-    constructor(position? : vector3, shininess? : number) {
-        if (position) this._position = new Vector3(position);
+    public get type(): String {
+        return this._type;
+    }
+    public set type(value: String) {
+        this._type = value;
+    }
+
+    constructor(shininess?: number, color?: Vector3) {
         if (shininess) this._shininess = shininess;
+        if (color) this._color = color;
     }
 
-    public get position(): Vector3 {
-        return this._position;
-    }
-    public set position(value: Vector3) {
-        this._position = value;
-    }
     public get shininess(): number {
         return this._shininess;
     }
