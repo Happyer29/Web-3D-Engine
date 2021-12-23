@@ -270,7 +270,7 @@ export class WebGLRenderer {
             }
 
             let worldMatrix = this.mainMatrix(object);
-            let worldViewProjectionMatrix = new Matrix4(Matrix4Utils.multiplication(this.camera.viewProjectionMatrix, worldMatrix.matrix));
+            let worldViewProjectionMatrix = new Matrix4(Matrix4Utils.multiplication(this.scene.camera.viewProjectionMatrix, worldMatrix.matrix));
             let worldInverseMatrix = new Matrix4(Matrix4Utils.inverse(worldMatrix.matrix));
             let worldInverseTransposeMatrix = new Matrix4(Matrix4Utils.transpose(worldInverseMatrix.matrix));
 
@@ -285,7 +285,7 @@ export class WebGLRenderer {
             gl.uniform3fv(lightWorldPositionLocation, this.scene.light.position.positionArr);
 
             // set the camera/view position
-            gl.uniform3fv(viewWorldPositionLocation, this.camera.getPositionAsArray());
+            gl.uniform3fv(viewWorldPositionLocation, this.scene.camera.getPositionAsArray());
             gl.uniform4fv(colorLocation, object.material.color.positionArr);
             // set the shininess
             gl.uniform1f(shininessLocation, this.scene.light.shininess);
