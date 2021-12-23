@@ -32,6 +32,7 @@ export class Object3D {
     private _parent: Object3D;
     private _children: Object3D[] = [];
 
+    protected controls: Controls;
 
     private _texture: WebGLTexture;
 
@@ -80,8 +81,6 @@ export class Object3D {
             this.parent.children.push(this);
         }
     }
-
-    protected controls: Controls;
 
 
     public get geometry(): Geometry {
