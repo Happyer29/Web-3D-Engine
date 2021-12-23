@@ -428,21 +428,21 @@ void main() {
   vec3 surfaceToViewDirection = normalize(v_surfaceToView);
   vec3 halfVector = normalize(surfaceToLightDirection + surfaceToViewDirection);
 
-  float light = dot(normal, surfaceToLightDirection);
-  float specular = 0.0;
-  if (light > 0.0) {
-    specular = pow(dot(normal, halfVector), u_shininess / 3.0);
-  }
+  //float light = dot(normal, surfaceToLightDirection);
+  //float specular = 0.0;
+  //if (light > 0.0) {
+    //specular = pow(dot(normal, halfVector), u_shininess / 3.0);
+  //}
 
   gl_FragColor = texture2D(u_texture, v_texcoord);
 
   // Lets multiply just the color portion (not the alpha)
   // by the light
-  gl_FragColor.rgb *= light;
+  //gl_FragColor.rgb *= light;
 
 
   // Just add in the specular
-  gl_FragColor.rgb += specular;
+  //gl_FragColor.rgb += specular;
   finalColor = v_normal * 0.5 + vec3(0.5);
   // Debugging normals
   // gl_FragColor = vec4(finalColor.x, finalColor.y, finalColor.z, 1.0);
