@@ -3,6 +3,7 @@ import { AmbientLight } from './W3DE/lighting/AmbientLight';
 import { PointLight } from './W3DE/lighting/PointLight';
 
 import * as W3DE from './W3DE/W3DE';
+import {Vector2, vector2} from "./W3DE/maths/Vector2";
 
 let t = new W3DE.Matrix3([[0, 1, 0]]);
 let a = new W3DE.Vector3([1, 2, 3]);
