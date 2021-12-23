@@ -30,7 +30,7 @@ export class Material {
     }
     
     public static emptyMaterial() {
-        return new Material(null);
+        return new Material(undefined);
     }
 
     public static async fromURL(url : string): Promise<Material> {
