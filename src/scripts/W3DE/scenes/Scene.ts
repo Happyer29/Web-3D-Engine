@@ -1,9 +1,16 @@
+import { Camera } from "../cameras/Camera";
 import { Object3D } from "../core/Object3D";
 import { Light } from "../lighting/Light";
 
 export class Scene {
     private itemsToRender: Object3D[] = []; // TODO: SceneGraph with nodes and world/local Matrices.
-
+    private _camera: Camera;
+    public get camera(): Camera {
+        return this._camera;
+    }
+    public set camera(value: Camera) {
+        this._camera = value;
+    }
     private _light: Light;
 
     public get light(): Light {

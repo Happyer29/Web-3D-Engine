@@ -21,6 +21,10 @@ export class Material {
         return new Material(texture);
     }
 
+    public static emptyMaterial() {
+        return new Material(undefined);
+    }
+
     set texture(value: HTMLImageElement) {
         this._texture = value;
     }

@@ -47,7 +47,7 @@ export class WebGLRenderer {
     private time: number = 1;
 
     private _animation;
-    private camera: Camera;
+    
 
     constructor(scene: Scene, camera: Camera, options: ConstructorOptions = {}) {
         this._options = options;
@@ -57,8 +57,7 @@ export class WebGLRenderer {
         this._canvas = this.createCanvasElement()
         this._ctx = this.getCtx();
 
-        this.camera = camera;
-        this.camera.aspect = this._ctx.canvas.clientWidth / this._ctx.canvas.clientHeight;
+        this.scene.camera.aspect = this._ctx.canvas.clientWidth / this._ctx.canvas.clientHeight;
 
 
         this.setSize(new Unit(options.width ?? undefined), new Unit(options.height ?? undefined), true)
@@ -370,7 +369,7 @@ void main() {
 
         // Multiply the matrices.        
         gl.useProgram(program);
-        let worldViewProjectionMatrix = new Matrix4(Matrix4Utils.multiplication(this.camera.viewProjectionMatrix, worldMatrix.matrix));
+        let worldViewProjectionMatrix = new Matrix4(Matrix4Utils.multiplication(this.scene.camera.viewProjectionMatrix, worldMatrix.matrix));
         let worldInverseMatrix = new Matrix4(Matrix4Utils.inverse(worldMatrix.matrix));
         let worldInverseTransposeMatrix = new Matrix4(Matrix4Utils.transpose(worldInverseMatrix.matrix));
 
@@ -385,7 +384,7 @@ void main() {
         gl.uniform3fv(lightWorldPositionLocation, Array.from(this.scene.light.position.positionArr));
 
         // set the camera/view position
-        gl.uniform3fv(viewWorldPositionLocation, this.camera.getPositionAsArray());
+        gl.uniform3fv(viewWorldPositionLocation, this.scene.camera.getPositionAsArray());
         gl.uniform4fv(colorLocation, object3d.material.color.positionArr);
         // set the shininess
         gl.uniform1f(shininessLocation, this.scene.light.shininess);

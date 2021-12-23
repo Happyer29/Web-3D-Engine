@@ -54,7 +54,7 @@ export class Object3D {
         
     }
 
-    private controls: Controls;
+    protected controls: Controls;
     constructor(geometry: Geometry, material?: Material) {
         this._geometry = geometry;
         if (material) this._material = material;
