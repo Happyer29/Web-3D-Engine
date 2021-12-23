@@ -1,4 +1,7 @@
 import { Camera } from './W3DE/cameras/Camera';
+import { AmbientLight } from './W3DE/lighting/AmbientLight';
+import { PointLight } from './W3DE/lighting/PointLight';
+
 import * as W3DE from './W3DE/W3DE';
 
 let t = new W3DE.Matrix3([[0, 1, 0]]);
@@ -59,10 +62,8 @@ async function readObjectFromInput(event: Event) {
     const object2 = new W3DE.Mesh(sphereGeometry, defaultMaterial);
     const object3 = new W3DE.Mesh(sphereGeometry1, defaultMaterial);
 
-    const scene = new W3DE.Scene();
-    const axes = new W3DE.Axes(500);
-    scene.add(axes);
-    console.log(axes);
+    
+    const axes = new W3DE.AxisHelper(500);
 
     const cameraPosition = new W3DE.Vector3([0, 20, 60]);
     const up = new W3DE.Vector3([0, 1, 0]);
@@ -70,8 +71,10 @@ async function readObjectFromInput(event: Event) {
 
     // TODO object.move(x,y,z); object.rotate.x();
     const camera = new Camera(cameraPosition, target, up);
-        
-
+    const scene = new W3DE.Scene().attachCamera(camera);
+    const plane = new W3DE.PlaneGeometry();
+    const planeMesh = new W3DE.Mesh(plane, defaultMaterial);
+    scene.ambientLight = new AmbientLight(800, new W3DE.Vector3([1, 1, 1]))
     object2.parent = object1;
     object3.parent = object2;
 
@@ -79,15 +82,16 @@ async function readObjectFromInput(event: Event) {
     object3.setTranslationX(100);
     camera.attachDefaultControls();
     object1.attachDefaultControls();
- 
+    // scene.light = new PointLight([1, 0, 0], 50, new W3DE.Vector3([0.5, 0.5, 1]));
     scene.add(object1);
-    scene.add(object2);
-    scene.add(object3);
-    
+    // scene.add(object2);
+    // scene.add(object3);
+    // scene.add(axes);
+    // scene.add(planeMesh)
     // scene.add(sphere);
     
     // scene.add(object1orbit);
-    const renderer = new W3DE.WebGLRenderer(scene, camera, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
+    const renderer = new W3DE.WebGLRenderer(scene, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
 
     resetCameraButton.onclick = () => {
         camera.rotate(0, 0);
@@ -98,8 +102,8 @@ async function readObjectFromInput(event: Event) {
     }
 
     let animate = () => {
-        object1.setRotationY(object1.rotation[1] + 0.5)
-        object2.setRotationY(object2.rotation[1] + 0.5)
+        // object1.setRotationY(object1.rotation[1] + 0.5)
+        // object2.setRotationY(object2.rotation[1] + 0.5)
     }
 
     renderer.resizeCanvasToDisplaySize();
@@ -158,9 +162,9 @@ async function drawGeometry() {
 
     const camera = new Camera(cameraPosition, up, target);
     camera.attachDefaultControls();
+    scene.attachCamera(camera);
     
-    
-
+    scene.ambientLight = new AmbientLight(800, new W3DE.Vector3([1, 1, 1]))
     const resetCameraButton : HTMLButtonElement = document.querySelector("#reset-camera-button");
     const resetObjectButton : HTMLButtonElement = document.querySelector("#reset-object-button");
 
@@ -171,7 +175,7 @@ async function drawGeometry() {
     }
     
     // scene.add(object);
-    for (let index = 0; index < 2; index++) {
+    for (let index = 0; index < 10; index++) {
         const sphereGeometry = new W3DE.SphereGeometry(40, 70); // change roundness to 5-10 to clearly see rotation
         const sphere = new W3DE.Mesh(sphereGeometry, defaultMaterial);
         sphere.setTranslationX(index * 150);
@@ -179,7 +183,7 @@ async function drawGeometry() {
         scene.add(sphere);
     }
 
-    const renderer = new W3DE.WebGLRenderer(scene, camera, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
+    const renderer = new W3DE.WebGLRenderer(scene, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
     renderer.animationSpeed = 0.5;
     let sceneGraph = renderer.scene.getItemsToRender();
     

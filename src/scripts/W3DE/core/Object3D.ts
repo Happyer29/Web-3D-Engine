@@ -5,6 +5,7 @@ import { Matrix4 } from "../maths/Matrix4";
 import { Controls } from "../controls/Controls";
 import { Mouse, MOUSE_EVENTS } from "../controls/Mouse";
 import { Key, KEY_EVENTS } from "../controls/Key";
+import { Matrix4Utils } from "../utils/Matrix4Utils";
 
 interface buffers {
     positionBuffer: WebGLBuffer,
@@ -56,12 +57,22 @@ export class Object3D {
     }
 
     private _matrix: Matrix4 = new Matrix4().identityMatrix();
+    private _normalMatrix: Matrix4 = new Matrix4().identityMatrix();
+    public get normalMatrix(): Matrix4 {
+        return this._normalMatrix;
+    }
+    public set normalMatrix(value: Matrix4) {
+        this._normalMatrix = value;
+    }
 
     public get matrix(): Matrix4 {
         return this._matrix;
     }
     public set matrix(value: Matrix4) {
         this._matrix = value;
+        this.normalMatrix = new Matrix4(Matrix4Utils.inverse(this.matrix.matrix));
+        this.normalMatrix.transpose();
+        
     }
 
     public get parent() {
@@ -226,7 +237,6 @@ export class Object3D {
 
         let aKey = new Key("a").setFunction(KEY_EVENTS.KEY_DOWN, () => {
             if (!toggleCModeKey.isPressed) {
-                console.log("object");
 
                 this.setTranslationX(this.translation[0] - 10);
             }
