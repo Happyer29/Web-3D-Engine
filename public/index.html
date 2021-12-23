@@ -11,39 +11,32 @@
 </head>
 <body>
 
-<!--    <div class="bg">-->
-
-
-<!--    </div>-->
-<!--    <div class="content">-->
-
-<!--    </div>-->
-
-
-<div class="loaders">
-    <div class="obj-loader-block">
-        <label for="obj-loader">obj-loader</label>
-        <input type="file" id="obj-loader" accept=".obj">
+<header>
+    <div class="show-controls-menu">
+        <button id="show-controls-button">Управление</button>
     </div>
-    <div class="texture-loader-block">
-        <label for="texture-loader">texture-loader</label>
-        <input type="file" id="texture-loader" accept=".jpg, .png, .jpeg">
-    </div>
-    <div class="geometry-test-block">
-        <label for="texture-loader">Отрисовать геометрию</label>
-        <button id="draw-geometry">Отрисовать</button>
-    </div>
-</div>
-<div class="show-controls-block">
-    <button id="show-controls-button">Управление</button>
-</div>
-<div class="controls-block">
-    <div class="camera-contols">
+</header>
+<div class="controls-menu">
+    <div class="controls-block camera-contols">
         <button id="reset-camera-button">Вернуть камеру</button>
         <button id="reset-object-button">Вернуть модель</button>
     </div>
     <div class="pressed-key"><p>Нажата клавиша: </p>
-    <span class="pressed-key-value"></span></div>
+        <span class="pressed-key-value"></span></div>
+
+    <div class="controls-block obj-loader-block">
+        <input type="file" id="obj-loader" hidden accept=".obj"/>
+        <span id="obj-loader-file">No file chosen</span>
+        <label for="obj-loader">Загрузить модель</label>
+    </div>
+    <!--        <div class="texture-loader-block">-->
+    <!--            <label for="texture-loader">texture-loader</label>-->
+    <!--            <input type="file" id="texture-loader" accept=".jpg, .png, .jpeg">-->
+    <!--        </div>-->
+    <div class="controls-block geometry-test-block">
+        <button id="draw-geometry">Отрисовать геометрию</button>
+    </div>
+
 </div>
 <div id="canvas-parent">
 </div>

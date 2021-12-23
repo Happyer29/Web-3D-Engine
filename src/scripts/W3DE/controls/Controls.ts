@@ -8,7 +8,7 @@ export class Controls {
     constructor(mouse : Mouse, ...keys : Key[]) {
         this.keys = keys;
         this.mouse = mouse;
-
+        this.addListenersToWindow();
     }
     public addListenersToWindow() {
 
