@@ -12,18 +12,32 @@ export class Material {
         this._color = value;
     }
 
-    constructor(texture: HTMLImageElement = null) {
-        if (texture) this._texture = texture;
-        else this.setDefaultMaterial();
+    constructor(texture: HTMLImageElement, color?: Vector4) {
+        if (texture) {this._texture = texture} else this.setDefaultMaterial();
+        if (color) this._color = color;
+        
     }
 
-    public static async getDefaultMaterial(): Promise<Material> {
+    public isEmpty() {
+        return !Boolean(this.texture);
+    }
+
+    public static async defaultMaterial(): Promise<Material> {
         let texture = await TextureLoader.loadFromUrl("default-texture.jpg");
         return new Material(texture);
     }
+    
+    public static emptyMaterial() {
+        return new Material(null);
+    }
 
-    private setDefaultMaterial(){
-        Material.getDefaultMaterial().then((material) => {
+    public static async fromURL(url : string): Promise<Material> {
+        let texture = await TextureLoader.loadFromUrl(url);
+        return new Material(texture);
+    }
+
+    private setDefaultMaterial() {
+        Material.defaultMaterial().then((material) => {
             this._texture = material.texture;
         })
     }

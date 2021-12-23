@@ -4,7 +4,7 @@ import { config } from "./config";
 import { WebGlShaderCreator } from "./WebGlShaderCreator";
 import { Matrix4 } from "../maths/Matrix4";
 import { Scene } from "../scenes/Scene";
-import {Material, Object3D} from "../W3DE";
+import { Material, Object3D, Vector3 } from "../W3DE";
 import { Camera } from "../cameras/Camera";
 import { Matrix4Utils } from "../utils/Matrix4Utils";
 
@@ -31,7 +31,7 @@ interface ConstructorOptions {
 type parentCanvasSelector = `#${string}` | "body";
 
 export class WebGLRenderer {
-    private readonly _canvas;
+    private readonly _canvas: HTMLCanvasElement;
     private readonly _parentCanvasEl: HTMLElement;
     private _ctx: WebGLRenderingContext;
     //private readonly _canvas: HTMLCanvasElement;
@@ -97,8 +97,8 @@ export class WebGLRenderer {
         }
     }
 
-    private createCanvasElement() {
-        const canvas = this.createElementNS('canvas');
+    private createCanvasElement(): HTMLCanvasElement {
+        const canvas: HTMLCanvasElement = <HTMLCanvasElement>this.createElementNS('canvas');
         this._parentCanvasEl.appendChild(canvas);
 
         canvas.style.display = 'block';
@@ -106,7 +106,7 @@ export class WebGLRenderer {
     }
 
     //TODO wtf??
-    private createElementNS(name) {
+    private createElementNS(name: string) {
         return document.createElementNS('http://www.w3.org/1999/xhtml', name);
     }
 
@@ -136,19 +136,27 @@ export class WebGLRenderer {
         let program = this.createProgram();
         this.scene.getItemsToRender().forEach((object) => {
             object.program = program;
-            // Create a texture buffer
-
+            if (object.material.isEmpty()) console.log(object);
+            // Create a position buffer
             object.buffers.positionBuffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, object.buffers.positionBuffer);
             let position = object.geometry.position
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(position), gl.STATIC_DRAW);
 
+            // Create a texture buffer
             object.buffers.textureBuffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, object.buffers.textureBuffer);
             let texture = object.geometry.texcoord
             gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texture), gl.STATIC_DRAW);
 
-            object.texture = this.attachMaterial(object);
+            // Create a normal buffer
+            object.buffers.normalsBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, object.buffers.normalsBuffer);
+            let normals = object.geometry.normal
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+            if (!object.material.isEmpty()) object.texture = this.attachMaterial(object)
+            
+            
 
             // Bind it to ARRAY_BUFFER
         });
@@ -175,18 +183,36 @@ export class WebGLRenderer {
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
         this.scene.getItemsToRender().forEach((object) => {
-            gl.bindTexture(this._ctx.TEXTURE_2D, object.texture);
-            let matrixLocation = gl.getUniformLocation(object.program, "u_matrix");
+            
+
+            let program = object.program;
+
+
+            let colorLocation = gl.getUniformLocation(program, "u_color");
+            let worldViewProjectionLocation = gl.getUniformLocation(program, "u_worldViewProjection");
+            let worldInverseTransposeLocation = gl.getUniformLocation(program, "u_worldInverseTranspose");
+            let reverseLightDirectionLocation = gl.getUniformLocation(program, "u_reverseLightDirection")
+            let shininessLocation = gl.getUniformLocation(program, "u_shininess");
+
+            let lightWorldPositionLocation = gl.getUniformLocation(program, "u_lightWorldPosition");
+
+            let viewWorldPositionLocation = gl.getUniformLocation(program, "u_viewWorldPosition");
+
+            let worldLocation = gl.getUniformLocation(program, "u_world");
+            // Create a buffer and put three 2d clip space points in it
+            // Tell it to use our program (pair of shaders)
+
             let textureLocation = gl.getUniformLocation(object.program, "u_texture");
 
             let positionLocation = gl.getAttribLocation(object.program, "a_position");
             let texcoordLocation = gl.getAttribLocation(object.program, "a_texcoord");
+            let normalsLocation = gl.getAttribLocation(program, "a_normal");
 
             var programInfo = object.program;
             var bufferInfo = object.buffers;
             var bindBuffers = false;
 
-            // Create a buffer and put three 2d clip space points in it
+            // POSITION
 
             gl.enableVertexAttribArray(positionLocation);
             // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
@@ -201,7 +227,7 @@ export class WebGLRenderer {
             var offset = 0;        // start at the beginning of the buffer
             gl.vertexAttribPointer(positionLocation, size, type, normalize, stride, offset);
 
-            // Turn on the texcoord attribute
+            // TEXCOORD
             gl.enableVertexAttribArray(texcoordLocation);
 
             // bind the texcoord buffer.
@@ -214,6 +240,19 @@ export class WebGLRenderer {
             var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
             var offset = 0;        // start at the beginning of the buffer
             gl.vertexAttribPointer(texcoordLocation, size, type, normalize, stride, offset);
+
+            // NORMALS
+            gl.enableVertexAttribArray(normalsLocation);
+            // bind the normals buffer.
+            gl.bindBuffer(gl.ARRAY_BUFFER, object.buffers.normalsBuffer);
+
+            // Tell the normal attribute how to get data out of normalBuffer (ARRAY_BUFFER)
+            var size = 2;          // 2 components per iteration
+            var type = gl.FLOAT;   // the data is 32bit floats
+            var normalize = false; // don't normalize the data
+            var stride = 0;        // 0 = move forward size * sizeof(type) each iteration to get the next position
+            var offset = 0;        // start at the beginning of the buffer
+            gl.vertexAttribPointer(normalsLocation, size, type, normalize, stride, offset);
 
             if (programInfo !== lastUsedProgramInfo) {
                 lastUsedProgramInfo = programInfo;
@@ -229,19 +268,40 @@ export class WebGLRenderer {
             // Setup all the needed attributes.
             if (bindBuffers || bufferInfo !== lastUsedBufferInfo) {
                 lastUsedBufferInfo = bufferInfo;
-                //TODO wtf???
-                //this.setBuffersAndAttributes(gl, programInfo, bufferInfo);
             }
 
-            gl.uniformMatrix4fv(matrixLocation, false, this.mainMatrix(object).matrixToArray());
+            let worldMatrix = this.mainMatrix(object);
+            let worldViewProjectionMatrix = new Matrix4(Matrix4Utils.multiplication(this.camera.viewProjectionMatrix, worldMatrix.matrix));
+            let worldInverseMatrix = new Matrix4(Matrix4Utils.inverse(worldMatrix.matrix));
+            let worldInverseTransposeMatrix = new Matrix4(Matrix4Utils.transpose(worldInverseMatrix.matrix));
+
+            // Set the matrices
+            gl.uniformMatrix4fv(worldViewProjectionLocation, false, worldViewProjectionMatrix.matrixToArray());
+            gl.uniformMatrix4fv(worldInverseTransposeLocation, false, worldInverseTransposeMatrix.matrixToArray());
+            gl.uniformMatrix4fv(worldLocation, false, worldMatrix.matrixToArray());
+
+            this.scene.light.position = new Vector3([0, 250, 0]);
+            this.scene.light.shininess = 150;
+            // set the light position
+            gl.uniform3fv(lightWorldPositionLocation, this.scene.light.position.positionArr);
+
+            // set the camera/view position
+            gl.uniform3fv(viewWorldPositionLocation, this.camera.getPositionAsArray());
+            gl.uniform4fv(colorLocation, object.material.color.positionArr);
+            // set the shininess
+            gl.uniform1f(shininessLocation, this.scene.light.shininess);
             gl.uniform1i(textureLocation, 0);
 
+            gl.bindTexture(this._ctx.TEXTURE_2D, object.texture);
+
             let primitiveType = this._ctx.TRIANGLES;
+            if (object.type == "Line") primitiveType = this._ctx.LINES;
             let offsetDraw = 0;
             let count = object.geometry.position.length / 3;
             // count = this._scene.elementsCount;
             gl.drawArrays(primitiveType, offsetDraw, count);
         });
+
         requestAnimationFrame(() => {
             if (this._animation)
                 this._animation(this.time)
@@ -249,18 +309,7 @@ export class WebGLRenderer {
         });
     }
 
-    private mainMatrix(object3d: Object3D) : Matrix4 {
-        function degToRad(d) {
-            return d * Math.PI / 180;
-        }
-
-        // let matrix = new Matrix4().projection(this._ctx.canvas.clientWidth, this._ctx.canvas.clientHeight, 10000);
-
-        // matrix = matrix.translate(object3d.translation[0], object3d.translation[1], object3d.translation[2]);
-        // matrix = matrix.xRotate(object3d.rotation[0]);
-        // matrix = matrix.yRotate(object3d.rotation[1]);
-        // matrix = matrix.zRotate(object3d.rotation[2]);
-        // matrix = matrix.scale(object3d.scale[0], object3d.scale[1], object3d.scale[2]);
+    private mainMatrix(object3d: Object3D): Matrix4 {
 
         let matrix = new Matrix4(Matrix4Utils.translate(new Matrix4().identityMatrix().matrix, object3d.translation[0], object3d.translation[1], object3d.translation[2]));
 
@@ -271,15 +320,16 @@ export class WebGLRenderer {
         matrix = matrix.scale(object3d.scale[0], object3d.scale[1], object3d.scale[2]);
 
         if (object3d.parent) matrix = new Matrix4(Matrix4Utils.multiplication(object3d.parent.matrix.matrix, matrix.matrix));
-        function updateMatrix(object3d : Object3D, matrix : Matrix4) {
+        function updateMatrix(object3d: Object3D, matrix: Matrix4) {
             object3d.matrix = new Matrix4(Matrix4Utils.multiplication(object3d.matrix.matrix, matrix.matrix));
             if (object3d.parent) {
                 object3d.children.forEach((child) => {
-                        updateMatrix(child, object3d.matrix)
-                    }
-                )}
+                    updateMatrix(child, object3d.matrix)
+                }
+                )
+            }
         }
-        object3d.children.forEach(function(child) {
+        object3d.children.forEach(function (child) {
             updateMatrix(child, matrix);
         });
         object3d.matrix = matrix;
@@ -287,7 +337,7 @@ export class WebGLRenderer {
     }
 
 
-    private isPowerOf2(value) {
+    private isPowerOf2(value: number) {
         return (value & (value - 1)) === 0;
     }
 
@@ -306,41 +356,108 @@ export class WebGLRenderer {
 
     private createVertexShader() {
         const shader = `
-attribute vec4 a_position;
-attribute vec2 a_texcoord;
-uniform mat4 u_matrix;
-varying vec2 v_texcoord;
-void main() {
-  // Multiply the position by the matrix.
-  gl_Position = u_matrix * a_position;
-  // Pass the texcoord to the fragment shader.
-  v_texcoord = a_texcoord;
-}
-        `;
+        attribute vec4 a_position;
+        attribute vec3 a_normal;
+        attribute vec2 a_texcoord;
+        
+        uniform vec3 u_lightWorldPosition;
+        uniform vec3 u_viewWorldPosition;
+        
+        uniform mat4 u_world;
+        uniform mat4 u_worldViewProjection;
+        uniform mat4 u_worldInverseTranspose;
+        
+        varying vec3 v_normal;
+        varying vec2 v_texcoord;
+        
+        varying vec3 v_surfaceToLight;
+        varying vec3 v_surfaceToView;
+        
+        
+        
+        void main() {
+          // Multiply the position by the matrix.
+          gl_Position = u_worldViewProjection * a_position;
+        
+          
+          // orient the normals and pass to the fragment shader
+          v_normal = mat3(u_worldInverseTranspose) * a_normal;
+        
+          // compute the world position of the surface
+          vec3 surfaceWorldPosition = (u_world * a_position).xyz;
+        
+          // compute the vector of the surface to the light
+          // and pass it to the fragment shader
+          v_surfaceToLight = u_lightWorldPosition - surfaceWorldPosition;
+        
+          // compute the vector of the surface to the view/camera
+          // and pass it to the fragment shader
+          v_surfaceToView = u_viewWorldPosition - surfaceWorldPosition;
+
+          // Pass the texcoord to the fragment shader.
+          v_texcoord = a_texcoord;
+        }`;
         // create GLSL shaders, upload the GLSL source, compile the shaders
         return new WebGlShaderCreator(this._ctx).createVertexShader(shader);
     }
 
+
     private createFragmentShader() {
         const shader = `
-precision mediump float;
-// Passed in from the vertex shader.
+        precision highp float;
+
+        // Passed in from the vertex shader.
+varying vec3 v_normal;
+varying vec3 v_surfaceToLight;
+varying vec3 v_surfaceToView;
+
+uniform float u_shininess;
+
 varying vec2 v_texcoord;
-// The texture.
 uniform sampler2D u_texture;
+
+vec3 finalColor; 
+
 void main() {
-   gl_FragColor = texture2D(u_texture, v_texcoord);
+  // because v_normal is a varying it's interpolated
+  // so it will not be a unit vector. Normalizing it
+  // will make it a unit vector again
+  vec3 normal = normalize(v_normal);
+
+  vec3 surfaceToLightDirection = normalize(v_surfaceToLight);
+  vec3 surfaceToViewDirection = normalize(v_surfaceToView);
+  vec3 halfVector = normalize(surfaceToLightDirection + surfaceToViewDirection);
+
+  float light = dot(normal, surfaceToLightDirection);
+  float specular = 0.0;
+  if (light > 0.0) {
+    specular = pow(dot(normal, halfVector), u_shininess / 3.0);
+  }
+
+  gl_FragColor = texture2D(u_texture, v_texcoord);
+
+  // Lets multiply just the color portion (not the alpha)
+  // by the light
+  gl_FragColor.rgb *= light;
+
+
+  // Just add in the specular
+  gl_FragColor.rgb += specular;
+  finalColor = v_normal * 0.5 + vec3(0.5);
+  // Debugging normals
+  // gl_FragColor = vec4(finalColor.x, finalColor.y, finalColor.z, 1.0);
 }`;
+
 
         return new WebGlShaderCreator(this._ctx).createFragmentShader(shader);
     }
 
-    private attachMaterial(object3d) {
+    private attachMaterial(object3d: Object3D) {
         let material = object3d.material;
         // Now that the image has loaded make copy it to the texture.
         let texture = this._ctx.createTexture();
         this._ctx.bindTexture(this._ctx.TEXTURE_2D, texture);
-        this._ctx.texImage2D(this._ctx.TEXTURE_2D, 0, this._ctx.RGBA, this._ctx.RGBA,this._ctx.UNSIGNED_BYTE, material.texture);
+        this._ctx.texImage2D(this._ctx.TEXTURE_2D, 0, this._ctx.RGBA, this._ctx.RGBA, this._ctx.UNSIGNED_BYTE, material.texture);
         // Check if the image is a power of 2 in both dimensions.
         if (this.isPowerOf2(material.texture.width) && this.isPowerOf2(material.texture.height)) {
             // Yes, it's a power of 2. Generate mips.
@@ -354,34 +471,6 @@ void main() {
         return texture;
     }
 
-    private setBuffersAndAttributes(gl, setters, buffers) {
-        this.setAttributes(setters, buffers.attribs);
-        if (buffers.indices) {
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
-        }
-    }
-
-    private setAttributes(setters, attribs) {
-        setters = setters.attribSetters || setters;
-        Object.keys(attribs).forEach(function(name) {
-            const setter = setters[name];
-            if (setter) {
-                setter(attribs[name]);
-            }
-        });
-    }
-
-    // private setUniforms(setters, ...values) {
-    //     setters = setters.uniformSetters || setters;
-    //     for (const uniforms of values) {
-    //         Object.keys(uniforms).forEach(function (name) {
-    //             const setter = setters[name];
-    //             if (setter) {
-    //                 setter(uniforms[name]);
-    //             }
-    //         });
-    //     }
-    // }
 
 
     /*

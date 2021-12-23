@@ -26,7 +26,7 @@ export class Camera {
     private controls : Controls;
 
     public getPositionAsArray() {
-        return Array.from(this.position.positionArr);
+        return this.position.positionArr;
     }
     constructor(cameraPosition?: Vector3, target?: Vector3, up?: Vector3, options?: {
         fovInRadians?: number,

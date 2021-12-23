@@ -6,15 +6,10 @@ import { Controls } from "../controls/Controls";
 import { Mouse, MOUSE_EVENTS } from "../controls/Mouse";
 import { Key, KEY_EVENTS } from "../controls/Key";
 
-interface buffers{
-    positionBuffer  ?: WebGLBuffer,
-    textureBuffer   ?: WebGLBuffer,
-    //normalsBuffer   ?: WebGLBuffer
-}
-
-interface attribs{
-    position?,
-    texture?
+interface buffers {
+    positionBuffer: WebGLBuffer,
+    textureBuffer: WebGLBuffer,
+    normalsBuffer: WebGLBuffer
 }
 
 export class Object3D {
@@ -22,10 +17,10 @@ export class Object3D {
     private _material: Material;
     private _type: string;
 
-    private _buffers:buffers = {
+    private _buffers: buffers = {
         positionBuffer: undefined,
         textureBuffer: undefined,
-        //normalsBuffer: null
+        normalsBuffer: undefined
     };
 
     private _programGL: WebGLProgram;
@@ -34,12 +29,19 @@ export class Object3D {
     private _rotation: Vector3 = new Vector3([0, 0, 0]);
     private _translation: Vector3 = new Vector3([0, 0, 0]);
 
-    private _parent : Object3D;
+    private _parent: Object3D;
     private _children: Object3D[] = [];
 
     private controls: Controls;
-    //TODO
-    texture: WebGLTexture;
+
+    private _texture: WebGLTexture;
+
+    public get texture(): WebGLTexture {
+        return this._texture;
+    }
+    public set texture(value: WebGLTexture) {
+        this._texture = value;
+    }
 
     constructor(geometry: Geometry, material?: Material) {
         this._geometry = geometry;
@@ -70,7 +72,7 @@ export class Object3D {
         if (this.parent) {
             var ndx = this.parent.children.indexOf(this);
             if (ndx >= 0) {
-            this.parent.children.splice(ndx, 1);
+                this.parent.children.splice(ndx, 1);
             }
         }
         this._parent = value;
@@ -150,7 +152,7 @@ export class Object3D {
 
 
     get scale(): number[] {
-        return Array.from(this._scale.positionArr);
+        return this._scale.positionArr;
     }
 
     get scaleX() {
@@ -165,7 +167,7 @@ export class Object3D {
     }
 
     get rotation(): number[] {
-        return Array.from(this._rotation.positionArr);
+        return this._rotation.positionArr;
     }
 
     get rotationX() {
@@ -180,7 +182,7 @@ export class Object3D {
     }
 
     get translation(): number[] {
-        return Array.from(this._translation.positionArr);
+        return this._translation.positionArr;
     }
     public toDefaultTRS() {
         this.setRotationAll(0);
