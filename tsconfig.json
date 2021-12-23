@@ -1,53 +1,34 @@
-//https://gist.github.com/KRostyslav/82a25c469ffa6652825d58537ac6bc22 спасибо за статью
 {
   "compileOnSave": true,
   "compilerOptions": {
     "allowJs": true,
     "checkJs": false,
-    "rootDir": "./src/scripts", // Путь до папки с которой надо начинать поиск входных файлов. Обычно корневая директория вычисляется по списку входных файлов. Данная опция необходима для проверки, что все найденные TypeScript-файлы находятся внутри корневой папки.
-    "build": false, // TODO
-    "composite": true, // TODO
+    "rootDir": "./src/scripts",
+    "build": false,
+    "composite": true,
     "esModuleInterop": true,
     "module": "CommonJS",
     "moduleResolution": "node",
-    "lib": ["es6", "es2015.promise", "es2016.array.include", "DOM"], // Набор библиотечных файлов полифилов, которые будут включены в итоговый выходной файл.
-    "alwaysStrict": true, // Компилировать ли каждый файл в строгом режиме и создавать ли 'use strict' для каждого выходного файла? Требуется TypeScript версии 2.1 или новее.
-    "noEmitOnError": true, // Не создавать итоговый файл, если во время компиляции произошла ошибка.
-    "noUnusedLocals": false, // Показывать ошибку, если где-то найдены неиспользуемые локальные значения.
-    "noUnusedParameters": false, // Показывать ошибку, если где-то найдены неиспользуемые параметры.
-    "pretty": true, // Окрашивать в терминале сообщения об ошибках.
-    "removeComments": true, // Удалить все комментарии из итогового файла.
-    "sourceMap": true, // Создавать ли соответствующие source map файлы ".map"?
-    "target": "es5", // Тип кода создаваемого итогового файла.
-    "watch": true, // Запустить компилятор в режиме отслеживания изменений во входных файлах и их повторной компиляции?
+    "lib": ["es6", "es2015.promise", "es2016.array.include", "DOM"],
+    "alwaysStrict": true,
+    "noEmitOnError": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "pretty": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "target": "es5",
+    "watch": true,
     "allowSyntheticDefaultImports" : true,
     "noImplicitAny": false,
     "strictNullChecks": false,
     "declaration": true,
-    //"outFile": "./scripts/build/bundle.js", // Имя единого итогового выходного файла, в который будут помещен код из всех найденных TypeScript-файлов.
-    //"outDir": "./scripts/build",
-    //"baseUrl": "../config",
     "typeRoots": [
-      //"./node_modules/@types"
     ],
     "types": ["mocha", "webpack-env"]
   },
   "include": ["./src/scripts/**/**/*", "./node_modules"],
-  // Вместе с компиляцией только конкретных исходных файлов можно компилировать только файлы в заданных папках, которые будут найдены через регулярные выражения, которые принимают только следующие значения:
-  // - букву или цифру;
-  // - * - ноль или более любых символов, не включая разделители директорий "/" и "\";
-  // - ? - один любой символ, не включая разделители директорий "/" и "\";
-  // - **/ - рекурсивно включить любую подпапку.
-  // Если путь до папки заканчивается так "*" или так ".*", тогда в ней будут скомплированы все файлы с расширениями .ts, .tsx, .d.ts, а также .js и .jsx, если опция "allowJs" будет равна true.
   "exclude": [
-    // Секция "exclude" позволяет исключить при компиляции определенные файлы, которые находятся в заданных папках секции "include" или в папках всего проекта, если секция "include" не задана.
-    // Компилятор не будет учитывать перечисленные в секции "exclude" файлы TypeScript, которые находятся в папках из секции "include".
-    // Однако файлы, заданные в секции "files" будут обязательно скомпилированы.
-    // Если секция "exclude" не указана, то по умолчанию будут исключаться из компиляции все файлы из папок:
-    // - node_modules,
-    // - bower_components,
-    // - jspm_packages,
-    // - файлы из папки, указанной в опции компилятора "outDir".
     "./src/scripts/**/*.spec.ts",
     "./dist",
     "./node_modules"

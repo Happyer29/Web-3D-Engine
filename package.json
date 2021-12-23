@@ -22,6 +22,7 @@
     "build:prod": "cross-env NODE_ENV=production webpack --config ./config/webpack.prod.config.js",
     "postbuild:prod": "npm run server:prod",
     "test": "webpack --config ./config/webpack-test.config.js",
+    "mocha": "ts-mocha -p ./tsconfig.json src/scripts/**/*.spec.ts",
     "test:watch": "webpack -w --config ./config/webpack-test.config.js",
     "serve": "webpack serve --hot --open"
   },
@@ -49,6 +50,7 @@
     "style-loader": "^3.2.1",
     "ts-color-class": "^0.9.0",
     "ts-loader": "^9.2.5",
+    "ts-mocha": "^8.0.0",
     "ts-node": "^10.3.0",
     "typescript": "^4.4.2",
     "webpack": "^5.51.1",
