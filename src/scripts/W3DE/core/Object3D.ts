@@ -253,7 +253,6 @@ export class Object3D {
         mouse.setFunction(MOUSE_EVENTS.MOUSE_MOVE, rotateXY);
 
         this.controls = new Controls(mouse, toggleCModeKey, toggleZModeKey, aKey, dKey, wKey, sKey);
-        this.controls.addListenersToWindow();
     }
 
     get translationX() {
