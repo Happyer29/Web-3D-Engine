@@ -41,19 +41,24 @@ async function readObjectFromInput(event: Event) {
     const file = files[0];
     const fileText = await W3DE.FileLoader.loadAsText(file);
 
-    const object1 = await new W3DE.ObjParser().parseObjFromFileAsGeometry(file);
-    //const object2 = await new W3DE.ObjParser().parseObjectFromString(fileText);//TODO
-    const sphereGeometry = new W3DE.SphereGeometry(30, 100); // change roundness to 10-20 to clearly see rotation
+    const objectGeometry = await new W3DE.ObjParser().parseObjFromFileAsGeometry(file);
+
+    const sphereGeometry = new W3DE.SphereGeometry(30, 100);
+
+    const sphereGeometry1 = new W3DE.SphereGeometry(30, 5);
 
     const defaultMaterial = await W3DE.Material.defaultMaterial();
 
-    const object2 = new W3DE.Mesh(sphereGeometry);
+    const headMaterial = await W3DE.Material.fromURL("NeutralWrapped.jpg");
+
+    const object1 = new W3DE.Mesh(objectGeometry, headMaterial);
+    const object2 = new W3DE.Mesh(sphereGeometry, defaultMaterial);
+    const object3 = new W3DE.Mesh(sphereGeometry1, defaultMaterial);
 
     const scene = new W3DE.Scene();
-    // const axes = new W3DE.Axes(500);
-    // axes.setTranslation(100, 0, 100)
-    // scene.add(axes);
-    // console.log(axes);
+    const axes = new W3DE.Axes(500);
+    scene.add(axes);
+    console.log(axes);
 
     const cameraPosition = new W3DE.Vector3([0, 20, 60]);
     const up = new W3DE.Vector3([0, 1, 0]);
@@ -61,22 +66,23 @@ async function readObjectFromInput(event: Event) {
 
     // TODO object.move(x,y,z); object.rotate.x();
     const camera = new Camera(cameraPosition, target, up);
-    
-    const object1orbit = new W3DE.Mesh();
-    
-    object1.parent = object1orbit;
-    object1orbit.parent = object2.parent;
-    object1orbit.setTranslationX(100);
+        
 
+    object2.parent = object1;
+    object3.parent = object2;
 
+    object2.setTranslationX(200);
+    object3.setTranslationX(100);
     camera.attachDefaultControls();
-    object2.attachDefaultControls();
+    object1.attachDefaultControls();
  
-    object1.setTranslationY(300);
-    scene.add(object2);
-    // scene.add(sphere);
     scene.add(object1);
+    scene.add(object2);
+    scene.add(object3);
     
+    // scene.add(sphere);
+    
+    // scene.add(object1orbit);
     const renderer = new W3DE.WebGLRenderer(scene, camera, { selector: "#canvas-parent", width: "1000px", height: "1000px" });
 
     resetCameraButton.onclick = () => {
@@ -84,14 +90,12 @@ async function readObjectFromInput(event: Event) {
         camera.setTranslation(cameraPosition.positionArr[0],cameraPosition.positionArr[1],cameraPosition.positionArr[2]);
     }
     resetObjectButton.onclick = () => {
-        object1.setRotation(0, 0, 0);
-        object1.toDefaultTRS();
-        object2.setRotation(300, 300, 300);
-        object2.toDefaultTRS();
+        object1.setTranslation(0, 0, 0);
     }
 
     let animate = () => {
-        object1orbit.setRotationY(object2.rotation[1] + 2)
+        object1.setRotationY(object1.rotation[1] + 0.5)
+        object2.setRotationY(object2.rotation[1] + 0.5)
     }
 
     renderer.resizeCanvasToDisplaySize();
@@ -138,7 +142,7 @@ async function drawGeometry() {
     
     
     const sphereGeometry = new W3DE.SphereGeometry(50, 10); // change roundness to 10-20 to clearly see rotation
-    const defaultMaterial = await W3DE.Material.getDefaultMaterial();
+    const defaultMaterial = await W3DE.Material.defaultMaterial();
 
     const sphere = new W3DE.Mesh(sphereGeometry, defaultMaterial);
 
