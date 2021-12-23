@@ -23,6 +23,6 @@ export class Point2 {
     }
 
     public static sum(p1:Point2, p2:Point2){
-        return new Point2([p1[0] + p2[0], p1[1] + p2[1]])
+        return new Point2([p1.x + p2.x, p1.y + p2.y])
     }
 }

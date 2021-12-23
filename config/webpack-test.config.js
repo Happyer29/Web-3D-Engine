@@ -19,7 +19,7 @@ module.exports = {
     externals: [nodeExternals()],
     plugins: [
         new WebpackShellPluginNext({
-            onBuildEnd: "mocha " + PATHS.dist + "\\testBundle.js"
+            onBuildEnd: "npm run mocha"
         })
     ],
     module: {
