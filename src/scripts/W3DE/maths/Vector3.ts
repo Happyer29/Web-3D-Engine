@@ -14,16 +14,19 @@ export type vector3 = fixedLengthArray<number, 3>;
 export class Vector3 {
     protected _vector: vector3;
     protected readonly _dimension: number = 3;
-    private _x:number = 0;
-    private _y:number = 0;
-    private _z:number = 0;
+    private _x: number = 0;
+    private _y: number = 0;
+    private _z: number = 0;
 
-    constructor(v: vector3 | vector3Points) {
-
-        if (Vector3.instanceOfVector3Points(v)) {
-            this.betweenPoints(v);
+    constructor(v?: vector3 | vector3Points) {
+        if (!v) { 
+            this._vector = [0, 0, 0]; 
         } else {
-            this._vector = v;
+            if (Vector3.instanceOfVector3Points(v)) {
+                this.betweenPoints(v);
+            } else {
+                this._vector = v;
+            }
         }
         this._x = this._vector[0];
         this._y = this._vector[1];
@@ -78,7 +81,7 @@ export class Vector3 {
     }
 
     get positionArr() {
-        return this._vector;
+        return Array.from(this._vector);
     }
 
     public static sum(v1: Vector3, v2: Vector3): Vector3 {
@@ -138,6 +141,7 @@ export class Vector3 {
     }
 
     private static instanceOfVector3Points(obj: any): obj is vector3Points {
+        if (!obj[0]) return false;
         return (<vector3Points>obj[0].z) !== undefined;
     }
 

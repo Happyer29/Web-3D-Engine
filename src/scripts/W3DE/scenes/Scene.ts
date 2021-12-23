@@ -3,7 +3,13 @@ import { Object3D } from "../core/Object3D";
 import { Light } from "../lighting/Light";
 
 export class Scene {
-    private itemsToRender: Object3D[] = []; // TODO: SceneGraph with nodes and world/local Matrices.
+    private _itemsToRender: Object3D[] = []; // TODO: SceneGraph with nodes and world/local Matrices.
+    public get itemsToRender(): Object3D[] {
+        return this._itemsToRender;
+    }
+    public set itemsToRender(value: Object3D[]) {
+        this._itemsToRender = value;
+    }
     private _camera: Camera;
     public get camera(): Camera {
         return this._camera;
@@ -25,18 +31,18 @@ export class Scene {
     }
 
     public add(item: Object3D) {
-        this.itemsToRender.push(item);
+        this._itemsToRender.push(item);
     }
 
     public clear() {
-        this.itemsToRender = [];
+        this._itemsToRender = [];
     }
 
     public getObjectByIndex(index: number) {
-        return this.itemsToRender[index];
+        return this._itemsToRender[index];
     }
 
     public getItemsToRender() {
-        return this.itemsToRender;
+        return this._itemsToRender;
     }
 }

@@ -6,17 +6,46 @@ import { Controls } from "../controls/Controls";
 import { Mouse, MOUSE_EVENTS } from "../controls/Mouse";
 import { Key, KEY_EVENTS } from "../controls/Key";
 
+interface buffers {
+    positionBuffer: WebGLBuffer,
+    textureBuffer: WebGLBuffer,
+    normalsBuffer: WebGLBuffer
+}
+
 export class Object3D {
     private _geometry: Geometry;
     private _material: Material;
     private _type: string;
 
+    private _buffers: buffers = {
+        positionBuffer: undefined,
+        textureBuffer: undefined,
+        normalsBuffer: undefined
+    };
+
+    private _programGL: WebGLProgram;
+
     private _scale: Vector3 = new Vector3([1, 1, 1]);
     private _rotation: Vector3 = new Vector3([0, 0, 0]);
     private _translation: Vector3 = new Vector3([0, 0, 0]);
 
-    private _parent : Object3D;
+    private _parent: Object3D;
     private _children: Object3D[] = [];
+
+
+    private _texture: WebGLTexture;
+
+    public get texture(): WebGLTexture {
+        return this._texture;
+    }
+    public set texture(value: WebGLTexture) {
+        this._texture = value;
+    }
+
+    constructor(geometry: Geometry, material?: Material) {
+        this._geometry = geometry;
+        if (material) this._material = material;
+    }
 
     public get children(): Object3D[] {
         return this._children;
@@ -26,6 +55,7 @@ export class Object3D {
     }
 
     private _matrix: Matrix4 = new Matrix4().identityMatrix();
+
     public get matrix(): Matrix4 {
         return this._matrix;
     }
@@ -41,7 +71,7 @@ export class Object3D {
         if (this.parent) {
             var ndx = this.parent.children.indexOf(this);
             if (ndx >= 0) {
-            this.parent.children.splice(ndx, 1);
+                this.parent.children.splice(ndx, 1);
             }
         }
         this._parent = value;
@@ -49,16 +79,10 @@ export class Object3D {
         if (value) {
             this.parent.children.push(this);
         }
-
-        
-        
     }
 
     protected controls: Controls;
-    constructor(geometry: Geometry, material?: Material) {
-        this._geometry = geometry;
-        if (material) this._material = material;
-    }
+
 
     public get geometry(): Geometry {
         return this._geometry;
@@ -129,7 +153,7 @@ export class Object3D {
 
 
     get scale(): number[] {
-        return Array.from(this._scale.positionArr);
+        return this._scale.positionArr;
     }
 
     get scaleX() {
@@ -144,7 +168,7 @@ export class Object3D {
     }
 
     get rotation(): number[] {
-        return Array.from(this._rotation.positionArr);
+        return this._rotation.positionArr;
     }
 
     get rotationX() {
@@ -158,9 +182,8 @@ export class Object3D {
 
     }
 
-
     get translation(): number[] {
-        return Array.from(this._translation.positionArr);
+        return this._translation.positionArr;
     }
     public toDefaultTRS() {
         this.setRotationAll(0);
@@ -242,5 +265,21 @@ export class Object3D {
     get translationZ() {
         return this._translation[2];
 
+    }
+
+    get program(): any {
+        return this._programGL;
+    }
+
+    set program(value: any) {
+        this._programGL = value;
+    }
+
+    get buffers(): buffers {
+        return this._buffers;
+    }
+
+    set buffers(value: buffers) {
+        this._buffers = value;
     }
 }

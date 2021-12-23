@@ -24,7 +24,7 @@ export class Camera extends Object3D {
 
 
     public getPositionAsArray() {
-        return Array.from(this.position.positionArr);
+        return this.position.positionArr;
     }
     constructor(cameraPosition?: Vector3, target?: Vector3, up?: Vector3, options?: {
         fovInRadians?: number,

@@ -40,10 +40,10 @@ export class SphereGeometry extends Geometry {
                 addPoint(x, y);
                 addPoint(x + 1, y);
                 addPoint(x, y + 1);
-
+                addPoint(x + 1, y + 1);
                 addPoint(x, y + 1,);
                 addPoint(x + 1, y);
-                addPoint(x + 1, y + 1);
+                
             }
         }
 

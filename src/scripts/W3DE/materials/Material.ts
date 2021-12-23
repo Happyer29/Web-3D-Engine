@@ -12,7 +12,9 @@ export class Material {
         this._color = value;
     }
 
+
     constructor(texture?: HTMLImageElement, color?: Vector4) {
+
         if (texture) {this._texture = texture} else this.setDefaultMaterial();
         if (color) this._color = color;
         

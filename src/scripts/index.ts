@@ -39,10 +39,8 @@ async function readObjectFromInput(event: Event) {
 
     const files = input.files;
     const file = files[0];
-    const fileText = await W3DE.FileLoader.loadAsText(file);
 
     const objectGeometry = await new W3DE.ObjParser().parseObjFromFileAsGeometry(file);
-
     const sphereGeometry = new W3DE.SphereGeometry(30, 100);
 
     const sphereGeometry1 = new W3DE.SphereGeometry(30, 5);
