@@ -2,6 +2,7 @@
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    font-family: "Farfetch Basis","Helvetica Neue",Arial,sans-serif;
 }
 
 html, body {
@@ -11,7 +12,49 @@ html, body {
 }
 
 html{
-    font-size: 10px;
+    font-size: 100%;
+    color: #ffffff;
+}
+
+button{
+    background-color: #1c1c1c;
+    border-radius: 4px;
+    border-style: none;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: "Farfetch Basis","Helvetica Neue",Arial,sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.5;
+    margin: 0;
+    max-width: none;
+    min-height: 30px;
+    min-width: 10px;
+    outline: none;
+    overflow: hidden;
+    padding: 5px 10px 5px;
+    position: relative;
+    text-align: center;
+    text-transform: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: 100%;
+    transition: opacity 0.2s ease-in;
+}
+
+
+button:hover{
+    opacity: .75;
+}
+
+header{
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 2px;
 }
 
 .bg{
@@ -37,28 +80,74 @@ html{
     !*z-index: 1;*!
     !*background: #fff;*!
 }*/
-.loaders {
-    display: grid;
-    grid-template: "obj texture geometry";
-}
-.loaders label {
-    font-size: 18px;
-    font-weight: bold;
-}
 
-.controls-block {
+.controls-menu {
     position: absolute;
     bottom: 0;
     right: 0;
     z-index: 100;
-    width: 15vw;
+    width: 300px;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: #565656;
     transition: all 0.3s ease;
     transform: translateX(150%);
+    padding: 2px;
 }
 .pressed-key {
     display: none;
     font-size: 24px;
 }
 
+.show-controls-menu{
+    height: 30px;
+    width: 110px;
+}
+
+.camera-contols > button{
+    width: 45%;
+    display: inline-block;
+}
+
+.camera-contols > button:first-child{
+    margin-right: 25px;
+}
+
+
+.obj-loader-block label {
+    width: 100%;
+    background-color: #1c1c1c;
+    border-radius: 4px;
+    border-style: none;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline;
+    font-family: "Farfetch Basis","Helvetica Neue",Arial,sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.5;
+    margin: 0;
+    max-width: none;
+    min-height: 30px;
+    min-width: 10px;
+    outline: none;
+    overflow: hidden;
+    padding: 5px 10px 5px;
+    position: relative;
+    text-align: center;
+    text-transform: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    transition: opacity 0.2s ease-in;
+}
+
+.obj-loader-block #obj-loader-file{
+    margin-left: 0.3rem;
+    font-family: sans-serif;
+}
+
+.controls-block{
+    width: 100%;
+    height: 40px;
+}

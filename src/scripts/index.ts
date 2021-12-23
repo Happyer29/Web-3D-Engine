@@ -7,29 +7,35 @@ console.log(a.positionArr[1])
 console.log(t.matrix)
 
 let objInput: HTMLButtonElement = document.querySelector("#obj-loader");
-let textureInput: HTMLButtonElement = document.querySelector("#texture-loader");
+// let textureInput: HTMLButtonElement = document.querySelector("#texture-loader");
 let drawGeometryBtn: HTMLButtonElement = document.querySelector("#draw-geometry");
 
 let showControlsButton : HTMLButtonElement = document.querySelector("#show-controls-button");
-let controlsBlock : HTMLElement = document.querySelector(".controls-block");
+let isControlButtonVisible = false;
+
+let controlsBlock : HTMLElement = document.querySelector(".controls-menu");
 let pressedKeyBlock : HTMLElement = document.querySelector(".pressed-key");
 let pressedKeyValue : HTMLElement = document.querySelector(".pressed-key-value");
 
 showControlsButton.onclick = () => {
-    controlsBlock.style.transform = "translateX(0)";
-}
-showControlsButton.ondblclick = () => {
-    controlsBlock.style.transform = "translateX(150%)";
-}
+    if(!isControlButtonVisible){
+        isControlButtonVisible = true;
+        controlsBlock.style.transform = "translateX(0)";
+    }
+    else{
+        isControlButtonVisible = false;
+        controlsBlock.style.transform = "translateX(300px)";
+    }
 
+}
 let buttons: HTMLButtonElement[] = [
     objInput,
-    textureInput,
+    //textureInput,
     drawGeometryBtn,
 ]
 
 objInput.addEventListener('change', readObjectFromInput, false);
-textureInput.addEventListener('change', readTextureFromInput, false);
+//textureInput.addEventListener('change', readTextureFromInput, false);
 drawGeometryBtn.addEventListener('click', drawGeometry, false);
 
 async function readObjectFromInput(event: Event) {
@@ -121,20 +127,20 @@ async function readObjectFromInput(event: Event) {
 
 }
 
-async function readTextureFromInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-
-    const files = input.files;
-    const file = files[0];
-
-    const texture = await W3DE.TextureLoader.loadFromFile(file);
-    const material = new W3DE.Material(texture);
-    console.log(material);
-
-    buttons.forEach(button => {
-        button.disabled = true;
-    })
-}
+// async function readTextureFromInput(event: Event) {
+//     const input = event.target as HTMLInputElement;
+//
+//     const files = input.files;
+//     const file = files[0];
+//
+//     const texture = await W3DE.TextureLoader.loadFromFile(file);
+//     const material = new W3DE.Material(texture);
+//     console.log(material);
+//
+//     buttons.forEach(button => {
+//         button.disabled = true;
+//     })
+// }
 
 async function drawGeometry() {
     
