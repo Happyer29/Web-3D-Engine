@@ -25,7 +25,9 @@ export class Camera {
 
     private controls : Controls;
 
-
+    public getPositionAsArray() {
+        return this.position.positionArr;
+    }
     constructor(cameraPosition?: Vector3, target?: Vector3, up?: Vector3, options?: {
         fovInRadians?: number,
         aspect?: number,
@@ -94,7 +96,7 @@ export class Camera {
         let toggleCModeKey = new Key("c");
 
         let translateZ = (event : WheelEvent) => {
-            if (!toggleZModeKey.isPressed) this.translate(0, 0, event.deltaY / 25);
+            if (toggleCModeKey.isPressed) this.translate(0, 0, event.deltaY / 5);
         }
 
         let rotateXY = (event : MouseEvent) => {
@@ -108,10 +110,26 @@ export class Camera {
                 this.rotate(dY, dX);
             }
         }
-        let aKey = new Key("a").setFunction(KEY_EVENTS.KEY_DOWN, () => this.translate(-10, 0, 0));
-        let dKey = new Key("d").setFunction(KEY_EVENTS.KEY_DOWN, () => this.translate(10, 0, 0));
-        let wKey = new Key("w").setFunction(KEY_EVENTS.KEY_DOWN, () => this.translate(0, 10, 0));
-        let sKey = new Key("s").setFunction(KEY_EVENTS.KEY_DOWN, () => this.translate(0, -10, 0));
+        let aKey = new Key("a").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (toggleCModeKey.isPressed)
+                this.translate(-10, 0, 0)
+        }
+        );
+        let dKey = new Key("d").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (toggleCModeKey.isPressed)
+                this.translate(10, 0, 0)
+        }
+        );
+        let wKey = new Key("w").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (toggleCModeKey.isPressed)
+                this.translate(0, 10, 0)
+        }
+        );
+        let sKey = new Key("s").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (toggleCModeKey.isPressed)
+                this.translate(0, -10, 0)
+        }
+        );
 
         mouse.setFunction(MOUSE_EVENTS.MOUSE_WHEEL, translateZ);
         mouse.setFunction(MOUSE_EVENTS.MOUSE_MOVE, rotateXY);

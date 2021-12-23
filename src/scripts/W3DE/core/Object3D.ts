@@ -4,28 +4,84 @@ import { Vector3 } from "../maths/Vector3";
 import { Matrix4 } from "../maths/Matrix4";
 import { Controls } from "../controls/Controls";
 import { Mouse, MOUSE_EVENTS } from "../controls/Mouse";
-import { Key } from "../controls/Key";
+import { Key, KEY_EVENTS } from "../controls/Key";
+
+interface buffers {
+    positionBuffer: WebGLBuffer,
+    textureBuffer: WebGLBuffer,
+    normalsBuffer: WebGLBuffer
+}
 
 export class Object3D {
     private _geometry: Geometry;
     private _material: Material;
     private _type: string;
 
+    private _buffers: buffers = {
+        positionBuffer: undefined,
+        textureBuffer: undefined,
+        normalsBuffer: undefined
+    };
+
+    private _programGL: WebGLProgram;
+
     private _scale: Vector3 = new Vector3([1, 1, 1]);
     private _rotation: Vector3 = new Vector3([0, 0, 0]);
     private _translation: Vector3 = new Vector3([0, 0, 0]);
 
-    private parent = null;
-    private children: Object3D[] = [];
-
-    private modelViewMatrix = new Matrix4().identityMatrix();
-    private normalMatrix = new Matrix4().identityMatrix();
+    private _parent: Object3D;
+    private _children: Object3D[] = [];
 
     private controls: Controls;
+
+    private _texture: WebGLTexture;
+
+    public get texture(): WebGLTexture {
+        return this._texture;
+    }
+    public set texture(value: WebGLTexture) {
+        this._texture = value;
+    }
+
     constructor(geometry: Geometry, material?: Material) {
         this._geometry = geometry;
         if (material) this._material = material;
     }
+
+    public get children(): Object3D[] {
+        return this._children;
+    }
+    public set children(value: Object3D[]) {
+        this._children = value;
+    }
+
+    private _matrix: Matrix4 = new Matrix4().identityMatrix();
+
+    public get matrix(): Matrix4 {
+        return this._matrix;
+    }
+    public set matrix(value: Matrix4) {
+        this._matrix = value;
+    }
+
+    public get parent() {
+        return this._parent;
+    }
+    public set parent(value) {
+        // remove us from our parent
+        if (this.parent) {
+            var ndx = this.parent.children.indexOf(this);
+            if (ndx >= 0) {
+                this.parent.children.splice(ndx, 1);
+            }
+        }
+        this._parent = value;
+        // Add us to our new parent
+        if (value) {
+            this.parent.children.push(this);
+        }
+    }
+
 
     public get geometry(): Geometry {
         return this._geometry;
@@ -96,7 +152,7 @@ export class Object3D {
 
 
     get scale(): number[] {
-        return Array.from(this._scale.positionArr);
+        return this._scale.positionArr;
     }
 
     get scaleX() {
@@ -111,7 +167,7 @@ export class Object3D {
     }
 
     get rotation(): number[] {
-        return Array.from(this._rotation.positionArr);
+        return this._rotation.positionArr;
     }
 
     get rotationX() {
@@ -125,9 +181,8 @@ export class Object3D {
 
     }
 
-
     get translation(): number[] {
-        return Array.from(this._translation.positionArr);
+        return this._translation.positionArr;
     }
     public toDefaultTRS() {
         this.setRotationAll(0);
@@ -145,10 +200,12 @@ export class Object3D {
         mouse.sensitivity = 30;
         let toggleZModeKey = new Key("z");
         let toggleCModeKey = new Key("c");
-        
+
         let rotateZ = (event: WheelEvent) => {
             if (toggleZModeKey.isPressed) {
                 this.setRotationZ(this.rotation[2] + event.deltaY / 25)
+            } else if (!toggleCModeKey.isPressed) {
+                this.setTranslationZ(this.translation[2] + event.deltaY / 25)
             }
         }
 
@@ -166,10 +223,35 @@ export class Object3D {
                 }
             }
         }
+
+        let aKey = new Key("a").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (!toggleCModeKey.isPressed) {
+                console.log("object");
+
+                this.setTranslationX(this.translation[0] - 10);
+            }
+        }
+        );
+        let dKey = new Key("d").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (!toggleCModeKey.isPressed)
+                this.setTranslationX(this.translation[0] + 10);
+        }
+        );
+        let wKey = new Key("w").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (!toggleCModeKey.isPressed)
+                this.setTranslationY(this.translation[1] + 10);
+        }
+        );
+        let sKey = new Key("s").setFunction(KEY_EVENTS.KEY_DOWN, () => {
+            if (!toggleCModeKey.isPressed)
+                this.setTranslationY(this.translation[1] - 10);
+        }
+        );
+
         mouse.setFunction(MOUSE_EVENTS.MOUSE_WHEEL, rotateZ);
         mouse.setFunction(MOUSE_EVENTS.MOUSE_MOVE, rotateXY);
 
-        this.controls = new Controls(mouse, toggleCModeKey, toggleZModeKey);
+        this.controls = new Controls(mouse, toggleCModeKey, toggleZModeKey, aKey, dKey, wKey, sKey);
         this.controls.addListenersToWindow();
     }
 
@@ -182,5 +264,21 @@ export class Object3D {
     get translationZ() {
         return this._translation[2];
 
+    }
+
+    get program(): any {
+        return this._programGL;
+    }
+
+    set program(value: any) {
+        this._programGL = value;
+    }
+
+    get buffers(): buffers {
+        return this._buffers;
+    }
+
+    set buffers(value: buffers) {
+        this._buffers = value;
     }
 }

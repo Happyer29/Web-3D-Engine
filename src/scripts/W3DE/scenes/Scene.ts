@@ -1,35 +1,35 @@
 import { Object3D } from "../core/Object3D";
+import { Light } from "../lighting/Light";
 
 export class Scene {
-    private itemsToRender: Object3D[] = []; // TODO: SceneGraph with nodes and world/local Matrices.
+    private _itemsToRender: Object3D[] = []; // TODO: SceneGraph with nodes and world/local Matrices.
 
-    private _ambientLight: Object; // todo Light class
+    private _light: Light;
 
-    public get ambientLight(): Object {
-        return this._ambientLight;
+    public get light(): Light {
+        return this._light;
+    }
+    public set light(value: Light) {
+        this._light = value;
     }
 
     constructor() {
-        // TODO: set ambientLight to default
-    }
-
-    public changeAmbientLight(ambientLight: Object) { // todo Light class
-        this._ambientLight = ambientLight;
+        this.light = new Light()
     }
 
     public add(item: Object3D) {
-        this.itemsToRender.push(item);
+        this._itemsToRender.push(item);
     }
 
     public clear() {
-        this.itemsToRender = [];
+        this._itemsToRender = [];
     }
 
-    public getObjectByIndex(index : number) {
-        return this.itemsToRender[index];
+    public getObjectByIndex(index: number) {
+        return this._itemsToRender[index];
     }
 
     public getItemsToRender() {
-        return this.itemsToRender;
+        return this._itemsToRender;
     }
 }
